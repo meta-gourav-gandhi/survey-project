@@ -1,3 +1,1 @@
 # survey-project
-
-Steps:
