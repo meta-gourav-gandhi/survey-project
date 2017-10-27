@@ -1,11 +1,20 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div class="jumbotron" style="text-align:center">
-  <h1 class="display-3"> <i class="fa fa-flag" aria-hidden="true"></i> {{title}} Started!</h1>
-  <p class="lead"><img width="300" src="https://static1.squarespace.com/static/57cde36e2994ca4d3c1de081/57db19a9bebafb407ca42be1/57db19c4ebbd1a047885f82a/1474926336449/logo-black+%283%29.png?format=500w">
-  </p>
-  <hr class="my-4">
-  <h2><p>Here is the link to help you start:</p></h2>
-  <p class="lead">
-    <a class="btn btn-primary btn-lg" href="https://github.com/meta-gourav-gandhi/survey-project" role="button">GitHub Link</a>
-  </p>
-</div>
+<mat-toolbar color="primary">
+  <span>WeSurve</span>
+  <span class="example-fill-remaining-space"></span>
+  <div class="button-row">
+      <button mat-button class="custom-nav-hover">Home</button>
+      <button mat-button class="custom-nav-hover">About</button>
+      <button mat-button class="custom-nav-hover">Contact Us</button>
+      <button mat-button class="custom-nav-hover">Login</button>
+    </div>
+</mat-toolbar>
+<mat-card>
+    <mat-card-title style="text-align:center;"><h1 class="display-3"> <i class="fa fa-flag" aria-hidden="true"></i> {{title}} Started!</h1></mat-card-title>
+    <mat-card-content  style="text-align:center;">
+        <p class="lead"><img width="300" src="https://static1.squarespace.com/static/57cde36e2994ca4d3c1de081/57db19a9bebafb407ca42be1/57db19c4ebbd1a047885f82a/1474926336449/logo-black+%283%29.png?format=500w">
+        </p>
+    </mat-card-content>
+    <mat-card-footer style="text-align:center;"><h2><p>Here is the link to help you start: <a mat-raised-button href="https://github.com/meta-gourav-gandhi/survey-project" color="primary">GitHub Link</a>
+    </p></h2></mat-card-footer>
+</mat-card>
+
