@@ -15,7 +15,7 @@ import org.hibernate.annotations.Check;
 
 @Entity
 @Table(name="user_details")
-public class User
+public class UserDetails
 {
 	@Id
 	@Column(name = "user_id")

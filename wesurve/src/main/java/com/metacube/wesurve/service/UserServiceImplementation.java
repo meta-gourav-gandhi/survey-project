@@ -17,11 +17,11 @@ public class UserServiceImplementation implements UserService {
 	
 	@Override
 	public User createNewUser(User user) {
-		return userDao.save(user);
-	}
-
-	@Override
-	public boolean checkIfEmailExists(String email) {
-		return userDao.checkIfEmailExists(email);
+		User userOutput = null;
+		if(!userDao.checkIfEmailExists(user.getEmail())) {
+			userOutput = userDao.save(user);
+		}
+		
+		return userOutput;
 	}
 }

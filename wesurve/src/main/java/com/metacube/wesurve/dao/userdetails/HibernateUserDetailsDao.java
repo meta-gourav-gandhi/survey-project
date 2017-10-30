@@ -6,21 +6,21 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import com.metacube.wesurve.dao.GenericHibernateDao;
-import com.metacube.wesurve.model.User;
+import com.metacube.wesurve.model.UserDetails;
 
 
-@Repository("hibernateUserDaoImplementation")
-public class HibernateUserDaoImplementation extends GenericHibernateDao<User, Integer> implements UserDao {
-	public HibernateUserDaoImplementation() {
-		super(User.class);
+@Repository("hibernateUserDetailsDao")
+public class HibernateUserDetailsDao extends GenericHibernateDao<UserDetails, Integer> implements UserDetailsDao {
+	public HibernateUserDetailsDao() {
+		super(UserDetails.class);
 	}
 
 	@Override
 	public boolean checkIfEmailExists(String email) {
 		boolean result = false;
 		Session session = getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(User.class);
-		User userDetails = (User) criteria.add(Restrictions.eq("email", email)).uniqueResult();
+		Criteria criteria = session.createCriteria(UserDetails.class);
+		UserDetails userDetails = (UserDetails) criteria.add(Restrictions.eq("email", email)).uniqueResult();
 		if(userDetails != null) {
 			result = true;
 		}

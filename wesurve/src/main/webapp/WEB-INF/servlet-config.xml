@@ -30,7 +30,7 @@
         <property name="dataSource" ref="dataSource"/>
         <property name="packagesToScan">
             <list>
-                <value>com.metacube.wesurve.model</value>
+                <value>com.metacube.get.layarch.model</value>
             </list>
         </property>
         <property name="hibernateProperties">
