@@ -1,6 +1,8 @@
 package com.metacube.wesurve.model;
 
-import java.sql.Date;
+
+
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,6 +11,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Check;
@@ -42,7 +46,7 @@ public class User
 	private char gender;
 	
 	@ManyToOne
-	@JoinColumn(name = "role_id", columnDefinition = "int default 3")
+	@JoinColumn(name = "role_id", insertable = false, columnDefinition = "int default 3")
 	private UserRole userRole;
 	
 	@Column(name = "created_date", nullable = true)
@@ -119,6 +123,7 @@ public class User
 		return createdDate;
 	}
 
+	@PrePersist
 	public void setCreatedDate(Date createdDate) {
 		this.createdDate = createdDate;
 	}
@@ -126,7 +131,8 @@ public class User
 	public Date getUpdatedDate() {
 		return updatedDate;
 	}
-
+	
+	@PreUpdate
 	public void setUpdatedDate(Date updatedDate) {
 		this.updatedDate = updatedDate;
 	}

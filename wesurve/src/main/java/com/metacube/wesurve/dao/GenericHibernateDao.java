@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class GenericHibernateDao<T, ID extends Serializable> implements AbstractDao<T, ID> {
 	@Autowired
 	private SessionFactory sessionFactory;
-
 	private Class<T> modelClass;
 
 	public GenericHibernateDao(Class<T> modelClass) {
@@ -34,6 +33,7 @@ public abstract class GenericHibernateDao<T, ID extends Serializable> implements
 	public Iterable<T> findAll() {
 		Session session = this.sessionFactory.getCurrentSession();
 		Criteria cr = session.createCriteria(getModelClass());
+		@SuppressWarnings("unchecked")
 		List<T> personsList = cr.list();
 		return personsList;
 	}

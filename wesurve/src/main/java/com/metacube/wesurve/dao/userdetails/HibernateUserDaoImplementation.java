@@ -26,4 +26,13 @@ public class HibernateUserDaoImplementation extends GenericHibernateDao<User, In
 		}
 		return result;
 	}
+
+	@Override
+	public User authenticateUser(String email, String password) {
+		Session session = getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(User.class);
+		criteria.add(Restrictions.eq("email", email)).uniqueResult();
+		User userDetails = (User)criteria.add(Restrictions.eq("password", password)).uniqueResult();
+		return userDetails;
+	}
 }
