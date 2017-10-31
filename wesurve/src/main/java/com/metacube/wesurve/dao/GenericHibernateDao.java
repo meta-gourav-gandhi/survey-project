@@ -64,4 +64,10 @@ public abstract class GenericHibernateDao<T, ID extends Serializable> implements
 	public Long count() {
 		return null;
 	}
+	
+	@Override
+	public void update(T entity) {
+		Session session = getSessionFactory().getCurrentSession();
+		session.update(entity);
+	}
 }

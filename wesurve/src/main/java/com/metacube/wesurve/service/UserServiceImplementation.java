@@ -29,4 +29,15 @@ public class UserServiceImplementation implements UserService {
 	public User checkAuthentication(String email, String password) {
 		return userDao.authenticateUser(email, password);
 	}
+
+	@Override
+	public boolean isUserAViewer(String email) {
+		return false;
+	}
+
+	@Override
+	public void setAccessToken(User user, String accessToken) {
+		user.setToken(accessToken);
+		userDao.update(user);
+	}
 }

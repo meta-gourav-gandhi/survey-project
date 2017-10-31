@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.metacube.wesurve.dto.LoginCredentialsDto;
+import com.metacube.wesurve.dto.LoginResponseDto;
 import com.metacube.wesurve.dto.UserDto;
 import com.metacube.wesurve.enums.Status;
 import com.metacube.wesurve.facade.UserFacade;
@@ -30,11 +32,12 @@ public class UserController {
 		return userFacade.createNewUser(userDto);
 	}
 	
-	@RequestMapping(value = "/login", method = RequestMethod.POST, consumes = "application/json")
-	public @ResponseBody Status login(HttpServletRequest request) {
+	@RequestMapping(value = "/login", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+	public @ResponseBody LoginResponseDto login(HttpServletRequest request, @RequestBody LoginCredentialsDto loginDto) {
 		session = request.getSession();
-		session.setAttribute("A", "ABCD");
-		return Status.SUCCESS;
+		LoginResponseDto loginResponseDto = userFacade.login(loginDto);
+		session.setAttribute("CurrentUserDetails", loginResponseDto);
+		return loginResponseDto;
 	}
 
 	@RequestMapping(value = "/welcome")

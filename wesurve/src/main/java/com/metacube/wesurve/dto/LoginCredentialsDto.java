@@ -1,6 +1,6 @@
 package com.metacube.wesurve.dto;
 
-public class LoginDto {
+public class LoginCredentialsDto {
 	private String email;
 	private String password;
 	
