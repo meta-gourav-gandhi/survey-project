@@ -1,0 +1,41 @@
+<div>
+    <div class="container-fluid fadeIn animated">
+            <div class="row">
+            <div class="col-sm-4"></div>
+            <div class="col-sm-4 box">
+                <div class="panel panel-default">
+                    <div class="panel-body">Login</div>
+                </div>
+
+                    <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input [(ngModel)]="user.email" #email="ngModel" type="email" class="form-control" id="email">
+                    </div>
+                    <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input [(ngModel)]="user.password" #password="ngModel" type="password" class="form-control" id="password">
+                    </div>
+
+                    <p class="form-group margin-top-5 text-center">
+                    <button  class="btn btn-success" (click)="doLogin();">Login</button>
+                    </p>
+
+                    <div *ngIf="error" class="alert alert-danger alert-dismissable">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                 Please try with right combination !
+                    </div>
+
+                    
+
+                    <div class="divider"><div class="divider-text">OR</div></div>
+                    <div class="social-btn-group">
+                        <button (click)="signIn('google')" class="google"><i class="fa fa-google left" aria-hidden="true"></i> Google</button>
+                        <button (click)="signIn('facebook')" class="facebook"><i class="fa fa-facebook left" aria-hidden="true"></i> Facebook</button>
+                    </div>
+                <!-- <button (click)="logout()">logout</button> -->
+               <!-- Facebook Ends Here -->
+                  </div>
+            <div class="col-sm-4"></div>
+            </div>
+    </div>
+</div>

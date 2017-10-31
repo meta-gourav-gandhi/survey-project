@@ -1,0 +1,71 @@
+<div class="survey-back">
+    <div class="container-fluid fadeIn animated">
+            <div class="row">
+            <div class="col-sm-4"></div>
+            <div class="col-sm-4 box">
+                    <div class="panel panel-default margin-bottom">
+                            <div class="panel-body">Create Account</div>
+                        </div>
+                        <div *ngIf="regMessageStatus">
+                                <div class="{{regMessageClass}}">
+                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                        {{regMessage}}
+                                      </div>
+                        </div>
+                        <form>
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input [(ngModel)]="user.name" #name="ngModel" name="name" required minlength="4" ngControl="name" type="text" class="form-control" id="name" required />
+                    <!-- <div *ngIf="name.invalid && (name.dirty || name.touched)" class="alert alert-danger">
+                        <div *ngIf="name.errors.required">
+                            Name is required.
+                        </div>
+                        <div *ngIf="name.errors.minlength">
+                            Name must be at least 4 characters long.
+                        </div>
+                    </div> -->
+                </div>
+                    
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input  [(ngModel)]="user.email" pattern="[^ @]*@[^ @]*" #email="ngModel" name="email" type="email" class="form-control" id="email">
+                    <!-- <div *ngIf="email.errors.required">
+                            Email is required.
+                    </div> -->
+                </div>
+                     
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input  [(ngModel)]="user.password" #password="ngModel" name="password" type="password" class="form-control" id="password">
+                </div>
+                    
+                <div class="form-group">
+                        <label for="password">Confirm Password:</label>
+                        <input type="password" class="form-control" name="cpassword">
+                </div>
+                   
+                <div class="form-group">
+                    <label for="dob">DOB:</label>
+                    <input  [(ngModel)]="user.dob" #dob="ngModel" type="date" name="date" class="form-control" id="dob">
+                </div>
+                    
+                    <b>Gender:</b> 
+                    <label class="radio-inline">
+                        <input  name="gender" type="radio" value="M"  [(ngModel)]="user.gender" #gender="ngModel" >Male
+                    </label>
+                    <label class="radio-inline">
+                        <input  name="gender" type="radio" value="F"  [(ngModel)]="user.gender" >Female
+                    </label>
+                    <label class="radio-inline">
+                        <input  name="gender" type="radio" value="O"  [(ngModel)]="user.gender" >Other
+                    </label>
+                    
+                    <p class="form-group margin-top-5">
+                    <button type="submit"  class="btn btn-success" (click)="doSignup();">Sign Up</button>
+                    </p>
+                </form>
+            </div>
+            <div class="col-sm-4"></div>
+            </div>
+    </div>
+</div>
