@@ -1,7 +1,10 @@
 package com.metacube.wesurve.model;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -10,6 +13,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -24,15 +29,37 @@ public class Survey {
 	@GeneratedValue(strategy= GenerationType.IDENTITY)
 	private int surveyId;
 	
+	
+	@ManyToMany(cascade = { CascadeType.ALL })
+    @JoinTable(
+        name = "survey_label", 
+        joinColumns = { @JoinColumn(name = "survey_id") }, 
+        inverseJoinColumns = { @JoinColumn(name = "label_id") }
+    )
+    Set<Labels> labels = new HashSet<>();
+	
+	
+	@ManyToMany(cascade = { CascadeType.ALL })
+    @JoinTable(
+        name = "survey_viewer", 
+        joinColumns = { @JoinColumn(name = "survey_id") }, 
+        inverseJoinColumns = { @JoinColumn(name = "user_id") }
+    )
+    Set<User> viewers = new HashSet<>();
+	
+
 	@ManyToOne
 	@JoinColumn(name = "user_id")
-	private User userId;
+	private User surveyorId;
 	
 	@Column(name = "survey_name", length = 500, nullable = false)
 	private String surveyName;
 	
 	@Enumerated(EnumType.STRING)
 	private SurveyStatus surveyStatus;
+	
+	
+	
 	
 	@Column(name = "created_date", nullable = true)
 	private Date createdDate;
@@ -48,12 +75,12 @@ public class Survey {
 		this.surveyId = surveyId;
 	}
 
-	public User getUserId() {
-		return userId;
+	public User getSurveyorId() {
+		return surveyorId;
 	}
 
-	public void setUserId(User userId) {
-		this.userId = userId;
+	public void setSurveyorId(User surveyorId) {
+		this.surveyorId = surveyorId;
 	}
 
 	public String getSurveyName() {
@@ -87,4 +114,22 @@ public class Survey {
 	public void setUpdatedDate(Date updatedDate) {
 		this.updatedDate = updatedDate;
 	}
+	
+
+	public Set<Labels> getLabels() {
+		return labels;
+	}
+
+	public void setLabels(Set<Labels> labels) {
+		this.labels = labels;
+	}
+	
+	public Set<User> getViewers() {
+		return viewers;
+	}
+
+	public void setViewers(Set<User> viewers) {
+		this.viewers = viewers;
+	}
+	
 }

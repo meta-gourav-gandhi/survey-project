@@ -8,4 +8,5 @@ public interface UserService {
 	public User checkAuthentication(String email, String password);
 	public boolean isUserAViewer(String email);
 	public void setAccessToken(User user, String accessToken);
+	public User getUserByMail(String email);
 }

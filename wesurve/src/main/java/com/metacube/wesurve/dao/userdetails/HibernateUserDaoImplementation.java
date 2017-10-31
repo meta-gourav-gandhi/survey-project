@@ -18,12 +18,10 @@ public class HibernateUserDaoImplementation extends GenericHibernateDao<User, In
 	@Override
 	public boolean checkIfEmailExists(String email) {
 		boolean result = false;
-		Session session = getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(User.class);
-		User userDetails = (User) criteria.add(Restrictions.eq("email", email)).uniqueResult();
-		if(userDetails != null) {
+		if(getUserByEmail(email) != null) {
 			result = true;
 		}
+		
 		return result;
 	}
 
@@ -34,5 +32,12 @@ public class HibernateUserDaoImplementation extends GenericHibernateDao<User, In
 		criteria.add(Restrictions.eq("email", email)).uniqueResult();
 		User userDetails = (User)criteria.add(Restrictions.eq("password", password)).uniqueResult();
 		return userDetails;
+	}
+
+	@Override
+	public User getUserByEmail(String email) {
+		Session session = getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(User.class);
+		return (User) criteria.add(Restrictions.eq("email", email)).uniqueResult();
 	}
 }

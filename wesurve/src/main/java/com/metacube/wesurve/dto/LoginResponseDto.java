@@ -6,6 +6,8 @@ public class LoginResponseDto {
 	private String accessToken;
 	private int role;
 	private boolean viewer;
+	private String name;
+	private String email;
 	
 	public int getStatus() {
 		return status;
@@ -45,5 +47,21 @@ public class LoginResponseDto {
 	
 	public void setViewer(boolean viewer) {
 		this.viewer = viewer;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 }

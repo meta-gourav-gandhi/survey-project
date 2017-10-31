@@ -32,12 +32,23 @@ public class UserServiceImplementation implements UserService {
 
 	@Override
 	public boolean isUserAViewer(String email) {
-		return false;
-	}
+		boolean result = false;
+		User user = userDao.getUserByEmail(email);
+		if(user.getSurvey().size() != 0) {
+			result = true;
+		}
+		
+		return result;
+	} 
 
 	@Override
 	public void setAccessToken(User user, String accessToken) {
 		user.setToken(accessToken);
 		userDao.update(user);
+	}
+
+	@Override
+	public User getUserByMail(String email) {
+		return userDao.getUserByEmail(email);
 	}
 }

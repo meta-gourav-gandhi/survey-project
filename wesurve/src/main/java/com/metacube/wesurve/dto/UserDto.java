@@ -1,13 +1,11 @@
 package com.metacube.wesurve.dto;
 
-import java.util.Date;
-
 public class UserDto {
 	private String name;
 	private String email;
 	private String password;
-	private Date dob;
-	private char gender;
+	private String dob;
+	private String gender;
 	
 	public String getName() {
 		return name;
@@ -33,19 +31,19 @@ public class UserDto {
 		this.password = password;
 	}
 	
-	public Date getDob() {
+	public String getDob() {
 		return dob;
 	}
 	
-	public void setDob(Date dob) {
+	public void setDob(String dob) {
 		this.dob = dob;
 	}
 	
-	public char getGender() {
+	public String getGender() {
 		return gender;
 	}
 	
-	public void setGender(char gender) {
+	public void setGender(String gender) {
 		this.gender = gender;
 	}
 }
