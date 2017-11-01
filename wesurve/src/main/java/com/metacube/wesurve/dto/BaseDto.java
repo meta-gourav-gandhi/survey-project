@@ -1,7 +1,6 @@
 package com.metacube.wesurve.dto;
 
 public class BaseDto {
-	
 	private String accessToken;
 
 	public String getAccessToken() {
@@ -11,7 +10,4 @@ public class BaseDto {
 	public void setAccessToken(String accessToken) {
 		this.accessToken = accessToken;
 	}
-	
-	
-	
 }

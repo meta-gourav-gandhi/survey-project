@@ -4,16 +4,8 @@ import java.security.SecureRandom;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -121,31 +113,6 @@ public class UserFacadeImplementation implements UserFacade {
 		return result;
 	}
 
-	public void sendEmail(String from, String password, String to,
-			String subject, String body) {
-		Message message;
-
-		Properties properties = new Properties();
-		properties.put("mail.smtp.host", "smtp.gmail.com");
-		properties.put("mail.smtp.port", "465");
-		properties.put("mail.smtp.auth", "true");
-		properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-		properties.put("mail.debug", "false");
-		Session session = Session.getDefaultInstance(properties,
-				new MailAuthenticator(from, password));
-
-		try {
-			message = new MimeMessage(session);
-			message.setFrom(new InternetAddress(from));
-			message.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
-			message.setSubject(subject);
-			message.setText(body);
-			Transport.send(message);
-		} catch (MessagingException exception) {
-			exception.printStackTrace();
-		}
-	}
-
 	public LoginResponseDto login(LoginCredentialsDto loginCredentialsDto) {
 		LoginResponseDto loginResponseDto = new LoginResponseDto();
 		User user = authenticate(loginCredentialsDto);
@@ -168,6 +135,11 @@ public class UserFacadeImplementation implements UserFacade {
 		return loginResponseDto;
 	}
 
+	/**
+	 * @param email to append in the access token
+	 * @return the random access token when user login 
+	 * function to generate the access token 
+	 */
 	private String generateAccessToken(String email) {
 		SecureRandom random = new SecureRandom();
 		long longToken = Math.abs(random.nextLong());
@@ -178,6 +150,7 @@ public class UserFacadeImplementation implements UserFacade {
 
 	private User authenticate(LoginCredentialsDto loginCredentialsDto) {
 		User user = null;
+		System.out.println(loginCredentialsDto.getPassword());
 		if (validateEmail(loginCredentialsDto.getEmail()) || validateString(loginCredentialsDto.getPassword()) || loginCredentialsDto.getPassword().length() >= 8) {
 			user = userService.checkAuthentication(loginCredentialsDto.getEmail(), PasswordEncryption.encrypt(loginCredentialsDto.getPassword()));
 		}
@@ -216,5 +189,11 @@ public class UserFacadeImplementation implements UserFacade {
 	private boolean validateSocialLoginCredentials(UserDto socialLoginCredentials) {
 		return validateEmail(socialLoginCredentials.getEmail())
 				&& validateString(socialLoginCredentials.getName());
+	}
+
+	@Override
+	public Status forgotPassword(String email) {
+		
+		return null;
 	}
 }

@@ -7,7 +7,7 @@ import com.metacube.wesurve.enums.Status;
 
 public interface UserFacade {
 	public Status createNewUser(UserDto userDetailsDto);
-	public void sendEmail(String from, String password, String to, String subject, String body);
 	public LoginResponseDto login(LoginCredentialsDto loginDto);
 	public LoginResponseDto socialLogin(UserDto socialLoginCredentials);
+	public Status forgotPassword(String email);
 }

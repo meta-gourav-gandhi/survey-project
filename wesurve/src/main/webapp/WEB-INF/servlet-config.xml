@@ -25,6 +25,16 @@
         <property name="password" value="${jdbc.password}"/>
 
     </bean>
+    
+	<bean class="org.springframework.beans.factory.config.CustomScopeConfigurer">
+		<property name="scopes">
+			<map>
+				<entry key="session">
+					<bean class="org.springframework.context.support.SimpleThreadScope"/>
+				</entry>
+			</map>
+		</property>
+	</bean>
 
     <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean" >
         <property name="dataSource" ref="dataSource"/>
