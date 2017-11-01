@@ -4,14 +4,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.metacube.wesurve.dto.BaseDto;
@@ -24,7 +22,6 @@ import com.metacube.wesurve.facade.UserFacade;
 @Controller
 @CrossOrigin
 @RequestMapping("/user")
-@Scope(value="session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class UserController {
 
 	HttpSession session;
@@ -59,6 +56,7 @@ public class UserController {
 			System.out.println(loginResponseDto.getEmail());
 		}
 
+		System.out.println(session.getAttribute("CurrentUserDetails"));
 		return loginResponseDto;
 	}
 
@@ -91,12 +89,13 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/logout", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public @ResponseBody Status logout(HttpServletRequest request, @RequestBody BaseDto baseDto) {
-		session = request.getSession(false);
+		session = request.getSession();
+		//session = request.getSession(false);
 		Status status = Status.FAILURE;
 		System.out.println(baseDto.getAccessToken());
-		LoginResponseDto loginResponseDto = new LoginResponseDto();
-		System.out.println(session);
-		loginResponseDto = (LoginResponseDto) session.getAttribute("CurrentUserDetails");
+		LoginResponseDto loginResponseDto = (LoginResponseDto) session.getAttribute("CurrentUserDetails");
+		System.out.println(session.getAttribute("CurrentUserDetails"));
+		
 		if(loginResponseDto != null) {
 			System.out.println("session is not null");
 			System.out.println(loginResponseDto.getEmail());
@@ -114,12 +113,21 @@ public class UserController {
 	}
 	
 	@RequestMapping(value = "/forgotpassword", method = RequestMethod.GET)
-	public @ResponseBody Status forgotPassword(@PathVariable String email) {
+	public @ResponseBody Status forgotPassword(@RequestParam("email") String email) {
 		return userFacade.forgotPassword(email);
 	}
 
 	@RequestMapping(value = "/welcome")
-	public @ResponseBody String welcome() {
+	public @ResponseBody String welcome(HttpServletRequest request) {
+		session = request.getSession();
+		session.setAttribute("A", "Welcome");
 		return "Hello";
+	}
+	
+	@RequestMapping(value = "/welcome2")
+	public @ResponseBody String welcome2(HttpServletRequest request) {
+		session = request.getSession();
+		System.out.println("......."+session);
+		return (String) session.getAttribute("A");
 	}
 }

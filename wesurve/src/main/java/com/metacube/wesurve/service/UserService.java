@@ -9,4 +9,7 @@ public interface UserService {
 	public boolean isUserAViewer(String email);
 	public void setAccessToken(User user, String accessToken);
 	public User getUserByMail(String email);
+	public User getCustomUserByMail(String email);
+	public void changePassword(User user, String newPassword);
+	public Iterable<User> getAllUsers();
 }

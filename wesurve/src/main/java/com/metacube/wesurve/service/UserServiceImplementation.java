@@ -14,7 +14,7 @@ public class UserServiceImplementation implements UserService {
 
 	@Resource(name = "hibernateUserDaoImplementation")
 	UserDao userDao;
-	
+
 	@Override
 	public User createNewUser(User user) {
 		return userDao.save(user);
@@ -34,12 +34,12 @@ public class UserServiceImplementation implements UserService {
 	public boolean isUserAViewer(String email) {
 		boolean result = false;
 		User user = userDao.getUserByEmail(email);
-		if(user.getSurvey().size() != 0) {
+		if (user.getSurvey().size() != 0) {
 			result = true;
 		}
-		
+
 		return result;
-	} 
+	}
 
 	@Override
 	public void setAccessToken(User user, String accessToken) {
@@ -50,5 +50,26 @@ public class UserServiceImplementation implements UserService {
 	@Override
 	public User getUserByMail(String email) {
 		return userDao.getUserByEmail(email);
+	}
+
+	@Override
+	public User getCustomUserByMail(String email) {
+		User user = getUserByMail(email);
+		if (user != null && (user.getPassword() == null || user.getPassword().isEmpty())) {
+			user = null;
+		}
+
+		return user;
+	}
+
+	@Override
+	public void changePassword(User user, String newPassword) {
+		user.setPassword(newPassword);
+		userDao.update(user);
+	}
+
+	@Override
+	public Iterable<User> getAllUsers() {
+		return userDao.findAll();
 	}
 }
