@@ -1,5 +1,6 @@
 package com.metacube.wesurve.service;
 
+import com.metacube.wesurve.enums.Role;
 import com.metacube.wesurve.model.User;
 
 public interface UserService {
@@ -12,4 +13,6 @@ public interface UserService {
 	public User getCustomUserByMail(String email);
 	public void changePassword(User user, String newPassword);
 	public Iterable<User> getAllUsers();
+	public Role checkAuthorization(String accessToken);
+	public User getUserByAccessToken(String accessToken);
 }

@@ -6,6 +6,7 @@ import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import com.metacube.wesurve.dao.userdetails.UserDao;
+import com.metacube.wesurve.enums.Role;
 import com.metacube.wesurve.model.User;
 
 @Service("userService")
@@ -71,5 +72,35 @@ public class UserServiceImplementation implements UserService {
 	@Override
 	public Iterable<User> getAllUsers() {
 		return userDao.findAll();
+	}
+
+	@Override
+	public Role checkAuthorization(String accessToken) {
+		User user = userDao.getUserByAccessToken(accessToken);
+		Role role = null;
+		try {
+			int roleId = user.getUserRole().getRoleId();
+			switch (roleId) {
+			case 1:
+				role = Role.ADMIN;
+				break;
+			case 2:
+				role = Role.SURVEYOR;
+				break;
+			case 3:
+				role = Role.USER;
+				break;
+			}
+		} catch (Exception exception) {
+			exception.printStackTrace();
+			role = Role.INVALID;
+		}
+
+		return role;
+	}
+
+	@Override
+	public User getUserByAccessToken(String accessToken) {
+		return userDao.getUserByAccessToken(accessToken);
 	}
 }

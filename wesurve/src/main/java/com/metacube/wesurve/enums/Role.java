@@ -1,5 +1,5 @@
 package com.metacube.wesurve.enums;
 
-public enum Roles {
+public enum Role {
 	ADMIN, SURVEYOR, USER, INVALID
 }

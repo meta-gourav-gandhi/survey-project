@@ -1,5 +1,6 @@
 package com.metacube.wesurve.facade;
 
+import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -15,11 +16,12 @@ import com.metacube.wesurve.dto.LoginCredentialsDto;
 import com.metacube.wesurve.dto.LoginResponseDto;
 import com.metacube.wesurve.dto.UserDetailsDto;
 import com.metacube.wesurve.dto.UserDto;
+import com.metacube.wesurve.enums.Role;
 import com.metacube.wesurve.enums.Status;
 import com.metacube.wesurve.model.User;
 import com.metacube.wesurve.service.UserService;
 import com.metacube.wesurve.utils.EmailUtils;
-import com.metacube.wesurve.utils.PasswordEncryption;
+import com.metacube.wesurve.utils.MD5Encryption;
 import com.metacube.wesurve.utils.StringUtils;
 
 @Component("userFacade")
@@ -91,7 +93,11 @@ public class UserFacadeImplementation implements UserFacade {
 		user.setDob(date);
 		user.setEmail(userDto.getEmail());
 		user.setGender(userDto.getGender().charAt(0));
-		user.setPassword(PasswordEncryption.encrypt(userDto.getPassword()));
+		try {
+			user.setPassword(MD5Encryption.encrypt(userDto.getPassword()));
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
 		user.setCreatedDate(new Date());
 		user.setUpdatedDate(new Date());
 		return user;
@@ -106,11 +112,16 @@ public class UserFacadeImplementation implements UserFacade {
 			loginResponseDto.setName(user.getName());
 			loginResponseDto.setEmail(user.getEmail());
 			loginResponseDto.setRole(user.getUserRole().getRoleId());
-			loginResponseDto.setViewer(userService.isUserAViewer(loginCredentialsDto.getEmail()));
+			loginResponseDto.setViewer(userService.isUserAViewer(user.getEmail()));
+			String accessToken = getAccessTokenIfUserLoggedIn(user);
 
-			String accessToken = StringUtils.generateAccessToken(loginCredentialsDto.getEmail());
-			loginResponseDto.setAccessToken(accessToken);
-			userService.setAccessToken(user, accessToken);
+			if (accessToken == null || accessToken.isEmpty()) {
+				String newAccessToken = StringUtils.generateAccessToken(user.getEmail());
+				loginResponseDto.setAccessToken(newAccessToken);
+				userService.setAccessToken(user, newAccessToken);
+			} else {
+				loginResponseDto.setAccessToken(accessToken);
+			}
 		} else {
 			loginResponseDto.setStatus(400);
 			loginResponseDto.setMessage("Error in login");
@@ -119,14 +130,22 @@ public class UserFacadeImplementation implements UserFacade {
 		return loginResponseDto;
 	}
 
+	private String getAccessTokenIfUserLoggedIn(User user) {
+		return user.getToken();
+	}
+
 	private User authenticate(LoginCredentialsDto loginCredentialsDto) {
 		User user = null;
 		System.out.println(loginCredentialsDto.getPassword());
 		if (StringUtils.validateEmail(loginCredentialsDto.getEmail())
 				|| StringUtils.validateString(loginCredentialsDto.getPassword())
 				|| loginCredentialsDto.getPassword().length() >= 8) {
-			user = userService.checkAuthentication(loginCredentialsDto.getEmail(),
-					PasswordEncryption.encrypt(loginCredentialsDto.getPassword()));
+			try {
+				user = userService.checkAuthentication(loginCredentialsDto.getEmail(),
+						MD5Encryption.encrypt(loginCredentialsDto.getPassword()));
+			} catch (NoSuchAlgorithmException e) {
+				e.printStackTrace();
+			}
 		}
 
 		return user;
@@ -136,28 +155,42 @@ public class UserFacadeImplementation implements UserFacade {
 	public LoginResponseDto socialLogin(UserDto socialLoginCredentials) {
 		LoginResponseDto loginResponseDto = new LoginResponseDto();
 		if (validateSocialLoginCredentials(socialLoginCredentials)) {
+			User user = createUserIfNotExists(socialLoginCredentials);
+			if (user != null) {
+				loginResponseDto.setStatus(200);
+				loginResponseDto.setMessage("Login Successful");
+				loginResponseDto.setName(user.getName());
+				loginResponseDto.setEmail(user.getEmail());
+				loginResponseDto.setRole(user.getUserRole().getRoleId());
+				loginResponseDto.setViewer(userService.isUserAViewer(user.getEmail()));
+				String accessToken = getAccessTokenIfUserLoggedIn(user);
 
-			if (!userService.checkIfEmailExists(socialLoginCredentials.getEmail())) {
-				User user = convertDtoToModel(socialLoginCredentials);
-				userService.createNewUser(user);
+				if (accessToken == null || accessToken.isEmpty()) {
+					String newAccessToken = StringUtils.generateAccessToken(user.getEmail());
+					loginResponseDto.setAccessToken(newAccessToken);
+					userService.setAccessToken(user, newAccessToken);
+				} else {
+					loginResponseDto.setAccessToken(accessToken);
+				}
 			}
-
-			User user = userService.getUserByMail(socialLoginCredentials.getEmail());
-			loginResponseDto.setStatus(200);
-			loginResponseDto.setMessage("Login Successful");
-			loginResponseDto.setName(socialLoginCredentials.getName());
-			loginResponseDto.setEmail(socialLoginCredentials.getEmail());
-			loginResponseDto.setRole(user.getUserRole().getRoleId());
-			String accessToken = StringUtils.generateAccessToken(socialLoginCredentials.getEmail());
-			loginResponseDto.setAccessToken(accessToken);
-			userService.setAccessToken(user, accessToken);
-			loginResponseDto.setViewer(userService.isUserAViewer(socialLoginCredentials.getEmail()));
 		} else {
 			loginResponseDto.setStatus(400);
 			loginResponseDto.setMessage("Error in login");
 		}
 
 		return loginResponseDto;
+	}
+
+	private User createUserIfNotExists(UserDto socialUserDto) {
+		User user;
+
+		if (!userService.checkIfEmailExists(socialUserDto.getEmail())) {
+			user = userService.createNewUser(convertDtoToModel(socialUserDto));
+		} else {
+			user = userService.getUserByMail(socialUserDto.getEmail());
+		}
+
+		return user;
 	}
 
 	private boolean validateSocialLoginCredentials(UserDto socialLoginCredentials) {
@@ -172,7 +205,11 @@ public class UserFacadeImplementation implements UserFacade {
 			User user = userService.getCustomUserByMail(email);
 			if (user != null) {
 				String newPassword = StringUtils.randomAlphanumeric(10);
-				userService.changePassword(user, PasswordEncryption.encrypt(newPassword));
+				try {
+					userService.changePassword(user, MD5Encryption.encrypt(newPassword));
+				} catch (NoSuchAlgorithmException e1) {
+					e1.printStackTrace();
+				}
 				String emailBody = "Hello " + user.getName() + ",\nYour new password is: \n" + newPassword
 						+ "\n\nYou can use this password for login and you can change the password from the user profile.\n\nThanks & Regards,\nWeServe Helpline";
 				try {
@@ -191,9 +228,12 @@ public class UserFacadeImplementation implements UserFacade {
 	}
 
 	@Override
-	public Iterable<UserDetailsDto> getAllUsers() {
+	public Iterable<UserDetailsDto> getAllUsers(String accessToken) {
 		List<UserDetailsDto> userDetailsDtoList = new ArrayList<>();
 		for (User user : userService.getAllUsers()) {
+			if (user.getToken() != null && user.getToken().equals(accessToken)) {
+				continue;
+			}
 			userDetailsDtoList.add(modelToDto(user));
 		}
 
@@ -210,5 +250,41 @@ public class UserFacadeImplementation implements UserFacade {
 			curUserDetails.setRole(user.getUserRole().getRoleId());
 			return curUserDetails;
 		}
+	}
+
+	@Override
+	public Status logout(String accessToken) {
+		User user = userService.getUserByAccessToken(accessToken);
+		Status status = null;
+		try {
+			userService.setAccessToken(user, "");
+			status = Status.SUCCESS;
+		} catch (Exception exception) {
+			exception.printStackTrace();
+			status = Status.FAILURE;
+		}
+
+		return status;
+	}
+
+	@Override
+	public Role checkAuthorization(String accessToken) {
+		return userService.checkAuthorization(accessToken);
+	}
+
+	@Override
+	public Status changeUserRole(String token, String email) {
+		Status status = Status.FAILURE;
+		User user = userService.getUserByMail(email);
+		if (user != null) {
+			if (user.getUserRole().getRoleId() == 2) {
+				user.getUserRole().setRoleId(3);
+			} else if (user.getUserRole().getRoleId() == 3) {
+				user.getUserRole().setRoleId(2);
+			}
+			status = Status.SUCCESS;
+		}
+
+		return status;
 	}
 }
