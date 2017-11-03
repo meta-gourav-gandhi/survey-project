@@ -1,28 +1,19 @@
 package com.metacube.wesurve.dto;
 
 public class LoginResponseDto {
-	private int status;
-	private String message;
+	private int id;
 	private String accessToken;
 	private int role;
 	private boolean viewer;
 	private String name;
 	private String email;
 	
-	public int getStatus() {
-		return status;
+	public int getId() {
+		return id;
 	}
-	
-	public void setStatus(int status) {
-		this.status = status;
-	}
-	
-	public String getMessage() {
-		return message;
-	}
-	
-	public void setMessage(String message) {
-		this.message = message;
+
+	public void setId(int id) {
+		this.id = id;
 	}
 	
 	public String getAccessToken() {

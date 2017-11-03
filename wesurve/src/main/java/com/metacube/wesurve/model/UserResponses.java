@@ -12,7 +12,7 @@ import javax.persistence.Table;
 @IdClass(UserResonsesID.class)
 @Table(name = "user_responses")
 public class UserResponses {
-	
+
 	@Id
 	@Column(name = "user_id")
 	private int userId;
@@ -20,10 +20,10 @@ public class UserResponses {
 	@Id
 	@Column(name = "ques_id")
 	private int quesId;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "option_id")
-	private QuestionOptions optionId;
+	private Options optionId;
 
 	public int getUserId() {
 		return userId;
@@ -41,11 +41,11 @@ public class UserResponses {
 		this.quesId = quesId;
 	}
 
-	public QuestionOptions getOptionId() {
+	public Options getOptionId() {
 		return optionId;
 	}
 
-	public void setOptionId(QuestionOptions optionId) {
+	public void setOptionId(Options optionId) {
 		this.optionId = optionId;
 	}
 }

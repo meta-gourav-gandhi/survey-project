@@ -11,25 +11,20 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
-
 @Entity
-@Table(name="labels")
+@Table(name = "labelstb")
 public class Labels {
 
 	@Id
 	@Column(name = "label_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int labelId;
-	
-	
-	
+
 	@Column(name = "label_name", length = 50, nullable = false)
-	private String label_name;
+	private String labelName;
 
-	
-	 @ManyToMany(mappedBy = "labels")
-	 private Set<Survey> survey = new HashSet<>();
-
+	@ManyToMany(mappedBy = "labels")
+	private Set<Survey> survey = new HashSet<>();
 
 	public int getLabelId() {
 		return labelId;
@@ -39,16 +34,12 @@ public class Labels {
 		this.labelId = labelId;
 	}
 
-
-
-	public String getLabel_name() {
-		return label_name;
+	public String getLabelName() {
+		return labelName;
 	}
 
-
-
-	public void setLabel_name(String label_name) {
-		this.label_name = label_name;
+	public void setLabelName(String labelName) {
+		this.labelName = labelName;
 	}
 
 	public Set<Survey> getSurvey() {
@@ -59,8 +50,4 @@ public class Labels {
 		this.survey = survey;
 	}
 
-	
-	
-	
-	
 }

@@ -1,7 +1,6 @@
 package com.metacube.wesurve.model;
 
 import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -9,34 +8,29 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.metacube.wesurve.enums.OptionType;
 
 @Entity
-@Table(name="question_options")
-public class QuestionOptions {
-	
+@Table(name = "optionstb")
+public class Options {
+
 	@Id
 	@Column(name = "option_id")
-	@GeneratedValue(strategy= GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int optionId;
-	
-	@ManyToOne
-	@JoinColumn(name = "ques_id")
-	private SurveyQuestions quesId;
+
 	
 	@Column(name = "option_value ", length = 500, nullable = false)
 	private String optionValue;
-	
+
 	@Enumerated(EnumType.STRING)
 	private OptionType optionType;
-	
+
 	@Column(name = "created_date", nullable = true)
 	private Date createdDate;
-	
+
 	@Column(name = "updated_date", nullable = true)
 	private Date updatedDate;
 
@@ -48,13 +42,6 @@ public class QuestionOptions {
 		this.optionId = optionId;
 	}
 
-	public SurveyQuestions getQuesId() {
-		return quesId;
-	}
-
-	public void setQuesId(SurveyQuestions quesId) {
-		this.quesId = quesId;
-	}
 
 	public String getOptionValue() {
 		return optionValue;
@@ -87,8 +74,4 @@ public class QuestionOptions {
 	public void setUpdatedDate(Date updatedDate) {
 		this.updatedDate = updatedDate;
 	}
-	
-	
-	
-
 }

@@ -15,8 +15,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.metacube.wesurve.dto.LoginCredentialsDto;
 import com.metacube.wesurve.dto.LoginResponseDto;
+import com.metacube.wesurve.dto.ResponseDto;
+import com.metacube.wesurve.dto.UserDetailsDto;
 import com.metacube.wesurve.dto.UserDto;
-import com.metacube.wesurve.dto.UserListResponse;
 import com.metacube.wesurve.enums.Role;
 import com.metacube.wesurve.enums.Status;
 import com.metacube.wesurve.facade.UserFacade;
@@ -31,85 +32,97 @@ public class UserController {
 	UserFacade userFacade;
 
 	/**
-	 * @param userDto
-	 *            contains the details user that register contains email ,password,
-	 *            dob and name
+	 * @param userDto contains the details user that register contains email ,password, dob and name
 	 * @return the status, message and access token for the user
 	 */
 	@RequestMapping(value = "/register", method = RequestMethod.POST, consumes = "application/json")
-	public @ResponseBody Status createNewUser(@RequestBody UserDto userDto) {
+	public @ResponseBody ResponseDto<Void> createNewUser(@RequestBody UserDto userDto) {
 		return userFacade.createNewUser(userDto);
 	}
 
 	/**
 	 * @param request
-	 * @param loginDto
-	 *            contains the login credential of the user
-	 * @return the success status if the user is valid else 400 status will be
-	 *         returned
+	 * @param loginDto contains the login credential of the user
+	 * @return the success status if the user is valid else 400 status will be returned
 	 */
 	@RequestMapping(value = "/login", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	public @ResponseBody LoginResponseDto login(HttpServletRequest request, @RequestBody LoginCredentialsDto loginDto) {
+	public @ResponseBody ResponseDto<LoginResponseDto> login(HttpServletRequest request, @RequestBody LoginCredentialsDto loginDto) {
 		return userFacade.login(loginDto);
 	}
 
 	/**
 	 * @param request
-	 * @param socialLoginCredentials
-	 *            contains user details, email, dob, user name
+	 * @param socialLoginCredentials contains user details, email, dob, user name
 	 * @return status, message, accessToken, role, viewer, name, email of the user
 	 */
 	@RequestMapping(value = "/sociallogin", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	public @ResponseBody LoginResponseDto socialLogin(HttpServletRequest request,
-			@RequestBody UserDto socialLoginCredentials) {
+	public @ResponseBody ResponseDto<LoginResponseDto> socialLogin(@RequestBody UserDto socialLoginCredentials) {
 		return userFacade.socialLogin(socialLoginCredentials);
 	}
 
 	/**
 	 * @param request
-	 * @param baseDto
-	 *            receiving token of the logged in user
-	 * @return Status of the user logged out or not function to logout the user from
-	 *         the session
+	 * @param baseDto receiving token of the logged in user
+	 * @return Status of the user logged out or not function to logout the user from the session
 	 */
-	@RequestMapping(value = "/logout", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	public @ResponseBody Status logout(@RequestHeader(value = "X-auth") String accessToken) {
+	@RequestMapping(value = "/logout", method = RequestMethod.GET, consumes = "application/json", produces = "application/json")
+	public @ResponseBody ResponseDto<Void> logout(@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken) {
 		Status status = Status.FAILURE;
 		if (checkAuthorization(accessToken) != Role.INVALID) {
 			status = userFacade.logout(accessToken);
 		}
-
-		return status;
+		
+		ResponseDto<Void> response = new ResponseDto<>();
+		response.setStatus(status);
+		return response;
 	}
 
+	/**
+	 * @param email of the user whose password need to reset
+	 * @return the status
+	 */
 	@RequestMapping(value = "/forgotpassword", method = RequestMethod.GET)
-	public @ResponseBody Status forgotPassword(@RequestParam("email") String email) {
+	public @ResponseBody ResponseDto<Void> forgotPassword(@RequestParam("email") String email) {
 		return userFacade.forgotPassword(email);
 	}
 
-	@RequestMapping(value = "/userslist", method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody UserListResponse getAllUser(@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken) {
+	/**
+	 * @param accessToken token of the requester 
+	 * @return list of the user
+	 */
+	@RequestMapping(value = "/", method = RequestMethod.GET, produces = "application/json")
+	public @ResponseBody ResponseDto<Iterable<UserDetailsDto>> getAllUser(@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken) {
 		Role role = checkAuthorization(accessToken);
-		UserListResponse userListResponse = new UserListResponse();
+		Iterable<UserDetailsDto> userList = null;
+		Status status = Status.ACCESS_DENIED;
+		
 		if (role == Role.ADMIN) {
-			userListResponse.setAccess(true);
-			userListResponse.setUsersList(userFacade.getAllUsers(accessToken));
-		} else {
-			userListResponse.setAccess(false);
-			userListResponse.setUsersList(null);
-		}
-
-		return userListResponse;
+			status = Status.ACCESS_GRANTED;
+			userList =	userFacade.getAllUsers(accessToken);
+		} 
+		
+		ResponseDto<Iterable<UserDetailsDto>> response = new ResponseDto<>();
+		response.setStatus(status);
+		response.setBody(userList);
+		return response;
 	}
 
-	@RequestMapping(value = "/createsurveyor/{email}", method = RequestMethod.POST, consumes = "application/json")
-	public @ResponseBody Status changeRoleofUser(@RequestHeader(value = Constants.ACCESSTOKEN) String token, @PathVariable String email) {
+	/**
+	 * @param token access token of the user
+	 * @param userId is the id of the user who's role needs to be changed
+	 * @return the Status
+	 * function to create or remove surveyor  
+	 */
+	@RequestMapping(value = "/createsurveyor/{userId}", method = RequestMethod.POST, consumes = "application/json")
+	public @ResponseBody ResponseDto<Void>  changeRoleofUser(@RequestHeader(value = Constants.ACCESSTOKEN) String token, @PathVariable int userId) {
+		ResponseDto<Void> response = new ResponseDto<>();
 		Status status = Status.FAILURE;
 		if(Role.ADMIN == checkAuthorization(token)) {
-			status = userFacade.changeUserRole(token, email);
+			status = userFacade.changeUserRole(userId);
 		}
 		
-		return status;
+		response.setStatus(status);
+		return response;
 	}
 
 	@RequestMapping(value = "/welcome")
@@ -117,6 +130,10 @@ public class UserController {
 		return "Hello";
 	}
 
+	/**
+	 * @param accessToken of the user
+	 * @return the role of the given user 
+	 */
 	private Role checkAuthorization(String accessToken) {
 		Role role = Role.INVALID;
 		if (accessToken != null) {

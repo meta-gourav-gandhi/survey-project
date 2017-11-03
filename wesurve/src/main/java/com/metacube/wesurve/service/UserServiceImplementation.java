@@ -35,7 +35,7 @@ public class UserServiceImplementation implements UserService {
 	public boolean isUserAViewer(String email) {
 		boolean result = false;
 		User user = userDao.getUserByEmail(email);
-		if (user.getSurvey().size() != 0) {
+		if (user.getSurveyListToView().size() != 0) {
 			result = true;
 		}
 
@@ -102,5 +102,15 @@ public class UserServiceImplementation implements UserService {
 	@Override
 	public User getUserByAccessToken(String accessToken) {
 		return userDao.getUserByAccessToken(accessToken);
+	}
+
+	@Override
+	public User getUserById(int primaryKey) {
+		return userDao.findOne(primaryKey);
+	}
+
+	@Override
+	public void update(User user) {
+		userDao.update(user);
 	}
 }

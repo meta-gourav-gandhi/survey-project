@@ -1,29 +1,28 @@
 package com.metacube.wesurve.model;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="survey_questions")
-public class SurveyQuestions {
+@Table(name="questionstb")
+public class Questions {
 
 	@Id
 	@Column(name = "ques_id")
 	@GeneratedValue(strategy= GenerationType.IDENTITY)
 	private int quesId;
-	
-	@ManyToOne
-	@JoinColumn(name = "survey_id")
-	private Survey surveyId;
-	
 	
 	@Column(name = "question", length = 500, nullable = false)
 	private String question;
@@ -33,6 +32,26 @@ public class SurveyQuestions {
 	
 	@Column(name = "updated_date", nullable = true)
 	private Date updatedDate;
+	
+	@Column(name = "required", nullable = false)
+	private boolean required;
+	
+	
+	
+	@OneToMany(cascade = { CascadeType.ALL })
+	@JoinTable(name = "question_option", joinColumns = { @JoinColumn(name = "ques_id") }, inverseJoinColumns = {
+			@JoinColumn(name = "option_id") })
+	Set<Options> options = new HashSet<>();
+
+	
+	
+	public Set<Options> getOptions() {
+		return options;
+	}
+
+	public void setOptions(Set<Options> options) {
+		this.options = options;
+	}
 
 	public int getQuesId() {
 		return quesId;
@@ -42,13 +61,6 @@ public class SurveyQuestions {
 		this.quesId = quesId;
 	}
 
-	public Survey getSurveyId() {
-		return surveyId;
-	}
-
-	public void setSurveyId(Survey surveyId) {
-		this.surveyId = surveyId;
-	}
 
 	public String getQuestion() {
 		return question;
@@ -74,8 +86,13 @@ public class SurveyQuestions {
 		this.updatedDate = updatedDate;
 	}
 	
-	
-	
-	
+	public boolean isRequired() {
+		return required;
+	}
+
+	public void setRequired(boolean required) {
+		this.required = required;
+	}
+
 	
 }

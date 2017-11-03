@@ -2,6 +2,7 @@ package com.metacube.wesurve.dto;
 
 public class UserDetailsDto {
 
+	private int id;
 	private String name;
 	private String email;
 	private int role;
@@ -28,5 +29,13 @@ public class UserDetailsDto {
 
 	public void setRole(int role) {
 		this.role = role;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 }

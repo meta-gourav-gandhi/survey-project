@@ -1,0 +1,22 @@
+package com.metacube.wesurve.service;
+
+import javax.annotation.Resource;
+import javax.transaction.Transactional;
+
+import org.springframework.stereotype.Service;
+
+import com.metacube.wesurve.dao.survey.SurveyDao;
+import com.metacube.wesurve.model.Survey;
+
+@Service("surveyService")
+@Transactional
+public class SurveyServiceImplementation implements SurveyService {
+
+	@Resource(name = "hibernateSurveyDaoImplementation")
+	SurveyDao surveyDao;
+	
+	@Override
+	public Survey createSurvey(Survey survey) {
+		return surveyDao.save(survey);
+	}
+}

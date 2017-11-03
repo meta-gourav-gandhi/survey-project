@@ -1,7 +1,5 @@
 package com.metacube.wesurve.model;
 
-
-
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -14,19 +12,16 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Check;
 
 @Entity
-@Table(name="user_details")
-public class User
-{
+@Table(name = "user_details")
+public class User {
 	@Id
 	@Column(name = "user_id")
-	@GeneratedValue(strategy= GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int userId;
 
 	@Column(name = "email", length = 50, nullable = false, unique = true)
@@ -40,26 +35,26 @@ public class User
 
 	@Column(name = "name", length = 100, nullable = false)
 	private String name;
-	
+
 	@Column(name = "dob", nullable = true)
 	private Date dob;
-	
+
 	@Column(name = "gender", length = 1, nullable = true)
 	@Check(constraints = "gender IN ('M', 'F', 'O')")
 	private char gender;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "role_id", insertable = false, columnDefinition = "int default 3")
 	private UserRole userRole;
-	
+
 	@Column(name = "created_date", nullable = true)
 	private Date createdDate;
-	
+
 	@Column(name = "updated_date", nullable = true)
 	private Date updatedDate;
-	
+
 	@ManyToMany(mappedBy = "viewers")
-	private Set<Survey> survey = new HashSet<>();
+	private Set<Survey> surveyListToView = new HashSet<>();
 
 	public int getUserId() {
 		return userId;
@@ -113,12 +108,12 @@ public class User
 		return gender;
 	}
 
-	public Set<Survey> getSurvey() {
-		return survey;
+	public Set<Survey> getSurveyListToView() {
+		return surveyListToView;
 	}
 
-	public void setSurvey(Set<Survey> survey) {
-		this.survey = survey;
+	public void setSurveyListToView(Set<Survey> surveyListToView) {
+		this.surveyListToView = surveyListToView;
 	}
 
 	public void setGender(char gender) {
@@ -137,7 +132,6 @@ public class User
 		return createdDate;
 	}
 
-	@PrePersist
 	public void setCreatedDate(Date createdDate) {
 		this.createdDate = createdDate;
 	}
@@ -145,8 +139,7 @@ public class User
 	public Date getUpdatedDate() {
 		return updatedDate;
 	}
-	
-	@PreUpdate
+
 	public void setUpdatedDate(Date updatedDate) {
 		this.updatedDate = updatedDate;
 	}

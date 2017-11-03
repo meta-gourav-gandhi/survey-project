@@ -16,54 +16,52 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.metacube.wesurve.enums.SurveyStatus;
 
 @Entity
-@Table(name="survey")
+@Table(name = "survey")
 public class Survey {
 
 	@Id
 	@Column(name = "survey_id")
-	@GeneratedValue(strategy= GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int surveyId;
-	
-	
+
 	@ManyToMany(cascade = { CascadeType.ALL })
-    @JoinTable(
-        name = "survey_label", 
-        joinColumns = { @JoinColumn(name = "survey_id") }, 
-        inverseJoinColumns = { @JoinColumn(name = "label_id") }
-    )
-    Set<Labels> labels = new HashSet<>();
-	
-	
+	@JoinTable(name = "survey_label", joinColumns = { @JoinColumn(name = "survey_id") }, inverseJoinColumns = {
+			@JoinColumn(name = "label_id") })
+	Set<Labels> labels = new HashSet<>();
+
 	@ManyToMany(cascade = { CascadeType.ALL })
-    @JoinTable(
-        name = "survey_viewer", 
-        joinColumns = { @JoinColumn(name = "survey_id") }, 
-        inverseJoinColumns = { @JoinColumn(name = "user_id") }
-    )
-    Set<User> viewers = new HashSet<>();
+	@JoinTable(name = "survey_viewer", joinColumns = { @JoinColumn(name = "survey_id") }, inverseJoinColumns = {
+			@JoinColumn(name = "user_id") })
+	Set<User> viewers = new HashSet<>();
 	
+	
+	@OneToMany(cascade = { CascadeType.ALL })
+	@JoinTable(name = "survey_question", joinColumns = { @JoinColumn(name = "survey_id") }, inverseJoinColumns = {
+			@JoinColumn(name = "ques_id") })
+	Set<Questions> questions = new HashSet<>();
 
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User surveyorId;
-	
+
 	@Column(name = "survey_name", length = 500, nullable = false)
 	private String surveyName;
-	
+
 	@Enumerated(EnumType.STRING)
-	private SurveyStatus surveyStatus;
+	private SurveyStatus surveyStatus = SurveyStatus.NOTLIVE;
 	
-	
-	
-	
+	@Column(name = "description", nullable = true)
+	private String description;
+
 	@Column(name = "created_date", nullable = true)
 	private Date createdDate;
-	
+
 	@Column(name = "updated_date", nullable = true)
 	private Date updatedDate;
 
@@ -98,6 +96,14 @@ public class Survey {
 	public void setSurveyStatus(SurveyStatus surveyStatus) {
 		this.surveyStatus = surveyStatus;
 	}
+	
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
 	public Date getCreatedDate() {
 		return createdDate;
@@ -114,7 +120,6 @@ public class Survey {
 	public void setUpdatedDate(Date updatedDate) {
 		this.updatedDate = updatedDate;
 	}
-	
 
 	public Set<Labels> getLabels() {
 		return labels;
@@ -123,7 +128,7 @@ public class Survey {
 	public void setLabels(Set<Labels> labels) {
 		this.labels = labels;
 	}
-	
+
 	public Set<User> getViewers() {
 		return viewers;
 	}
@@ -131,5 +136,15 @@ public class Survey {
 	public void setViewers(Set<User> viewers) {
 		this.viewers = viewers;
 	}
+
+	public Set<Questions> getQuestions() {
+		return questions;
+	}
+
+	public void setQuestions(Set<Questions> questions) {
+		this.questions = questions;
+	}
+	
+	
 	
 }

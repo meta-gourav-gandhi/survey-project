@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import com.metacube.wesurve.dto.LoginCredentialsDto;
 import com.metacube.wesurve.dto.LoginResponseDto;
+import com.metacube.wesurve.dto.ResponseDto;
 import com.metacube.wesurve.dto.UserDetailsDto;
 import com.metacube.wesurve.dto.UserDto;
 import com.metacube.wesurve.enums.Role;
@@ -33,24 +34,26 @@ public class UserFacadeImplementation implements UserFacade {
 	}
 
 	/**
-	 * @param userDto
-	 *            details of the user to save in the database
+	 * @param userDto details of the user to save in the database
 	 * @return return the success , failure,success,duplicate
 	 */
 	@Override
-	public Status createNewUser(UserDto userDto) {
-		Status outputStatus = Status.FAILURE;
+	public ResponseDto<Void> createNewUser(UserDto userDto) {
+		ResponseDto<Void> response = new ResponseDto<>();
+		Status status = Status.INVALID_CONTENT;
 		if (validateUser(userDto)) {
 			if (!userService.checkIfEmailExists(userDto.getEmail())) {
 				User user = convertDtoToModel(userDto);
 				if (userService.createNewUser(user) != null) {
-					outputStatus = Status.SUCCESS;
+					status = Status.SUCCESS;
 				}
 			} else {
-				outputStatus = Status.DUPLICATE;
+				status = Status.DUPLICATE;
 			}
 		}
-		return outputStatus;
+		
+		response.setStatus(status);
+		return response;
 	}
 
 	/**
@@ -93,6 +96,7 @@ public class UserFacadeImplementation implements UserFacade {
 		user.setDob(date);
 		user.setEmail(userDto.getEmail());
 		user.setGender(userDto.getGender().charAt(0));
+		
 		try {
 			user.setPassword(MD5Encryption.encrypt(userDto.getPassword()));
 		} catch (NoSuchAlgorithmException e) {
@@ -103,12 +107,16 @@ public class UserFacadeImplementation implements UserFacade {
 		return user;
 	}
 
-	public LoginResponseDto login(LoginCredentialsDto loginCredentialsDto) {
-		LoginResponseDto loginResponseDto = new LoginResponseDto();
+	public ResponseDto<LoginResponseDto> login(LoginCredentialsDto loginCredentialsDto) {
+		ResponseDto<LoginResponseDto> response = new ResponseDto<>();
+		
+		LoginResponseDto loginResponseDto = null;
+		Status status;
 		User user = authenticate(loginCredentialsDto);
 		if (user != null) {
-			loginResponseDto.setStatus(200);
-			loginResponseDto.setMessage("Login Successful");
+			status = Status.SUCCESS;
+			
+			loginResponseDto = new LoginResponseDto();
 			loginResponseDto.setName(user.getName());
 			loginResponseDto.setEmail(user.getEmail());
 			loginResponseDto.setRole(user.getUserRole().getRoleId());
@@ -116,24 +124,35 @@ public class UserFacadeImplementation implements UserFacade {
 			String accessToken = getAccessTokenIfUserLoggedIn(user);
 
 			if (accessToken == null || accessToken.isEmpty()) {
-				String newAccessToken = StringUtils.generateAccessToken(user.getEmail());
+				String newAccessToken = null;
+				try {
+					newAccessToken = StringUtils.generateAccessToken(user.getEmail());
+				} catch (NoSuchAlgorithmException e) {
+					e.printStackTrace();
+				}
 				loginResponseDto.setAccessToken(newAccessToken);
 				userService.setAccessToken(user, newAccessToken);
 			} else {
 				loginResponseDto.setAccessToken(accessToken);
 			}
 		} else {
-			loginResponseDto.setStatus(400);
-			loginResponseDto.setMessage("Error in login");
+			status = Status.INVALID;
 		}
-
-		return loginResponseDto;
+		
+		response.setStatus(status);
+		response.setBody(loginResponseDto);
+		
+		return response;
 	}
 
 	private String getAccessTokenIfUserLoggedIn(User user) {
 		return user.getToken();
 	}
 
+	/**
+	 * @param loginCredentialsDto email and password to authenticate user
+	 * @return user
+	 */
 	private User authenticate(LoginCredentialsDto loginCredentialsDto) {
 		User user = null;
 		System.out.println(loginCredentialsDto.getPassword());
@@ -152,13 +171,17 @@ public class UserFacadeImplementation implements UserFacade {
 	}
 
 	@Override
-	public LoginResponseDto socialLogin(UserDto socialLoginCredentials) {
-		LoginResponseDto loginResponseDto = new LoginResponseDto();
+	public ResponseDto<LoginResponseDto> socialLogin(UserDto socialLoginCredentials) {
+		ResponseDto<LoginResponseDto> response = new ResponseDto<>();
+		
+		LoginResponseDto loginResponseDto = null;
+		Status status = null;
 		if (validateSocialLoginCredentials(socialLoginCredentials)) {
 			User user = createUserIfNotExists(socialLoginCredentials);
 			if (user != null) {
-				loginResponseDto.setStatus(200);
-				loginResponseDto.setMessage("Login Successful");
+				status = Status.SUCCESS;
+				
+				loginResponseDto = new LoginResponseDto();
 				loginResponseDto.setName(user.getName());
 				loginResponseDto.setEmail(user.getEmail());
 				loginResponseDto.setRole(user.getUserRole().getRoleId());
@@ -166,7 +189,13 @@ public class UserFacadeImplementation implements UserFacade {
 				String accessToken = getAccessTokenIfUserLoggedIn(user);
 
 				if (accessToken == null || accessToken.isEmpty()) {
-					String newAccessToken = StringUtils.generateAccessToken(user.getEmail());
+					String newAccessToken = null;
+					try {
+						newAccessToken = StringUtils.generateAccessToken(user.getEmail());
+					} catch (NoSuchAlgorithmException e) {
+						e.printStackTrace();
+					}
+					
 					loginResponseDto.setAccessToken(newAccessToken);
 					userService.setAccessToken(user, newAccessToken);
 				} else {
@@ -174,11 +203,13 @@ public class UserFacadeImplementation implements UserFacade {
 				}
 			}
 		} else {
-			loginResponseDto.setStatus(400);
-			loginResponseDto.setMessage("Error in login");
+			status = Status.INVALID;
 		}
 
-		return loginResponseDto;
+		response.setStatus(status);
+		response.setBody(loginResponseDto);
+		
+		return response;
 	}
 
 	private User createUserIfNotExists(UserDto socialUserDto) {
@@ -199,7 +230,8 @@ public class UserFacadeImplementation implements UserFacade {
 	}
 
 	@Override
-	public Status forgotPassword(String email) {
+	public ResponseDto<Void> forgotPassword(String email) {
+		ResponseDto<Void> response = new ResponseDto<>();
 		Status status = Status.FAILURE;
 		if (StringUtils.validateEmail(email)) {
 			User user = userService.getCustomUserByMail(email);
@@ -220,11 +252,10 @@ public class UserFacadeImplementation implements UserFacade {
 					e.printStackTrace();
 					status = Status.FAILURE;
 				}
-
 			}
 		}
-
-		return status;
+		response.setStatus(status);
+		return response;
 	}
 
 	@Override
@@ -245,6 +276,7 @@ public class UserFacadeImplementation implements UserFacade {
 			return null;
 		} else {
 			UserDetailsDto curUserDetails = new UserDetailsDto();
+			curUserDetails.setId(user.getUserId());
 			curUserDetails.setEmail(user.getEmail());
 			curUserDetails.setName(user.getName());
 			curUserDetails.setRole(user.getUserRole().getRoleId());
@@ -272,16 +304,21 @@ public class UserFacadeImplementation implements UserFacade {
 		return userService.checkAuthorization(accessToken);
 	}
 
+	/**
+	 * @param userId id of the user whose role needs to changed
+	 * @return Status
+	 */
 	@Override
-	public Status changeUserRole(String token, String email) {
+	public Status changeUserRole(int userId) {
 		Status status = Status.FAILURE;
-		User user = userService.getUserByMail(email);
+		User user = userService.getUserById(userId);
 		if (user != null) {
 			if (user.getUserRole().getRoleId() == 2) {
 				user.getUserRole().setRoleId(3);
 			} else if (user.getUserRole().getRoleId() == 3) {
 				user.getUserRole().setRoleId(2);
 			}
+			userService.update(user);
 			status = Status.SUCCESS;
 		}
 

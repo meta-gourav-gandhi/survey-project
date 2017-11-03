@@ -4,11 +4,7 @@ import java.io.Serializable;
 
 public class SurveyResponsesID implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
-
 	private int userId;
 	private int surveyId;
 
@@ -27,5 +23,4 @@ public class SurveyResponsesID implements Serializable {
 	public void setSurveyId(int surveyId) {
 		this.surveyId = surveyId;
 	}
-
 }

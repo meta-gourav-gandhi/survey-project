@@ -15,4 +15,6 @@ public interface UserService {
 	public Iterable<User> getAllUsers();
 	public Role checkAuthorization(String accessToken);
 	public User getUserByAccessToken(String accessToken);
+	public User getUserById(int primaryKey);
+	public void update(User user);
 }

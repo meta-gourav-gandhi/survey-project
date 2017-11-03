@@ -6,6 +6,11 @@ import java.security.NoSuchAlgorithmException;
 
 public class MD5Encryption {
 
+	/**
+	 * @param input string to encrypt
+	 * @return encrypted string
+	 * @throws NoSuchAlgorithmException
+	 */
 	public static String encrypt(String input) throws NoSuchAlgorithmException {
 
 		String output = null;

@@ -1,5 +1,6 @@
 package com.metacube.wesurve.utils;
 
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -43,12 +44,13 @@ public class StringUtils {
 	 * @param email to append in the access token
 	 * @return the random access token when user login 
 	 * function to generate the access token 
+	 * @throws NoSuchAlgorithmException 
 	 */
-	public static String generateAccessToken(String email) {
+	public static String generateAccessToken(String email) throws NoSuchAlgorithmException {
 		SecureRandom random = new SecureRandom();
 		long longToken = Math.abs(random.nextLong());
 		String token = Long.toString(longToken, 16);
 		token += email;
-		return token;
+		return MD5Encryption.encrypt(token);
 	}
 }
