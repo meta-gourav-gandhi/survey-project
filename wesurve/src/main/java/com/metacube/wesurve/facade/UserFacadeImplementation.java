@@ -34,8 +34,9 @@ public class UserFacadeImplementation implements UserFacade {
 	}
 
 	/**
-	 * @param userDto details of the user to save in the database
-	 * @return return the success , failure,success,duplicate
+	 * @param userDto
+	 *            details of the user to save in the database
+	 * @return return the success, failure, success, duplicate
 	 */
 	@Override
 	public ResponseDto<Void> createNewUser(UserDto userDto) {
@@ -43,15 +44,13 @@ public class UserFacadeImplementation implements UserFacade {
 		Status status = Status.INVALID_CONTENT;
 		if (validateUser(userDto)) {
 			if (!userService.checkIfEmailExists(userDto.getEmail())) {
-				User user = convertDtoToModel(userDto);
-				if (userService.createNewUser(user) != null) {
-					status = Status.SUCCESS;
-				}
+				userService.createNewUser(convertDtoToModel(userDto));
+				status = Status.SUCCESS;
 			} else {
 				status = Status.DUPLICATE;
 			}
 		}
-		
+
 		response.setStatus(status);
 		return response;
 	}
@@ -62,24 +61,19 @@ public class UserFacadeImplementation implements UserFacade {
 	 * @return boolean function to validate user if its credentials are correct
 	 */
 	private boolean validateUser(UserDto userDto) {
-		boolean result = true;
-
-		boolean condition1 = StringUtils.validateString(userDto.getName())
-				|| StringUtils.validateString(userDto.getPassword()) || StringUtils.validateString(userDto.getEmail())
-				|| (userDto.getDob() == null);
-		boolean condition2 = userDto.getPassword().length() >= 8;
-		boolean condition3 = StringUtils.validateEmail(userDto.getEmail());
-
-		if (condition1 == false || condition2 == false || condition3 == false) {
-			result = false;
-		}
-
-		return result;
+		return (StringUtils.validateString(userDto.getName()) 
+				&& userDto.getName().trim().length() >= 2)
+				&& (StringUtils.validateString(userDto.getPassword()) 
+				&& userDto.getPassword().length() >= 8)
+				&& (StringUtils.validateEmail(userDto.getEmail()))
+				&& (userDto.getDob() != null);
 	}
 
 	private User convertDtoToModel(UserDto userDto) {
 		User user = new User();
+		
 		user.setName(userDto.getName());
+		
 		SimpleDateFormat sourceFormat = new SimpleDateFormat("dd/MM/yyyy");
 		SimpleDateFormat targetFormat = new SimpleDateFormat("yyyy-MM-dd");
 		Date date = null;
@@ -96,12 +90,13 @@ public class UserFacadeImplementation implements UserFacade {
 		user.setDob(date);
 		user.setEmail(userDto.getEmail());
 		user.setGender(userDto.getGender().charAt(0));
-		
+
 		try {
 			user.setPassword(MD5Encryption.encrypt(userDto.getPassword()));
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
+		
 		user.setCreatedDate(new Date());
 		user.setUpdatedDate(new Date());
 		return user;
@@ -109,13 +104,14 @@ public class UserFacadeImplementation implements UserFacade {
 
 	public ResponseDto<LoginResponseDto> login(LoginCredentialsDto loginCredentialsDto) {
 		ResponseDto<LoginResponseDto> response = new ResponseDto<>();
-		
+
 		LoginResponseDto loginResponseDto = null;
 		Status status;
+		
 		User user = authenticate(loginCredentialsDto);
 		if (user != null) {
 			status = Status.SUCCESS;
-			
+
 			loginResponseDto = new LoginResponseDto();
 			loginResponseDto.setName(user.getName());
 			loginResponseDto.setEmail(user.getEmail());
@@ -138,10 +134,10 @@ public class UserFacadeImplementation implements UserFacade {
 		} else {
 			status = Status.INVALID;
 		}
-		
+
 		response.setStatus(status);
 		response.setBody(loginResponseDto);
-		
+
 		return response;
 	}
 
@@ -155,12 +151,12 @@ public class UserFacadeImplementation implements UserFacade {
 	 */
 	private User authenticate(LoginCredentialsDto loginCredentialsDto) {
 		User user = null;
-		System.out.println(loginCredentialsDto.getPassword());
-		if (StringUtils.validateEmail(loginCredentialsDto.getEmail())
-				|| StringUtils.validateString(loginCredentialsDto.getPassword())
-				|| loginCredentialsDto.getPassword().length() >= 8) {
+		if (StringUtils.validateEmail(loginCredentialsDto.getEmail()) 
+				&& StringUtils.validateString(loginCredentialsDto.getPassword())
+				&& loginCredentialsDto.getPassword().length() >= 8) {
+			
 			try {
-				user = userService.checkAuthentication(loginCredentialsDto.getEmail(),
+				user = userService.checkAuthentication(loginCredentialsDto.getEmail(), 
 						MD5Encryption.encrypt(loginCredentialsDto.getPassword()));
 			} catch (NoSuchAlgorithmException e) {
 				e.printStackTrace();
@@ -173,15 +169,16 @@ public class UserFacadeImplementation implements UserFacade {
 	@Override
 	public ResponseDto<LoginResponseDto> socialLogin(UserDto socialLoginCredentials) {
 		ResponseDto<LoginResponseDto> response = new ResponseDto<>();
-		
+	 System.out.println("in social login");
 		LoginResponseDto loginResponseDto = null;
 		Status status = null;
 		if (validateSocialLoginCredentials(socialLoginCredentials)) {
 			User user = createUserIfNotExists(socialLoginCredentials);
 			if (user != null) {
 				status = Status.SUCCESS;
-				
+
 				loginResponseDto = new LoginResponseDto();
+				loginResponseDto.setId(user.getUserId());
 				loginResponseDto.setName(user.getName());
 				loginResponseDto.setEmail(user.getEmail());
 				loginResponseDto.setRole(user.getUserRole().getRoleId());
@@ -195,7 +192,7 @@ public class UserFacadeImplementation implements UserFacade {
 					} catch (NoSuchAlgorithmException e) {
 						e.printStackTrace();
 					}
-					
+
 					loginResponseDto.setAccessToken(newAccessToken);
 					userService.setAccessToken(user, newAccessToken);
 				} else {
@@ -208,7 +205,7 @@ public class UserFacadeImplementation implements UserFacade {
 
 		response.setStatus(status);
 		response.setBody(loginResponseDto);
-		
+
 		return response;
 	}
 
@@ -238,15 +235,21 @@ public class UserFacadeImplementation implements UserFacade {
 			if (user != null) {
 				String newPassword = StringUtils.randomAlphanumeric(10);
 				try {
-					userService.changePassword(user, MD5Encryption.encrypt(newPassword));
+					userService.changePassword(user,
+							MD5Encryption.encrypt(newPassword));
 				} catch (NoSuchAlgorithmException e1) {
 					e1.printStackTrace();
 				}
-				String emailBody = "Hello " + user.getName() + ",\nYour new password is: \n" + newPassword
+				String emailBody = "Hello "
+						+ user.getName()
+						+ ",\nYour new password is: \n"
+						+ newPassword
 						+ "\n\nYou can use this password for login and you can change the password from the user profile.\n\nThanks & Regards,\nWeServe Helpline";
 				try {
-					EmailUtils.sendEmail("wesurvehelpline@gmail.com", "wesurve#123", email, "Recover Password",
-							emailBody);
+					EmailUtils
+							.sendEmail("wesurvehelpline@gmail.com",
+									"wesurve#123", email, "Recover Password",
+									emailBody);
 					status = Status.SUCCESS;
 				} catch (MessagingException e) {
 					e.printStackTrace();
@@ -305,7 +308,8 @@ public class UserFacadeImplementation implements UserFacade {
 	}
 
 	/**
-	 * @param userId id of the user whose role needs to changed
+	 * @param userId
+	 *            id of the user whose role needs to changed
 	 * @return Status
 	 */
 	@Override

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.metacube.wesurve.dao.userdetails.UserDao;
 import com.metacube.wesurve.enums.Role;
 import com.metacube.wesurve.model.User;
+import com.metacube.wesurve.model.UserRole;
 
 @Service("userService")
 @Transactional
@@ -18,6 +19,9 @@ public class UserServiceImplementation implements UserService {
 
 	@Override
 	public User createNewUser(User user) {
+		UserRole userRole = new UserRole();
+		userRole.setRoleId(3);
+		user.setUserRole(userRole);
 		return userDao.save(user);
 	}
 

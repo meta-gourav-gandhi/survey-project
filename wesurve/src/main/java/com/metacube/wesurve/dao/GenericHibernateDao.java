@@ -47,11 +47,12 @@ public abstract class GenericHibernateDao<T, ID extends Serializable> implements
 		return (T) criteria.add(Restrictions.eq("userId", primaryKey)).uniqueResult();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public <S extends T> S save(final S entity) {
 		Session session = this.sessionFactory.getCurrentSession();
-		session.save(entity);
-		return entity;
+		ID id = (ID) session.save(entity);
+		return (S) findOne(id);
 	}
 
 	@Override

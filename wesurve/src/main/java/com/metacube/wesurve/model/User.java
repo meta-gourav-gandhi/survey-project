@@ -44,7 +44,7 @@ public class User {
 	private char gender;
 
 	@ManyToOne
-	@JoinColumn(name = "role_id", insertable = false, columnDefinition = "int default 3")
+	@JoinColumn(name = "role_id")
 	private UserRole userRole;
 
 	@Column(name = "created_date", nullable = true)
