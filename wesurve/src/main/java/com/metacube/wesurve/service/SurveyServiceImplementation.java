@@ -6,6 +6,7 @@ import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import com.metacube.wesurve.dao.survey.SurveyDao;
+import com.metacube.wesurve.enums.SurveyStatus;
 import com.metacube.wesurve.model.Survey;
 
 @Service("surveyService")
@@ -18,5 +19,11 @@ public class SurveyServiceImplementation implements SurveyService {
 	@Override
 	public Survey createSurvey(Survey survey) {
 		return surveyDao.save(survey);
+	}
+
+	@Override
+	public void changeSurveyStatus(Survey survey, SurveyStatus status) {
+		survey.setSurveyStatus(status);
+		surveyDao.update(survey);
 	}
 }

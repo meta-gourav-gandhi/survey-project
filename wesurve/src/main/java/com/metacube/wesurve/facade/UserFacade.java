@@ -3,6 +3,7 @@ package com.metacube.wesurve.facade;
 import com.metacube.wesurve.dto.LoginCredentialsDto;
 import com.metacube.wesurve.dto.LoginResponseDto;
 import com.metacube.wesurve.dto.ResponseDto;
+import com.metacube.wesurve.dto.SurveyInfoDto;
 import com.metacube.wesurve.dto.UserDetailsDto;
 import com.metacube.wesurve.dto.UserDto;
 import com.metacube.wesurve.enums.Role;
@@ -17,4 +18,5 @@ public interface UserFacade {
 	public Status logout(String accessToken);
 	public Role checkAuthorization(String accessToken);
 	public Status changeUserRole(int userId);
+	public Iterable<SurveyInfoDto> getSurveyList(String token);
 }

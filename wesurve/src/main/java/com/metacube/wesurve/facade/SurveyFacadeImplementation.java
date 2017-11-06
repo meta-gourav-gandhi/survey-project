@@ -20,6 +20,7 @@ import com.metacube.wesurve.model.Options;
 import com.metacube.wesurve.model.Questions;
 import com.metacube.wesurve.model.Survey;
 import com.metacube.wesurve.model.User;
+import com.metacube.wesurve.service.LabelsService;
 import com.metacube.wesurve.service.SurveyService;
 import com.metacube.wesurve.service.UserService;
 import com.metacube.wesurve.utils.StringUtils;
@@ -33,22 +34,27 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 	@Autowired
 	SurveyService surveyService;
 	
+	@Autowired
+	LabelsService labelsService;
+	
 	@Override
 	public ResponseDto<SurveyResponseDto> createSurvey(int surveyorId, SurveyDto surveyDto) {
 		ResponseDto<SurveyResponseDto> response = new ResponseDto<>();
 		Status status;
 		SurveyResponseDto surveyResponse = null;
-		if(!validateSurvey(surveyDto)) {
+		if(validateSurvey(surveyDto)) {
 			User user = userService.getUserById(surveyorId);
-			Survey survey = convertDtoToModel(user, surveyDto);
+			Survey survey = convertDtoToModel(surveyDto);
+			
+			user.getCreatedSurveyList().add(survey);
 			
 			//Set surveyor as viewer of survey
-			Set<User> viewers = new HashSet<>();
-			viewers.add(user);
-			survey.setViewers(viewers);
+			survey.getViewers().add(user);
 			
 			Survey surveyResult = surveyService.createSurvey(survey);
-			String url = null;
+			userService.update(user);
+			
+			String url = "http://172.16.33.117/survey/" + surveyResult.getSurveyId() + "/";
 			surveyResponse = new SurveyResponseDto();
 			surveyResponse.setId(surveyResult.getSurveyId());
 			surveyResponse.setName(surveyResult.getSurveyName());
@@ -63,20 +69,16 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 		return response;
 	}
 
-	private Survey convertDtoToModel(User user, SurveyDto surveyDto) {
+	private Survey convertDtoToModel(SurveyDto surveyDto) {
 		Survey survey = new Survey();
 		survey.setSurveyName(surveyDto.getText());
 		survey.setDescription(surveyDto.getDescription());
-		survey.setSurveyorId(user);
+		survey.setUpdatedDate(new Date());
 		if(surveyDto.getId() <= 0) {
-			survey.setCreatedDate(new Date());
-			survey.setUpdatedDate(new Date());
-		} else {
-			survey.setUpdatedDate(new Date());
+			survey.setCreatedDate(new Date());	
 		}
 		
 		survey.setQuestions(convertDtoToModelQuestion(surveyDto.getQuestions()));
-		
 		survey.setLabels(changeTosetOfLabels(surveyDto.getLabels()));
 		return survey;
 	}
@@ -91,6 +93,10 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 			currQuestion.setRequired(quesDto.isRequired());
 			currQuestion.setOptions(convertDtoToModelOption(quesDto.getOptions()));
 			currQuestion.setUpdatedDate(new Date());
+			if(currQuestion.getQuesId() <= 0) {
+				currQuestion.setCreatedDate(new Date());	
+			}
+			
 			questions.add(currQuestion);
 		}
 		
@@ -106,6 +112,10 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 			currOption.setOptionValue(optionDto.getText());
 			currOption.setOptionType(optionDto.getType());
 			currOption.setUpdatedDate(new Date());
+			if(currOption.getOptionId() <= 0) {
+				currOption.setCreatedDate(new Date());	
+			}
+			
 			options.add(currOption);
 		}
 		
@@ -154,7 +164,6 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 
 	@Override
 	public Role checkAuthorization(String accessToken) {
-		
 		return userService.checkAuthorization(accessToken);
 	}
 }

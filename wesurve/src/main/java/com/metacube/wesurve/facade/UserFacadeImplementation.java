@@ -3,9 +3,9 @@ package com.metacube.wesurve.facade;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.mail.MessagingException;
 
@@ -15,11 +15,15 @@ import org.springframework.stereotype.Component;
 import com.metacube.wesurve.dto.LoginCredentialsDto;
 import com.metacube.wesurve.dto.LoginResponseDto;
 import com.metacube.wesurve.dto.ResponseDto;
+import com.metacube.wesurve.dto.SurveyInfoDto;
 import com.metacube.wesurve.dto.UserDetailsDto;
 import com.metacube.wesurve.dto.UserDto;
 import com.metacube.wesurve.enums.Role;
 import com.metacube.wesurve.enums.Status;
+import com.metacube.wesurve.enums.SurveyStatus;
+import com.metacube.wesurve.model.Survey;
 import com.metacube.wesurve.model.User;
+import com.metacube.wesurve.service.SurveyService;
 import com.metacube.wesurve.service.UserService;
 import com.metacube.wesurve.utils.EmailUtils;
 import com.metacube.wesurve.utils.MD5Encryption;
@@ -29,6 +33,9 @@ import com.metacube.wesurve.utils.StringUtils;
 public class UserFacadeImplementation implements UserFacade {
 	@Autowired
 	UserService userService;
+
+	@Autowired
+	SurveyService surveyService;
 
 	public UserFacadeImplementation() {
 	}
@@ -61,27 +68,29 @@ public class UserFacadeImplementation implements UserFacade {
 	 * @return boolean function to validate user if its credentials are correct
 	 */
 	private boolean validateUser(UserDto userDto) {
-		return (StringUtils.validateString(userDto.getName()) 
-				&& userDto.getName().trim().length() >= 2)
-				&& (StringUtils.validateString(userDto.getPassword()) 
-				&& userDto.getPassword().length() >= 8)
-				&& (StringUtils.validateEmail(userDto.getEmail()))
-				&& (userDto.getDob() != null);
+		return (StringUtils.validateString(userDto.getName()) && userDto.getName().trim().length() >= 2)
+				&& (StringUtils.validateString(userDto.getPassword()) && userDto.getPassword().length() >= 8)
+				&& (StringUtils.validateEmail(userDto.getEmail())) && (userDto.getDob() != null);
 	}
 
 	private User convertDtoToModel(UserDto userDto) {
 		User user = new User();
-		
+
 		user.setName(userDto.getName());
-		
+
 		SimpleDateFormat sourceFormat = new SimpleDateFormat("dd/MM/yyyy");
 		SimpleDateFormat targetFormat = new SimpleDateFormat("yyyy-MM-dd");
 		Date date = null;
+		String dob = userDto.getDob();
 		try {
-			date = targetFormat.parse(userDto.getDob());
+			if (StringUtils.validateString(dob)) {
+				date = targetFormat.parse(userDto.getDob());
+			}
 		} catch (ParseException e) {
 			try {
-				date = targetFormat.parse(targetFormat.format(sourceFormat.parse(userDto.getDob())));
+				if (StringUtils.validateString(dob)) {
+					date = targetFormat.parse(targetFormat.format(sourceFormat.parse(userDto.getDob())));
+				}
 			} catch (ParseException e1) {
 				e1.printStackTrace();
 			}
@@ -89,14 +98,18 @@ public class UserFacadeImplementation implements UserFacade {
 
 		user.setDob(date);
 		user.setEmail(userDto.getEmail());
-		user.setGender(userDto.getGender().charAt(0));
+		String gender = userDto.getGender();
+		if(StringUtils.validateString(gender)) {
+			user.setGender(gender.charAt(0));
+		}
+		
 
 		try {
 			user.setPassword(MD5Encryption.encrypt(userDto.getPassword()));
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
-		
+
 		user.setCreatedDate(new Date());
 		user.setUpdatedDate(new Date());
 		return user;
@@ -107,7 +120,7 @@ public class UserFacadeImplementation implements UserFacade {
 
 		LoginResponseDto loginResponseDto = null;
 		Status status;
-		
+
 		User user = authenticate(loginCredentialsDto);
 		if (user != null) {
 			status = Status.SUCCESS;
@@ -137,7 +150,6 @@ public class UserFacadeImplementation implements UserFacade {
 
 		response.setStatus(status);
 		response.setBody(loginResponseDto);
-
 		return response;
 	}
 
@@ -146,17 +158,18 @@ public class UserFacadeImplementation implements UserFacade {
 	}
 
 	/**
-	 * @param loginCredentialsDto email and password to authenticate user
+	 * @param loginCredentialsDto
+	 *            email and password to authenticate user
 	 * @return user
 	 */
 	private User authenticate(LoginCredentialsDto loginCredentialsDto) {
 		User user = null;
-		if (StringUtils.validateEmail(loginCredentialsDto.getEmail()) 
+		if (StringUtils.validateEmail(loginCredentialsDto.getEmail())
 				&& StringUtils.validateString(loginCredentialsDto.getPassword())
 				&& loginCredentialsDto.getPassword().length() >= 8) {
-			
+
 			try {
-				user = userService.checkAuthentication(loginCredentialsDto.getEmail(), 
+				user = userService.checkAuthentication(loginCredentialsDto.getEmail(),
 						MD5Encryption.encrypt(loginCredentialsDto.getPassword()));
 			} catch (NoSuchAlgorithmException e) {
 				e.printStackTrace();
@@ -169,7 +182,6 @@ public class UserFacadeImplementation implements UserFacade {
 	@Override
 	public ResponseDto<LoginResponseDto> socialLogin(UserDto socialLoginCredentials) {
 		ResponseDto<LoginResponseDto> response = new ResponseDto<>();
-	 System.out.println("in social login");
 		LoginResponseDto loginResponseDto = null;
 		Status status = null;
 		if (validateSocialLoginCredentials(socialLoginCredentials)) {
@@ -235,21 +247,15 @@ public class UserFacadeImplementation implements UserFacade {
 			if (user != null) {
 				String newPassword = StringUtils.randomAlphanumeric(10);
 				try {
-					userService.changePassword(user,
-							MD5Encryption.encrypt(newPassword));
+					userService.changePassword(user, MD5Encryption.encrypt(newPassword));
 				} catch (NoSuchAlgorithmException e1) {
 					e1.printStackTrace();
 				}
-				String emailBody = "Hello "
-						+ user.getName()
-						+ ",\nYour new password is: \n"
-						+ newPassword
+				String emailBody = "Hello " + user.getName() + ",\nYour new password is: \n" + newPassword
 						+ "\n\nYou can use this password for login and you can change the password from the user profile.\n\nThanks & Regards,\nWeServe Helpline";
 				try {
-					EmailUtils
-							.sendEmail("wesurvehelpline@gmail.com",
-									"wesurve#123", email, "Recover Password",
-									emailBody);
+					EmailUtils.sendEmail("wesurvehelpline@gmail.com", "wesurve#123", email, "Recover Password",
+							emailBody);
 					status = Status.SUCCESS;
 				} catch (MessagingException e) {
 					e.printStackTrace();
@@ -263,15 +269,16 @@ public class UserFacadeImplementation implements UserFacade {
 
 	@Override
 	public Iterable<UserDetailsDto> getAllUsers(String accessToken) {
-		List<UserDetailsDto> userDetailsDtoList = new ArrayList<>();
+		Set<UserDetailsDto> userDetailsDtoSet = new HashSet<>();
 		for (User user : userService.getAllUsers()) {
 			if (user.getToken() != null && user.getToken().equals(accessToken)) {
 				continue;
 			}
-			userDetailsDtoList.add(modelToDto(user));
+			
+			userDetailsDtoSet.add(modelToDto(user));
 		}
 
-		return userDetailsDtoList;
+		return userDetailsDtoSet;
 	}
 
 	private UserDetailsDto modelToDto(User user) {
@@ -319,13 +326,44 @@ public class UserFacadeImplementation implements UserFacade {
 		if (user != null) {
 			if (user.getUserRole().getRoleId() == 2) {
 				user.getUserRole().setRoleId(3);
+				Set<Survey> createdSurveys = user.getCreatedSurveyList();
+				for (Survey survey : createdSurveys) {
+					surveyService.changeSurveyStatus(survey, SurveyStatus.NOTLIVE);
+				}
 			} else if (user.getUserRole().getRoleId() == 3) {
 				user.getUserRole().setRoleId(2);
 			}
+
 			userService.update(user);
 			status = Status.SUCCESS;
 		}
 
 		return status;
+	}
+
+	@Override
+	public Iterable<SurveyInfoDto> getSurveyList(String token) {
+		User user =userService.getUserByAccessToken(token);
+		Set<SurveyInfoDto> surveyInfoList = new HashSet<>();
+		if(user!=null && user.getSurveyListToView().size() != 0) {
+			Set <Survey> surveys = user.getSurveyListToView();
+			
+			for(Survey curSurvey : surveys) {
+				surveyInfoList.add(convertModeltoDtoSurvey(curSurvey));
+			}
+		}
+		
+		return surveyInfoList;
+	}
+
+	private SurveyInfoDto convertModeltoDtoSurvey(Survey curSurvey) {
+		
+		SurveyInfoDto surveyInfoDtoObject = new SurveyInfoDto();
+		surveyInfoDtoObject.setId(curSurvey.getSurveyId());
+		surveyInfoDtoObject.setDescription(curSurvey.getDescription());
+		surveyInfoDtoObject.setSurveyName(curSurvey.getSurveyName());
+		
+		
+		return surveyInfoDtoObject;
 	}
 }

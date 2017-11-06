@@ -9,13 +9,13 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -35,20 +35,15 @@ public class Survey {
 			@JoinColumn(name = "label_id") })
 	Set<Labels> labels = new HashSet<>();
 
-	@ManyToMany(cascade = { CascadeType.ALL })
+	@ManyToMany(fetch = FetchType.EAGER,cascade = { CascadeType.ALL })
 	@JoinTable(name = "survey_viewer", joinColumns = { @JoinColumn(name = "survey_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "user_id") })
 	Set<User> viewers = new HashSet<>();
-	
 	
 	@OneToMany(cascade = { CascadeType.ALL })
 	@JoinTable(name = "survey_question", joinColumns = { @JoinColumn(name = "survey_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "ques_id") })
 	Set<Questions> questions = new HashSet<>();
-
-	@ManyToOne
-	@JoinColumn(name = "user_id")
-	private User surveyorId;
 
 	@Column(name = "survey_name", length = 500, nullable = false)
 	private String surveyName;
@@ -64,6 +59,9 @@ public class Survey {
 
 	@Column(name = "updated_date", nullable = true)
 	private Date updatedDate;
+	
+	@ManyToMany(mappedBy = "filledSurveyList")
+	private Set<User> respondersList = new HashSet<>();
 
 	public int getSurveyId() {
 		return surveyId;
@@ -71,14 +69,6 @@ public class Survey {
 
 	public void setSurveyId(int surveyId) {
 		this.surveyId = surveyId;
-	}
-
-	public User getSurveyorId() {
-		return surveyorId;
-	}
-
-	public void setSurveyorId(User surveyorId) {
-		this.surveyorId = surveyorId;
 	}
 
 	public String getSurveyName() {

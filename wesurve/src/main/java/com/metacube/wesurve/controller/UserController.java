@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.metacube.wesurve.dto.LoginCredentialsDto;
 import com.metacube.wesurve.dto.LoginResponseDto;
 import com.metacube.wesurve.dto.ResponseDto;
+import com.metacube.wesurve.dto.SurveyInfoDto;
 import com.metacube.wesurve.dto.UserDetailsDto;
 import com.metacube.wesurve.dto.UserDto;
 import com.metacube.wesurve.enums.Role;
@@ -122,6 +123,22 @@ public class UserController {
 		}
 		
 		response.setStatus(status);
+		return response;
+	}
+	
+	@RequestMapping(value = "/surveylist",  method = RequestMethod.GET, consumes = "application/json")
+	public @ResponseBody ResponseDto<Iterable<SurveyInfoDto>> getSurveyList (@RequestHeader(value = Constants.ACCESSTOKEN) String token) {
+		ResponseDto<Iterable<SurveyInfoDto>> response = new ResponseDto<>();
+		Iterable<SurveyInfoDto> surveyList = null;
+		Status status = Status.ACCESS_DENIED;
+		if(Role.INVALID != checkAuthorization(token)) {
+			
+			surveyList = userFacade.getSurveyList(token);
+			status = Status.SUCCESS;
+		}
+		
+		response.setStatus(status);
+		response.setBody(surveyList);
 		return response;
 	}
 
