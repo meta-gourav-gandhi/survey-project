@@ -4,14 +4,18 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Check;
@@ -55,6 +59,11 @@ public class User {
 
 	@ManyToMany(mappedBy = "viewers")
 	private Set<Survey> surveyListToView = new HashSet<>();
+	
+	@OneToMany(fetch = FetchType.EAGER,cascade = { CascadeType.ALL })
+	@JoinTable(name = "survey_owner", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {
+			@JoinColumn(name = "survey_id") })
+	private Set<Survey> createdSurveyList = new HashSet<>();
 
 	public int getUserId() {
 		return userId;
@@ -143,4 +152,15 @@ public class User {
 	public void setUpdatedDate(Date updatedDate) {
 		this.updatedDate = updatedDate;
 	}
+
+	public Set<Survey> getCreatedSurveyList() {
+		return createdSurveyList;
+	}
+
+	public void setCreatedSurveyList(Set<Survey> createdSurveyList) {
+		this.createdSurveyList = createdSurveyList;
+	}
+	
+	
+	
 }

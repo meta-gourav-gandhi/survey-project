@@ -15,7 +15,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -46,9 +45,6 @@ public class Survey {
 			@JoinColumn(name = "ques_id") })
 	Set<Questions> questions = new HashSet<>();
 
-	@ManyToOne
-	@JoinColumn(name = "user_id")
-	private User surveyorId;
 
 	@Column(name = "survey_name", length = 500, nullable = false)
 	private String surveyName;
@@ -73,13 +69,6 @@ public class Survey {
 		this.surveyId = surveyId;
 	}
 
-	public User getSurveyorId() {
-		return surveyorId;
-	}
-
-	public void setSurveyorId(User surveyorId) {
-		this.surveyorId = surveyorId;
-	}
 
 	public String getSurveyName() {
 		return surveyName;

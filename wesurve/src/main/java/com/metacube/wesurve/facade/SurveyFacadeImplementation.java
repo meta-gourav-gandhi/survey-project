@@ -38,9 +38,11 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 		ResponseDto<SurveyResponseDto> response = new ResponseDto<>();
 		Status status;
 		SurveyResponseDto surveyResponse = null;
-		if(!validateSurvey(surveyDto)) {
+		if(true) {
 			User user = userService.getUserById(surveyorId);
-			Survey survey = convertDtoToModel(user, surveyDto);
+			Survey survey = convertDtoToModel(surveyDto);
+			
+			user.getCreatedSurveyList().add(survey);
 			
 			//Set surveyor as viewer of survey
 			Set<User> viewers = new HashSet<>();
@@ -48,6 +50,7 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 			survey.setViewers(viewers);
 			
 			Survey surveyResult = surveyService.createSurvey(survey);
+			userService.update(user);
 			String url = null;
 			surveyResponse = new SurveyResponseDto();
 			surveyResponse.setId(surveyResult.getSurveyId());
@@ -63,11 +66,10 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 		return response;
 	}
 
-	private Survey convertDtoToModel(User user, SurveyDto surveyDto) {
+	private Survey convertDtoToModel(SurveyDto surveyDto) {
 		Survey survey = new Survey();
 		survey.setSurveyName(surveyDto.getText());
 		survey.setDescription(surveyDto.getDescription());
-		survey.setSurveyorId(user);
 		if(surveyDto.getId() <= 0) {
 			survey.setCreatedDate(new Date());
 			survey.setUpdatedDate(new Date());

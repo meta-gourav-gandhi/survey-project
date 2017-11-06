@@ -14,6 +14,9 @@ public abstract class GenericHibernateDao<T, ID extends Serializable> implements
 	private SessionFactory sessionFactory;
 	private Class<T> modelClass;
 
+
+	public abstract String getPrimaryKey();
+	
 	public GenericHibernateDao(Class<T> modelClass) {
 		this.modelClass = modelClass;
 	}
@@ -44,8 +47,9 @@ public abstract class GenericHibernateDao<T, ID extends Serializable> implements
 	public T findOne(final ID primaryKey) {
 		Session session = this.sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(getModelClass());
-		return (T) criteria.add(Restrictions.eq("userId", primaryKey)).uniqueResult();
+		return (T) criteria.add(Restrictions.eq(getPrimaryKey(), primaryKey)).uniqueResult();
 	}
+
 
 	@SuppressWarnings("unchecked")
 	@Override

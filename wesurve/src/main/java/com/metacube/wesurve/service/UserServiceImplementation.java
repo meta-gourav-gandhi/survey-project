@@ -1,5 +1,7 @@
 package com.metacube.wesurve.service;
 
+import java.util.HashSet;
+
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
 
@@ -7,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.metacube.wesurve.dao.userdetails.UserDao;
 import com.metacube.wesurve.enums.Role;
+import com.metacube.wesurve.model.Survey;
 import com.metacube.wesurve.model.User;
 import com.metacube.wesurve.model.UserRole;
 

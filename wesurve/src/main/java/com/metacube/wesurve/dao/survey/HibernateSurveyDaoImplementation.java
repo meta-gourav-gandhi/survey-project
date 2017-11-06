@@ -12,4 +12,9 @@ public class HibernateSurveyDaoImplementation extends GenericHibernateDao<Survey
 		super(Survey.class);
 	}
 
+	@Override
+	public String getPrimaryKey() {
+		return "surveyId";
+	}
+
 }

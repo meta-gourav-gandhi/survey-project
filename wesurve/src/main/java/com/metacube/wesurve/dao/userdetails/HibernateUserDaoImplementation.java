@@ -47,4 +47,9 @@ public class HibernateUserDaoImplementation extends GenericHibernateDao<User, In
 		Criteria criteria = session.createCriteria(User.class);
 		return (User) criteria.add(Restrictions.eq("token", accessToken)).uniqueResult();
 	}
+
+	@Override
+	public String getPrimaryKey() {
+		return "userId";
+	}
 }
