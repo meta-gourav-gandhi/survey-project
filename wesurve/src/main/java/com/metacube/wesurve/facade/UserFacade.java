@@ -1,9 +1,22 @@
 package com.metacube.wesurve.facade;
 
+import com.metacube.wesurve.dto.LoginCredentialsDto;
+import com.metacube.wesurve.dto.LoginResponseDto;
+import com.metacube.wesurve.dto.ResponseDto;
+import com.metacube.wesurve.dto.SurveyInfoDto;
+import com.metacube.wesurve.dto.UserDetailsDto;
 import com.metacube.wesurve.dto.UserDto;
+import com.metacube.wesurve.enums.Role;
 import com.metacube.wesurve.enums.Status;
 
 public interface UserFacade {
-	public Status createNewUser(UserDto userDetailsDto);
-	public void sendEmail(String from, String password, String to, String subject, String body);
+	public ResponseDto<Void> createNewUser(UserDto userDetailsDto);
+	public ResponseDto<LoginResponseDto> login(LoginCredentialsDto loginDto);
+	public ResponseDto<LoginResponseDto> socialLogin(UserDto socialLoginCredentials);
+	public ResponseDto<Void> forgotPassword(String email);
+	public Iterable<UserDetailsDto> getAllUsers(String accessToken);
+	public Status logout(String accessToken);
+	public Role checkAuthorization(String accessToken);
+	public Status changeUserRole(int userId);
+	public Iterable<SurveyInfoDto> getSurveyList(String token);
 }

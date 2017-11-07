@@ -13,6 +13,7 @@
     <context:component-scan base-package="com.metacube.wesurve" />
 
     <alias name="hibernateUserDetailsDao" alias="userDetailsDao" />
+    
 
     <context:property-placeholder location="classpath:dbconfig.properties" />
 
@@ -30,7 +31,7 @@
         <property name="dataSource" ref="dataSource"/>
         <property name="packagesToScan">
             <list>
-                <value>com.metacube.get.layarch.model</value>
+                <value>com.metacube.wesurve.model</value>
             </list>
         </property>
         <property name="hibernateProperties">

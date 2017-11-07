@@ -10,7 +10,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "user_roles")
 public class UserRole {
-	
+
 	@Id
 	@Column(name = "role_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,14 +20,14 @@ public class UserRole {
 	private String role;
 
 	public UserRole() {
-		
+
 	}
-	
+
 	public UserRole(int roleId, String role) {
 		setRoleId(roleId);
 		setRole(role);
 	}
-	
+
 	public int getRoleId() {
 		return roleId;
 	}

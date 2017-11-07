@@ -6,14 +6,16 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class GenericHibernateDao<T, ID extends Serializable> implements AbstractDao<T, ID> {
 	@Autowired
 	private SessionFactory sessionFactory;
-
 	private Class<T> modelClass;
 
+	public abstract String getPrimaryKey();
+	
 	public GenericHibernateDao(Class<T> modelClass) {
 		this.modelClass = modelClass;
 	}
@@ -33,21 +35,27 @@ public abstract class GenericHibernateDao<T, ID extends Serializable> implements
 	@Override
 	public Iterable<T> findAll() {
 		Session session = this.sessionFactory.getCurrentSession();
-		Criteria cr = session.createCriteria(getModelClass());
-		List<T> personsList = cr.list();
-		return personsList;
+		Criteria criteria = session.createCriteria(getModelClass());
+		@SuppressWarnings("unchecked")
+		List<T> list = criteria.list();
+		return list;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public T findOne(final ID primaryKey) {
-		return null;
+		Session session = this.sessionFactory.getCurrentSession();
+		Criteria criteria = session.createCriteria(getModelClass());
+		return (T) criteria.add(Restrictions.eq(getPrimaryKey(), primaryKey)).uniqueResult();
 	}
 
+
+	@SuppressWarnings("unchecked")
 	@Override
 	public <S extends T> S save(final S entity) {
 		Session session = this.sessionFactory.getCurrentSession();
-		session.save(entity);
-		return entity;
+		ID id = (ID) session.save(entity);
+		return (S) findOne(id);
 	}
 
 	@Override
@@ -57,11 +65,18 @@ public abstract class GenericHibernateDao<T, ID extends Serializable> implements
 
 	@Override
 	public void delete(final T entity) {
-
+		Session session = this.sessionFactory.getCurrentSession();
+		session.delete(entity);
 	}
 
 	@Override
 	public Long count() {
 		return null;
+	}
+	
+	@Override
+	public void update(T entity) {
+		Session session = getSessionFactory().getCurrentSession();
+		session.update(entity);
 	}
 }

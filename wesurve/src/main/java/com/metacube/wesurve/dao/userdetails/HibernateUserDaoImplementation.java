@@ -18,12 +18,38 @@ public class HibernateUserDaoImplementation extends GenericHibernateDao<User, In
 	@Override
 	public boolean checkIfEmailExists(String email) {
 		boolean result = false;
-		Session session = getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(User.class);
-		User userDetails = (User) criteria.add(Restrictions.eq("email", email)).uniqueResult();
-		if(userDetails != null) {
+		if(getUserByEmail(email) != null) {
 			result = true;
 		}
+		
 		return result;
+	}
+
+	@Override
+	public User authenticateUser(String email, String password) {
+		Session session = getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(User.class);
+		criteria.add(Restrictions.eq("email", email)).uniqueResult();
+		User userDetails = (User)criteria.add(Restrictions.eq("password", password)).uniqueResult();
+		return userDetails;
+	}
+
+	@Override
+	public User getUserByEmail(String email) {
+		Session session = getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(User.class);
+		return (User) criteria.add(Restrictions.eq("email", email)).uniqueResult();
+	}
+
+	@Override
+	public User getUserByAccessToken(String accessToken) {
+		Session session = getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(User.class);
+		return (User) criteria.add(Restrictions.eq("token", accessToken)).uniqueResult();
+	}
+
+	@Override
+	public String getPrimaryKey() {
+		return "userId";
 	}
 }

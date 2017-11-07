@@ -1,4 +1,4 @@
-package com.metacube.wesurve.facade;
+package com.metacube.wesurve.utils;
 
 import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;
