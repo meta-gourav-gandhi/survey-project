@@ -6,4 +6,6 @@ import com.metacube.wesurve.model.Survey;
 public interface SurveyService {
 	Survey createSurvey(Survey survey);
 	void changeSurveyStatus(Survey survey, SurveyStatus status);
+	Survey getSurveyById(int surveyId);
+	void deleteSurvey(Survey survey);
 }

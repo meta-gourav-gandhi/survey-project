@@ -343,11 +343,10 @@ public class UserFacadeImplementation implements UserFacade {
 
 	@Override
 	public Iterable<SurveyInfoDto> getSurveyList(String token) {
-		User user =userService.getUserByAccessToken(token);
+		User user = userService.getUserByAccessToken(token);
 		Set<SurveyInfoDto> surveyInfoList = new HashSet<>();
-		if(user!=null && user.getSurveyListToView().size() != 0) {
-			Set <Survey> surveys = user.getSurveyListToView();
-			
+		if(user != null && user.getSurveyListToView().size() != 0) {
+			Set<Survey> surveys = user.getSurveyListToView();
 			for(Survey curSurvey : surveys) {
 				surveyInfoList.add(convertModeltoDtoSurvey(curSurvey));
 			}
@@ -357,12 +356,10 @@ public class UserFacadeImplementation implements UserFacade {
 	}
 
 	private SurveyInfoDto convertModeltoDtoSurvey(Survey curSurvey) {
-		
 		SurveyInfoDto surveyInfoDtoObject = new SurveyInfoDto();
 		surveyInfoDtoObject.setId(curSurvey.getSurveyId());
 		surveyInfoDtoObject.setDescription(curSurvey.getDescription());
 		surveyInfoDtoObject.setSurveyName(curSurvey.getSurveyName());
-		
 		
 		return surveyInfoDtoObject;
 	}

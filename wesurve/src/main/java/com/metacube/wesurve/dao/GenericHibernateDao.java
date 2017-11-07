@@ -65,7 +65,8 @@ public abstract class GenericHibernateDao<T, ID extends Serializable> implements
 
 	@Override
 	public void delete(final T entity) {
-
+		Session session = this.sessionFactory.getCurrentSession();
+		session.delete(entity);
 	}
 
 	@Override

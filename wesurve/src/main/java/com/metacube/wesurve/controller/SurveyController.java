@@ -41,6 +41,38 @@ public class SurveyController {
 		return response;
 	}
 	
+	@RequestMapping(value = "/", method = RequestMethod.DELETE)
+	public @ResponseBody ResponseDto<Void> deleteSurvey(@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken,
+			@RequestParam("id") int surveyId) {
+		
+		ResponseDto<Void> response;
+		if(checkAuthorization(accessToken) == Role.SURVEYOR) {
+			response = surveyFacade.deleteSurvey(accessToken, surveyId); 
+		} else {
+			response = new ResponseDto<>();
+			response.setStatus(Status.ACCESS_DENIED);
+			response.setBody(null);
+		}
+		
+		return response;
+	}
+	
+	@RequestMapping(value = "/", method = RequestMethod.PUT)
+	public @ResponseBody ResponseDto<Void> editSurvey(@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken,
+			@RequestParam("id") int surveyId) {
+		
+		ResponseDto<Void> response;
+		if(checkAuthorization(accessToken) == Role.SURVEYOR) {
+			response = surveyFacade.deleteSurvey(accessToken, surveyId); 
+		} else {
+			response = new ResponseDto<>();
+			response.setStatus(Status.ACCESS_DENIED);
+			response.setBody(null);
+		}
+		
+		return response;
+	}
+	
 	public Role checkAuthorization(String accessToken) {
 		Role role = Role.INVALID;
 		if (accessToken != null) {

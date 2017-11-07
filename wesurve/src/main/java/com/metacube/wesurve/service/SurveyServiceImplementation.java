@@ -26,4 +26,14 @@ public class SurveyServiceImplementation implements SurveyService {
 		survey.setSurveyStatus(status);
 		surveyDao.update(survey);
 	}
+
+	@Override
+	public Survey getSurveyById(int surveyId) {
+		return surveyDao.findOne(surveyId);
+	}
+
+	@Override
+	public void deleteSurvey(Survey survey) {
+		surveyDao.delete(survey);
+	}
 }

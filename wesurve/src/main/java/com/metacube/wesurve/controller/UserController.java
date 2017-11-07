@@ -107,7 +107,12 @@ public class UserController {
 		response.setBody(userList);
 		return response;
 	}
-
+	
+	/*@RequestMapping(value = "/changepassword", method = RequestMethod.GET)
+	public @ResponseBody ResponseDto<Void> changePassword(@RequestHeader(value = Constants.ACCESSTOKEN) String token, String email) {
+		return userFacade.changePassword(email);
+	}*/
+	
 	/**
 	 * @param token access token of the user
 	 * @param userId is the id of the user who's role needs to be changed
@@ -126,13 +131,12 @@ public class UserController {
 		return response;
 	}
 	
-	@RequestMapping(value = "/surveylist",  method = RequestMethod.GET, consumes = "application/json")
+	@RequestMapping(value = "/surveylist",  method = RequestMethod.GET)
 	public @ResponseBody ResponseDto<Iterable<SurveyInfoDto>> getSurveyList (@RequestHeader(value = Constants.ACCESSTOKEN) String token) {
 		ResponseDto<Iterable<SurveyInfoDto>> response = new ResponseDto<>();
 		Iterable<SurveyInfoDto> surveyList = null;
 		Status status = Status.ACCESS_DENIED;
 		if(Role.INVALID != checkAuthorization(token)) {
-			
 			surveyList = userFacade.getSurveyList(token);
 			status = Status.SUCCESS;
 		}

@@ -166,4 +166,25 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 	public Role checkAuthorization(String accessToken) {
 		return userService.checkAuthorization(accessToken);
 	}
+
+	@Override
+	public ResponseDto<Void> deleteSurvey(String accessToken, int surveyId) {
+		ResponseDto<Void> response = new ResponseDto<>();
+		Status status;
+		User surveyor = userService.getUserByAccessToken(accessToken);
+		Survey survey = surveyService.getSurveyById(surveyId);
+		if(surveyor != null && survey != null) {
+			if(surveyor.getCreatedSurveyList().contains(survey)) {
+				surveyService.deleteSurvey(survey);
+				status = Status.SUCCESS;
+			} else {
+				status = Status.ACCESS_DENIED;
+			}
+		} else {
+			status = Status.NOT_FOUND;
+		}
+		
+		response.setStatus(status);
+		return response;
+	}
 }
