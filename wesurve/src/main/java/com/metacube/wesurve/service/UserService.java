@@ -17,4 +17,5 @@ public interface UserService {
 	public User getUserByAccessToken(String accessToken);
 	public User getUserById(int primaryKey);
 	public void update(User user);
+	public User getCurrentPassword(String accessToken);
 }

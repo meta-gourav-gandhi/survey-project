@@ -35,7 +35,7 @@ public abstract class GenericHibernateDao<T, ID extends Serializable> implements
 	@Override
 	public Iterable<T> findAll() {
 		Session session = this.sessionFactory.getCurrentSession();
-		Criteria criteria = session.createCriteria(getModelClass());
+		Criteria criteria = session.createCriteria(getModelClass()).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		@SuppressWarnings("unchecked")
 		List<T> list = criteria.list();
 		return list;
@@ -60,7 +60,12 @@ public abstract class GenericHibernateDao<T, ID extends Serializable> implements
 
 	@Override
 	public boolean exists(final ID primaryKey) {
-		return false;
+		boolean result = false;
+		if(findOne(primaryKey) != null) {
+			result = true;
+		}
+		
+		return result;
 	}
 
 	@Override
@@ -71,7 +76,7 @@ public abstract class GenericHibernateDao<T, ID extends Serializable> implements
 
 	@Override
 	public Long count() {
-		return null;
+		return (long) 0;
 	}
 	
 	@Override

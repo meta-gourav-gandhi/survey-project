@@ -9,4 +9,7 @@ public interface SurveyFacade {
 	ResponseDto<SurveyResponseDto> createSurvey(int surveyorId, SurveyDto surveyDto);
 	Role checkAuthorization(String accessToken);
 	ResponseDto<Void> deleteSurvey(String accessToken, int surveyId);
+	ResponseDto<SurveyDto> getSurvey(String accessToken, int surveyId);
+	ResponseDto<SurveyResponseDto> editSurvey(String accessToken, int surveyId);
+	String getLabelByname(String string);
 }

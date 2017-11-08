@@ -66,12 +66,18 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 		
 		response.setStatus(status);
 		response.setBody(surveyResponse);
+		/*Labels l = labelsService.getLabelByLabelName("A");
+		System.out.println("After adding labels: " + l.getSurvey().size());
+		Iterator<Survey> iter = l.getSurvey().iterator();
+		while(iter.hasNext()) {
+			System.out.println(iter.next().getSurveyName());
+		}*/
 		return response;
 	}
 
 	private Survey convertDtoToModel(SurveyDto surveyDto) {
 		Survey survey = new Survey();
-		survey.setSurveyName(surveyDto.getText());
+		survey.setSurveyName(surveyDto.getName());
 		survey.setDescription(surveyDto.getDescription());
 		survey.setUpdatedDate(new Date());
 		if(surveyDto.getId() <= 0) {
@@ -79,7 +85,7 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 		}
 		
 		survey.setQuestions(convertDtoToModelQuestion(surveyDto.getQuestions()));
-		survey.setLabels(changeTosetOfLabels(surveyDto.getLabels()));
+		survey.setLabels(changeStringSetToLabelsSet(surveyDto.getLabels()));
 		return survey;
 	}
 
@@ -122,12 +128,16 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 		return options;
 	}
 
-	private Set<Labels> changeTosetOfLabels(Set<String> labels) {
+	private Set<Labels> changeStringSetToLabelsSet(Set<String> labels) {
 		Set<Labels> setOflabels = new HashSet<>();
 		Labels curlabel; 
 		for(String label : labels) {
-			curlabel = new Labels();
-			curlabel.setLabelName(label);
+			/*curlabel = labelsService.getLabelByLabelName(label);
+			if(curlabel == null) {
+			*/	curlabel = new Labels();
+				curlabel.setLabelName(label);
+			
+			
 			setOflabels.add(curlabel);
 		}
 		
@@ -136,7 +146,7 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 
 	private boolean validateSurvey(SurveyDto survey) {
 		boolean result = false;
-		boolean condition1 = StringUtils.validateString(survey.getText()) &&
+		boolean condition1 = StringUtils.validateString(survey.getName()) &&
 				StringUtils.validateString(survey.getDescription());
 				
 		boolean condition2 = survey.getQuestions() != null && survey.getQuestions().size() != 0;
@@ -186,5 +196,98 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 		
 		response.setStatus(status);
 		return response;
+	}
+
+	@Override
+	public ResponseDto<SurveyDto> getSurvey(String accessToken, int surveyId) {
+		ResponseDto<SurveyDto> response = new ResponseDto<>();
+		
+		Status status;
+		SurveyDto surveyDto = null;
+		
+		User surveyor = userService.getUserByAccessToken(accessToken);
+		Survey survey = surveyService.getSurveyById(surveyId);
+		if(surveyor != null && survey != null) {
+			if(surveyor.getCreatedSurveyList().contains(survey)) {
+				surveyDto = convertModelToDto(survey);
+				status = Status.SUCCESS;
+			} else {
+				status = Status.ACCESS_DENIED;
+			}
+		} else {
+			status = Status.NOT_FOUND;
+		}
+		
+		response.setStatus(status);
+		response.setBody(surveyDto);
+		
+		return response;
+	}
+
+	private SurveyDto convertModelToDto(Survey survey) {
+		SurveyDto surveyDto = new SurveyDto();
+		
+		surveyDto.setId(survey.getSurveyId());
+		surveyDto.setName(survey.getSurveyName());
+		surveyDto.setDescription(survey.getDescription());
+		surveyDto.setLabels(changeLabelsSetToStringSet(survey.getLabels()));
+		surveyDto.setQuestions(convertModelToDtoQuestion(survey.getQuestions()));
+		
+		return surveyDto;
+	}
+
+	private Set<QuestionDto> convertModelToDtoQuestion(Set<Questions> questions) {
+		Set<QuestionDto> questionDtos = new HashSet<>();
+		QuestionDto currQuestion;
+		
+		for(Questions ques : questions) {
+			currQuestion = new QuestionDto();
+			currQuestion.setId(ques.getQuesId());
+			currQuestion.setText(ques.getQuestion());
+			currQuestion.setRequired(ques.isRequired());
+			currQuestion.setOptions(convertModelToDtoOption(ques.getOptions()));
+			questionDtos.add(currQuestion);
+		}
+		
+		return questionDtos;
+	}
+
+	private Set<OptionDto> convertModelToDtoOption(Set<Options> options) {
+		Set<OptionDto> optionDtos = new HashSet<>();
+		OptionDto currOption;
+		
+		for(Options option : options) {
+			currOption = new OptionDto();
+			currOption.setId(option.getOptionId());
+			currOption.setText(option.getOptionValue());
+			currOption.setType(option.getOptionType());
+			optionDtos.add(currOption);
+		}
+		
+		return optionDtos;
+	}
+
+	private Set<String> changeLabelsSetToStringSet(Set<Labels> labels) {
+		Set<String> setOflabels = new HashSet<>();
+		for(Labels label : labels) {
+			setOflabels.add(label.getLabelName());
+		}
+		
+		return setOflabels;
+	}
+
+	@Override
+	public ResponseDto<SurveyResponseDto> editSurvey(String accessToken, int surveyId) {
+		ResponseDto<SurveyResponseDto> response = new ResponseDto<>();
+		Status status;
+		SurveyResponseDto surveyResponse = null;
+		
+		return response;
+	}
+
+	@Override
+	public String getLabelByname(String string) {
+		labelsService.getLabelByLabelName("A");
+		return null;
 	}
 }

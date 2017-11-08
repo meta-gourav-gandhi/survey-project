@@ -3,8 +3,10 @@ package com.metacube.wesurve.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,7 +25,7 @@ public class Labels {
 	@Column(name = "label_name", length = 50, nullable = false)
 	private String labelName;
 
-	@ManyToMany(mappedBy = "labels")
+	@ManyToMany(mappedBy = "labels", fetch = FetchType.EAGER, cascade = { CascadeType.ALL } )
 	private Set<Survey> survey = new HashSet<>();
 
 	public int getLabelId() {

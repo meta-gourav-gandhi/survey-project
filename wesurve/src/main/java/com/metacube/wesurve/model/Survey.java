@@ -133,8 +133,5 @@ public class Survey {
 
 	public void setQuestions(Set<Questions> questions) {
 		this.questions = questions;
-	}
-	
-	
-	
+	}	
 }

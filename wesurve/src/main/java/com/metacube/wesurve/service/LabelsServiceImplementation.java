@@ -21,4 +21,9 @@ public class LabelsServiceImplementation implements LabelsService {
 	public Set<Labels> getAll() {
 		return (Set<Labels>) labelsDao.findAll();
 	}
+
+	@Override
+	public Labels getLabelByLabelName(String label) {
+		return labelsDao.getByLabelName(label);
+	}
 }

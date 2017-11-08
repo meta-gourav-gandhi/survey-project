@@ -57,13 +57,13 @@ public class SurveyController {
 		return response;
 	}
 	
-	@RequestMapping(value = "/", method = RequestMethod.PUT)
-	public @ResponseBody ResponseDto<Void> editSurvey(@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken,
+	@RequestMapping(value = "/", method = RequestMethod.GET)
+	public @ResponseBody ResponseDto<SurveyDto> getSurvey(@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken,
 			@RequestParam("id") int surveyId) {
 		
-		ResponseDto<Void> response;
+		ResponseDto<SurveyDto> response;
 		if(checkAuthorization(accessToken) == Role.SURVEYOR) {
-			response = surveyFacade.deleteSurvey(accessToken, surveyId); 
+			response = surveyFacade.getSurvey(accessToken, surveyId); 
 		} else {
 			response = new ResponseDto<>();
 			response.setStatus(Status.ACCESS_DENIED);
@@ -71,6 +71,27 @@ public class SurveyController {
 		}
 		
 		return response;
+	}
+	
+	@RequestMapping(value = "/", method = RequestMethod.PUT)
+	public @ResponseBody ResponseDto<SurveyResponseDto> editSurvey(@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken,
+			@RequestParam("id") int surveyId) {
+		
+		ResponseDto<SurveyResponseDto> response;
+		if(checkAuthorization(accessToken) == Role.SURVEYOR) {
+			response = surveyFacade.editSurvey(accessToken, surveyId); 
+		} else {
+			response = new ResponseDto<>();
+			response.setStatus(Status.ACCESS_DENIED);
+			response.setBody(null);
+		}
+		
+		return response;
+	}
+	
+	@RequestMapping(value = "/welcome")
+	public @ResponseBody String welcome() {
+		return surveyFacade.getLabelByname("A");
 	}
 	
 	public Role checkAuthorization(String accessToken) {

@@ -363,4 +363,26 @@ public class UserFacadeImplementation implements UserFacade {
 		
 		return surveyInfoDtoObject;
 	}
+
+	@Override
+	public ResponseDto<Void> changePassword(String accessToken, String currentPassword, String newPassword) {
+		ResponseDto<Void> response = new ResponseDto<>();
+		Status status = Status.FAILURE;
+		User user = userService.getUserByAccessToken(accessToken);
+		
+		try {
+			if (currentPassword.equals(newPassword)) {
+				status = Status.DUPLICATE;
+			} else if (userService.getCurrentPassword(accessToken).getPassword().equals(MD5Encryption.encrypt(currentPassword))) {
+				user.setPassword(MD5Encryption.encrypt(newPassword));
+				userService.update(user);
+				status = Status.SUCCESS;
+			}
+		} catch (NoSuchAlgorithmException nsae) {
+			nsae.printStackTrace();
+		}
+		
+		response.setStatus(status);
+		return response;
+	}
 }

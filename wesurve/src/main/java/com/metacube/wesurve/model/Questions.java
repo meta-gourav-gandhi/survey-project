@@ -36,15 +36,11 @@ public class Questions {
 	@Column(name = "required", nullable = false)
 	private boolean required;
 	
-	
-	
 	@OneToMany(cascade = { CascadeType.ALL })
 	@JoinTable(name = "question_option", joinColumns = { @JoinColumn(name = "ques_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "option_id") })
 	Set<Options> options = new HashSet<>();
 
-	
-	
 	public Set<Options> getOptions() {
 		return options;
 	}

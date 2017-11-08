@@ -4,7 +4,7 @@ import java.util.Set;
 
 public class SurveyDto {
 	private int id;
-	private String text;
+	private String name;
 	private String description;
 	private Set<QuestionDto> questions;
 	private Set<String> labels;
@@ -17,12 +17,12 @@ public class SurveyDto {
 		this.id = id;
 	}
 	
-	public String getText() {
-		return text;
+	public String getName() {
+		return name;
 	}
 	
-	public void setText(String text) {
-		this.text = text;
+	public void setName(String name) {
+		this.name = name;
 	}
 	
 	public String getDescription() {

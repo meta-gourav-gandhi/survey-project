@@ -6,4 +6,5 @@ import com.metacube.wesurve.model.Labels;
 
 public interface LabelsService {
 	Set<Labels> getAll();
+	Labels getLabelByLabelName(String label);
 }

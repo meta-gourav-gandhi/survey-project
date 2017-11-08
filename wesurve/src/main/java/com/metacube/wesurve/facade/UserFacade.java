@@ -19,4 +19,5 @@ public interface UserFacade {
 	public Role checkAuthorization(String accessToken);
 	public Status changeUserRole(int userId);
 	public Iterable<SurveyInfoDto> getSurveyList(String token);
+	public ResponseDto<Void> changePassword(String accessToken, String currentPassword, String newPassword);
 }

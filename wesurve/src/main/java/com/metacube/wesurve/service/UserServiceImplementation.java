@@ -117,4 +117,10 @@ public class UserServiceImplementation implements UserService {
 	public void update(User user) {
 		userDao.update(user);
 	}
+
+	@Override
+	public User getCurrentPassword(String accessToken) {
+		return userDao.getCurrentPassword(accessToken);
+	}
+
 }

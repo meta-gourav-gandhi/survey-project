@@ -65,7 +65,7 @@ public class User {
 			@JoinColumn(name = "survey_id") })
 	private Set<Survey> createdSurveyList = new HashSet<>();
 	
-	@ManyToMany(fetch = FetchType.EAGER,cascade = { CascadeType.ALL })
+	@ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
 	@JoinTable(name = "survey_responses", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "survey_id") })
 	Set<Survey> filledSurveyList = new HashSet<>();
@@ -165,7 +165,4 @@ public class User {
 	public void setCreatedSurveyList(Set<Survey> createdSurveyList) {
 		this.createdSurveyList = createdSurveyList;
 	}
-	
-	
-	
 }

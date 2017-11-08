@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.metacube.wesurve.dto.LoginCredentialsDto;
 import com.metacube.wesurve.dto.LoginResponseDto;
+import com.metacube.wesurve.dto.PasswordsDto;
 import com.metacube.wesurve.dto.ResponseDto;
 import com.metacube.wesurve.dto.SurveyInfoDto;
 import com.metacube.wesurve.dto.UserDetailsDto;
@@ -108,10 +109,20 @@ public class UserController {
 		return response;
 	}
 	
-	/*@RequestMapping(value = "/changepassword", method = RequestMethod.GET)
-	public @ResponseBody ResponseDto<Void> changePassword(@RequestHeader(value = Constants.ACCESSTOKEN) String token, String email) {
-		return userFacade.changePassword(email);
-	}*/
+	@RequestMapping(value = "/changepassword", method= RequestMethod.PUT)
+	public @ResponseBody ResponseDto<Void> changePassword(@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken, @RequestBody PasswordsDto password){
+		ResponseDto<Void> response = null;
+		
+		if(checkAuthorization(accessToken) != Role.INVALID) {
+			response = userFacade.changePassword(accessToken, password.getCurrentPassword(), password.getNewPassword());
+		} else {
+			response = new ResponseDto<>();
+			response.setStatus(Status.ACCESS_DENIED);
+			response.setBody(null);
+		}
+		
+		return response;
+	}
 	
 	/**
 	 * @param token access token of the user
