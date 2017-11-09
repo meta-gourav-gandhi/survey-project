@@ -25,6 +25,7 @@ import com.metacube.wesurve.model.Survey;
 import com.metacube.wesurve.model.User;
 import com.metacube.wesurve.service.SurveyService;
 import com.metacube.wesurve.service.UserService;
+import com.metacube.wesurve.utils.Constants;
 import com.metacube.wesurve.utils.EmailUtils;
 import com.metacube.wesurve.utils.MD5Encryption;
 import com.metacube.wesurve.utils.StringUtils;
@@ -342,25 +343,28 @@ public class UserFacadeImplementation implements UserFacade {
 	}
 
 	@Override
-	public Iterable<SurveyInfoDto> getSurveyList(String token) {
-		User user = userService.getUserByAccessToken(token);
+	public Iterable<SurveyInfoDto> getSurveyListForViewers(String accessToken) {
+		User user = userService.getUserByAccessToken(accessToken);
 		Set<SurveyInfoDto> surveyInfoList = new HashSet<>();
 		if(user != null && user.getSurveyListToView().size() != 0) {
 			Set<Survey> surveys = user.getSurveyListToView();
 			for(Survey curSurvey : surveys) {
-				surveyInfoList.add(convertModeltoDtoSurvey(curSurvey));
+				if(curSurvey.getSurveyStatus() != SurveyStatus.DELETED) {
+					surveyInfoList.add(convertModeltoDtoSurveyInfo(curSurvey));
+				}
 			}
 		}
 		
 		return surveyInfoList;
 	}
 
-	private SurveyInfoDto convertModeltoDtoSurvey(Survey curSurvey) {
+	private SurveyInfoDto convertModeltoDtoSurveyInfo(Survey curSurvey) {
 		SurveyInfoDto surveyInfoDtoObject = new SurveyInfoDto();
 		surveyInfoDtoObject.setId(curSurvey.getSurveyId());
 		surveyInfoDtoObject.setDescription(curSurvey.getDescription());
 		surveyInfoDtoObject.setSurveyName(curSurvey.getSurveyName());
-		
+		surveyInfoDtoObject.setStatus(curSurvey.getSurveyStatus());
+		surveyInfoDtoObject.setSurveyUrl(Constants.SURVEYURLINITIALS + curSurvey.getSurveyId() + "/");
 		return surveyInfoDtoObject;
 	}
 
@@ -378,11 +382,28 @@ public class UserFacadeImplementation implements UserFacade {
 				userService.update(user);
 				status = Status.SUCCESS;
 			}
-		} catch (NoSuchAlgorithmException nsae) {
-			nsae.printStackTrace();
+		} catch (NoSuchAlgorithmException exception) {
+			exception.printStackTrace();
 		}
 		
 		response.setStatus(status);
 		return response;
+	}
+
+	@Override
+	public Iterable<SurveyInfoDto> getSurveyListOfSurveyor(String accessToken) {
+		User user = userService.getUserByAccessToken(accessToken);
+		Set<SurveyInfoDto> surveyInfoList = null;
+		if(user != null && user.getCreatedSurveyList().size() != 0) {
+			surveyInfoList = new HashSet<>();
+			Set<Survey> surveys = user.getCreatedSurveyList();
+			for(Survey curSurvey : surveys) {
+				if(curSurvey.getSurveyStatus() != SurveyStatus.DELETED) {
+					surveyInfoList.add(convertModeltoDtoSurveyInfo(curSurvey));
+				}
+			}
+		}
+		
+		return surveyInfoList;
 	}
 }

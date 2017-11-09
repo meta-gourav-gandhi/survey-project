@@ -18,6 +18,7 @@ public interface UserFacade {
 	public Status logout(String accessToken);
 	public Role checkAuthorization(String accessToken);
 	public Status changeUserRole(int userId);
-	public Iterable<SurveyInfoDto> getSurveyList(String token);
+	public Iterable<SurveyInfoDto> getSurveyListForViewers(String accessToken);
 	public ResponseDto<Void> changePassword(String accessToken, String currentPassword, String newPassword);
+	public Iterable<SurveyInfoDto> getSurveyListOfSurveyor(String accessToken);
 }

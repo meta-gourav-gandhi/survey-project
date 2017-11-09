@@ -16,5 +16,4 @@ public class HibernateSurveyDaoImplementation extends GenericHibernateDao<Survey
 	public String getPrimaryKey() {
 		return "surveyId";
 	}
-
 }

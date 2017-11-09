@@ -7,6 +7,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -36,10 +37,10 @@ public class Questions {
 	@Column(name = "required", nullable = false)
 	private boolean required;
 	
-	@OneToMany(cascade = { CascadeType.ALL })
+	@OneToMany(fetch = FetchType.EAGER,cascade = { CascadeType.ALL })
 	@JoinTable(name = "question_option", joinColumns = { @JoinColumn(name = "ques_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "option_id") })
-	Set<Options> options = new HashSet<>();
+	private Set<Options> options = new HashSet<>();
 
 	public Set<Options> getOptions() {
 		return options;

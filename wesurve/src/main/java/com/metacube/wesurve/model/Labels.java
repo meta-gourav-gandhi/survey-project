@@ -22,10 +22,10 @@ public class Labels {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int labelId;
 
-	@Column(name = "label_name", length = 50, nullable = false)
+	@Column(name = "label_name", length = 50, nullable = false, unique = true)
 	private String labelName;
 
-	@ManyToMany(mappedBy = "labels", fetch = FetchType.EAGER, cascade = { CascadeType.ALL } )
+	@ManyToMany(mappedBy = "labels", fetch = FetchType.EAGER, cascade = { CascadeType.MERGE } )
 	private Set<Survey> survey = new HashSet<>();
 
 	public int getLabelId() {
@@ -51,5 +51,4 @@ public class Labels {
 	public void setSurvey(Set<Survey> survey) {
 		this.survey = survey;
 	}
-
 }

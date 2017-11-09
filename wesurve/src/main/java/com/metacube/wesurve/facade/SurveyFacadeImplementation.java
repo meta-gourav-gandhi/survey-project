@@ -15,6 +15,7 @@ import com.metacube.wesurve.dto.SurveyDto;
 import com.metacube.wesurve.dto.SurveyResponseDto;
 import com.metacube.wesurve.enums.Role;
 import com.metacube.wesurve.enums.Status;
+import com.metacube.wesurve.enums.SurveyStatus;
 import com.metacube.wesurve.model.Labels;
 import com.metacube.wesurve.model.Options;
 import com.metacube.wesurve.model.Questions;
@@ -23,6 +24,7 @@ import com.metacube.wesurve.model.User;
 import com.metacube.wesurve.service.LabelsService;
 import com.metacube.wesurve.service.SurveyService;
 import com.metacube.wesurve.service.UserService;
+import com.metacube.wesurve.utils.Constants;
 import com.metacube.wesurve.utils.StringUtils;
 
 @Component("surveyFacade")
@@ -46,6 +48,7 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 			User user = userService.getUserById(surveyorId);
 			Survey survey = convertDtoToModel(surveyDto);
 			
+			survey.setSurveyOwner(user);
 			user.getCreatedSurveyList().add(survey);
 			
 			//Set surveyor as viewer of survey
@@ -54,7 +57,7 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 			Survey surveyResult = surveyService.createSurvey(survey);
 			userService.update(user);
 			
-			String url = "http://172.16.33.117/survey/" + surveyResult.getSurveyId() + "/";
+			String url = Constants.SURVEYURLINITIALS + surveyResult.getSurveyId() + "/";
 			surveyResponse = new SurveyResponseDto();
 			surveyResponse.setId(surveyResult.getSurveyId());
 			surveyResponse.setName(surveyResult.getSurveyName());
@@ -66,12 +69,6 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 		
 		response.setStatus(status);
 		response.setBody(surveyResponse);
-		/*Labels l = labelsService.getLabelByLabelName("A");
-		System.out.println("After adding labels: " + l.getSurvey().size());
-		Iterator<Survey> iter = l.getSurvey().iterator();
-		while(iter.hasNext()) {
-			System.out.println(iter.next().getSurveyName());
-		}*/
 		return response;
 	}
 
@@ -132,11 +129,11 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 		Set<Labels> setOflabels = new HashSet<>();
 		Labels curlabel; 
 		for(String label : labels) {
-			/*curlabel = labelsService.getLabelByLabelName(label);
+			curlabel = labelsService.getLabelByLabelName(label);
 			if(curlabel == null) {
-			*/	curlabel = new Labels();
+				curlabel = new Labels();
 				curlabel.setLabelName(label);
-			
+			}
 			
 			setOflabels.add(curlabel);
 		}
@@ -183,11 +180,12 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 		Status status;
 		User surveyor = userService.getUserByAccessToken(accessToken);
 		Survey survey = surveyService.getSurveyById(surveyId);
-		if(surveyor != null && survey != null) {
-			if(surveyor.getCreatedSurveyList().contains(survey)) {
-				surveyService.deleteSurvey(survey);
+		if(surveyor != null && survey != null && survey.getSurveyStatus() == SurveyStatus.DELETED) {
+			if(survey.getSurveyOwner().equals(surveyor)) {
+				surveyService.changeSurveyStatus(survey, SurveyStatus.DELETED);
 				status = Status.SUCCESS;
 			} else {
+				System.out.println("Not Matched surveyor");
 				status = Status.ACCESS_DENIED;
 			}
 		} else {
@@ -207,8 +205,8 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 		
 		User surveyor = userService.getUserByAccessToken(accessToken);
 		Survey survey = surveyService.getSurveyById(surveyId);
-		if(surveyor != null && survey != null) {
-			if(surveyor.getCreatedSurveyList().contains(survey)) {
+		if(surveyor != null && survey != null && survey.getSurveyStatus() != SurveyStatus.DELETED) {
+			if(survey.getSurveyOwner().equals(surveyor)) {
 				surveyDto = convertModelToDto(survey);
 				status = Status.SUCCESS;
 			} else {
@@ -278,16 +276,6 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 
 	@Override
 	public ResponseDto<SurveyResponseDto> editSurvey(String accessToken, int surveyId) {
-		ResponseDto<SurveyResponseDto> response = new ResponseDto<>();
-		Status status;
-		SurveyResponseDto surveyResponse = null;
-		
-		return response;
-	}
-
-	@Override
-	public String getLabelByname(String string) {
-		labelsService.getLabelByLabelName("A");
 		return null;
 	}
 }

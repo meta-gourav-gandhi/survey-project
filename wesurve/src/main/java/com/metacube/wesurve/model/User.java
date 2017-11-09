@@ -57,7 +57,7 @@ public class User {
 	@Column(name = "updated_date", nullable = true)
 	private Date updatedDate;
 
-	@ManyToMany(fetch = FetchType.EAGER,mappedBy = "viewers")
+	@ManyToMany(fetch = FetchType.EAGER, mappedBy = "viewers")
 	private Set<Survey> surveyListToView = new HashSet<>();
 	
 	@OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
@@ -68,7 +68,7 @@ public class User {
 	@ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
 	@JoinTable(name = "survey_responses", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "survey_id") })
-	Set<Survey> filledSurveyList = new HashSet<>();
+	private Set<Survey> filledSurveyList = new HashSet<>();
 
 	public int getUserId() {
 		return userId;
@@ -164,5 +164,27 @@ public class User {
 
 	public void setCreatedSurveyList(Set<Survey> createdSurveyList) {
 		this.createdSurveyList = createdSurveyList;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + userId;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		User other = (User) obj;
+		if (userId != other.userId)
+			return false;
+		return true;
 	}
 }

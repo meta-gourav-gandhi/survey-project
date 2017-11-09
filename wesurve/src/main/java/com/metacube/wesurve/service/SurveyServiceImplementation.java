@@ -23,8 +23,10 @@ public class SurveyServiceImplementation implements SurveyService {
 
 	@Override
 	public void changeSurveyStatus(Survey survey, SurveyStatus status) {
-		survey.setSurveyStatus(status);
-		surveyDao.update(survey);
+		if(survey.getSurveyStatus() != SurveyStatus.DELETED) {
+			survey.setSurveyStatus(status);
+			surveyDao.update(survey);
+		}
 	}
 
 	@Override

@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -29,24 +30,13 @@ public class Survey {
 	@Column(name = "survey_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int surveyId;
-
-	@ManyToMany(cascade = { CascadeType.ALL })
-	@JoinTable(name = "survey_label", joinColumns = { @JoinColumn(name = "survey_id") }, inverseJoinColumns = {
-			@JoinColumn(name = "label_id") })
-	Set<Labels> labels = new HashSet<>();
-
-	@ManyToMany(fetch = FetchType.EAGER,cascade = { CascadeType.ALL })
-	@JoinTable(name = "survey_viewer", joinColumns = { @JoinColumn(name = "survey_id") }, inverseJoinColumns = {
-			@JoinColumn(name = "user_id") })
-	Set<User> viewers = new HashSet<>();
 	
-	@OneToMany(cascade = { CascadeType.ALL })
-	@JoinTable(name = "survey_question", joinColumns = { @JoinColumn(name = "survey_id") }, inverseJoinColumns = {
-			@JoinColumn(name = "ques_id") })
-	Set<Questions> questions = new HashSet<>();
-
 	@Column(name = "survey_name", length = 500, nullable = false)
 	private String surveyName;
+	
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	private User surveyOwner;
 
 	@Enumerated(EnumType.STRING)
 	private SurveyStatus surveyStatus = SurveyStatus.NOTLIVE;
@@ -59,6 +49,21 @@ public class Survey {
 
 	@Column(name = "updated_date", nullable = true)
 	private Date updatedDate;
+
+	@ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
+	@JoinTable(name = "survey_label", joinColumns = { @JoinColumn(name = "survey_id") }, inverseJoinColumns = {
+			@JoinColumn(name = "label_id") })
+	private Set<Labels> labels = new HashSet<>();
+
+	@ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
+	@JoinTable(name = "survey_viewer", joinColumns = { @JoinColumn(name = "survey_id") }, inverseJoinColumns = {
+			@JoinColumn(name = "user_id") })
+	private Set<User> viewers = new HashSet<>();
+	
+	@OneToMany(fetch = FetchType.EAGER ,cascade = { CascadeType.ALL })
+	@JoinTable(name = "survey_question", joinColumns = { @JoinColumn(name = "survey_id") }, inverseJoinColumns = {
+			@JoinColumn(name = "ques_id") })
+	private Set<Questions> questions = new HashSet<>();
 	
 	@ManyToMany(mappedBy = "filledSurveyList")
 	private Set<User> respondersList = new HashSet<>();
@@ -133,5 +138,43 @@ public class Survey {
 
 	public void setQuestions(Set<Questions> questions) {
 		this.questions = questions;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + surveyId;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Survey other = (Survey) obj;
+		if (surveyId != other.surveyId)
+			return false;
+		return true;
+	}
+
+	public User getSurveyOwner() {
+		return surveyOwner;
+	}
+
+	public void setSurveyOwner(User surveyOwner) {
+		this.surveyOwner = surveyOwner;
+	}
+
+	public Set<User> getRespondersList() {
+		return respondersList;
+	}
+
+	public void setRespondersList(Set<User> respondersList) {
+		this.respondersList = respondersList;
 	}	
 }

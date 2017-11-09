@@ -89,11 +89,6 @@ public class SurveyController {
 		return response;
 	}
 	
-	@RequestMapping(value = "/welcome")
-	public @ResponseBody String welcome() {
-		return surveyFacade.getLabelByname("A");
-	}
-	
 	public Role checkAuthorization(String accessToken) {
 		Role role = Role.INVALID;
 		if (accessToken != null) {

@@ -20,7 +20,6 @@ public class Options {
 	@Column(name = "option_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int optionId;
-
 	
 	@Column(name = "option_value ", length = 500, nullable = false)
 	private String optionValue;

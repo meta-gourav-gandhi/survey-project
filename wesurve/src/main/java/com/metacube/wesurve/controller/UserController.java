@@ -142,13 +142,13 @@ public class UserController {
 		return response;
 	}
 	
-	@RequestMapping(value = "/surveylist",  method = RequestMethod.GET)
-	public @ResponseBody ResponseDto<Iterable<SurveyInfoDto>> getSurveyList (@RequestHeader(value = Constants.ACCESSTOKEN) String token) {
+	@RequestMapping(value = "/viewer/surveylist",  method = RequestMethod.GET)
+	public @ResponseBody ResponseDto<Iterable<SurveyInfoDto>> getSurveyListForViewers(@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken) {
 		ResponseDto<Iterable<SurveyInfoDto>> response = new ResponseDto<>();
 		Iterable<SurveyInfoDto> surveyList = null;
 		Status status = Status.ACCESS_DENIED;
-		if(Role.INVALID != checkAuthorization(token)) {
-			surveyList = userFacade.getSurveyList(token);
+		if(Role.INVALID != checkAuthorization(accessToken)) {
+			surveyList = userFacade.getSurveyListForViewers(accessToken);
 			status = Status.SUCCESS;
 		}
 		
@@ -157,6 +157,22 @@ public class UserController {
 		return response;
 	}
 
+	@RequestMapping(value = "/surveyor/surveylist",  method = RequestMethod.GET)
+	public @ResponseBody ResponseDto<Iterable<SurveyInfoDto>> getSurveyListOfSurveyor(@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken) {
+		ResponseDto<Iterable<SurveyInfoDto>> response = new ResponseDto<>();
+		Iterable<SurveyInfoDto> surveyList = null;
+		Status status = Status.ACCESS_DENIED;
+		
+		if(Role.INVALID != checkAuthorization(accessToken)) {
+			surveyList = userFacade.getSurveyListOfSurveyor(accessToken);
+			status = Status.SUCCESS;
+		}
+		
+		response.setStatus(status);
+		response.setBody(surveyList);
+		return response;
+	}
+	
 	@RequestMapping(value = "/welcome")
 	public @ResponseBody String welcome() {
 		return "Hello";
