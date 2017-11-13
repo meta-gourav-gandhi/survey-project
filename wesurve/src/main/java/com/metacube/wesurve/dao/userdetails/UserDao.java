@@ -8,5 +8,4 @@ public interface UserDao extends AbstractDao<User, Integer> {
 	public User authenticateUser(String email, String password);
 	public User getUserByEmail(String email);
 	public User getUserByAccessToken(String accessToken);
-	public User getCurrentPassword(String accessToken);
 }

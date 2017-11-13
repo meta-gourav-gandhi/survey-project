@@ -1,6 +1,5 @@
 package com.metacube.wesurve.model;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
@@ -14,38 +13,40 @@ import javax.persistence.Table;
 public class UserResponses {
 
 	@Id
-	@Column(name = "user_id")
-	private int userId;
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	private User user;
 
 	@Id
-	@Column(name = "ques_id")
-	private int quesId;
+	@ManyToOne
+	@JoinColumn(name = "ques_id")
+	private Questions question;
 
 	@ManyToOne
 	@JoinColumn(name = "option_id")
-	private Options optionId;
+	private Options option;
 
-	public int getUserId() {
-		return userId;
+	public User getUser() {
+		return user;
 	}
 
-	public void setUserId(int userId) {
-		this.userId = userId;
+	public void setUser(User user) {
+		this.user = user;
 	}
 
-	public int getQuesId() {
-		return quesId;
+	public Questions getQuestion() {
+		return question;
 	}
 
-	public void setQuesId(int quesId) {
-		this.quesId = quesId;
+	public void setQuestion(Questions question) {
+		this.question = question;
 	}
 
-	public Options getOptionId() {
-		return optionId;
+	public Options getOption() {
+		return option;
 	}
 
-	public void setOptionId(Options optionId) {
-		this.optionId = optionId;
+	public void setOption(Options option) {
+		this.option = option;
 	}
 }

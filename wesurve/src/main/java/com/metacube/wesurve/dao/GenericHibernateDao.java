@@ -50,12 +50,11 @@ public abstract class GenericHibernateDao<T, ID extends Serializable> implements
 	}
 
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public <S extends T> S save(final S entity) {
 		Session session = this.sessionFactory.getCurrentSession();
-		ID id = (ID) session.save(entity);
-		return (S) findOne(id);
+		session.save(entity);
+		return entity;
 	}
 
 	@Override
@@ -82,6 +81,7 @@ public abstract class GenericHibernateDao<T, ID extends Serializable> implements
 	@Override
 	public void update(T entity) {
 		Session session = getSessionFactory().getCurrentSession();	
+		session.clear();
 		session.update(entity);
 	}
 }

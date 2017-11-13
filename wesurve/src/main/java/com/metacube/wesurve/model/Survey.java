@@ -65,7 +65,9 @@ public class Survey {
 			@JoinColumn(name = "ques_id") })
 	private Set<Questions> questions = new HashSet<>();
 	
-	@ManyToMany(mappedBy = "filledSurveyList")
+	@ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE })
+	@JoinTable(name = "survey_responses", joinColumns = { @JoinColumn(name = "survey_id") }, inverseJoinColumns = {
+			@JoinColumn(name = "user_id") })
 	private Set<User> respondersList = new HashSet<>();
 
 	public int getSurveyId() {

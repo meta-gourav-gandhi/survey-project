@@ -163,8 +163,25 @@ public class UserController {
 		Iterable<SurveyInfoDto> surveyList = null;
 		Status status = Status.ACCESS_DENIED;
 		
-		if(Role.INVALID != checkAuthorization(accessToken)) {
+		if(Role.SURVEYOR == checkAuthorization(accessToken)) {
 			surveyList = userFacade.getSurveyListOfSurveyor(accessToken);
+			status = Status.SUCCESS;
+		}
+		
+		response.setStatus(status);
+		response.setBody(surveyList);
+		return response;
+	}
+	
+	@RequestMapping(value = "/responder/surveylist",  method = RequestMethod.GET)
+	public @ResponseBody ResponseDto<Iterable<SurveyInfoDto>> getListOfFilledSurveys(@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken) {
+		ResponseDto<Iterable<SurveyInfoDto>> response = new ResponseDto<>();
+		
+		Iterable<SurveyInfoDto> surveyList = null;
+		Status status = Status.ACCESS_DENIED;
+		
+		if(Role.INVALID != checkAuthorization(accessToken)) {
+			surveyList = userFacade.getListOfFilledSurveys(accessToken);
 			status = Status.SUCCESS;
 		}
 		

@@ -52,11 +52,4 @@ public class HibernateUserDaoImplementation extends GenericHibernateDao<User, In
 	public String getPrimaryKey() {
 		return "userId";
 	}
-
-	@Override
-	public User getCurrentPassword(String accessToken) {
-		Session session = getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(User.class);
-		return (User) criteria.add(Restrictions.eq("token", accessToken)).uniqueResult();
-	}
 }

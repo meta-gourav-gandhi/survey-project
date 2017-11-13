@@ -65,9 +65,7 @@ public class User {
 			@JoinColumn(name = "survey_id") })
 	private Set<Survey> createdSurveyList = new HashSet<>();
 	
-	@ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
-	@JoinTable(name = "survey_responses", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {
-			@JoinColumn(name = "survey_id") })
+	@ManyToMany(fetch = FetchType.EAGER, mappedBy = "respondersList", cascade = { CascadeType.MERGE })
 	private Set<Survey> filledSurveyList = new HashSet<>();
 
 	public int getUserId() {
@@ -186,5 +184,13 @@ public class User {
 		if (userId != other.userId)
 			return false;
 		return true;
+	}
+
+	public Set<Survey> getFilledSurveyList() {
+		return filledSurveyList;
+	}
+
+	public void setFilledSurveyList(Set<Survey> filledSurveyList) {
+		this.filledSurveyList = filledSurveyList;
 	}
 }

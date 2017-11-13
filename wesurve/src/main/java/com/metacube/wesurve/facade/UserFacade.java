@@ -21,4 +21,5 @@ public interface UserFacade {
 	public Iterable<SurveyInfoDto> getSurveyListForViewers(String accessToken);
 	public ResponseDto<Void> changePassword(String accessToken, String currentPassword, String newPassword);
 	public Iterable<SurveyInfoDto> getSurveyListOfSurveyor(String accessToken);
+	public Iterable<SurveyInfoDto> getListOfFilledSurveys(String accessToken);
 }

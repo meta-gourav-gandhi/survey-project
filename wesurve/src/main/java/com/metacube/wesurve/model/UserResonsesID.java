@@ -5,22 +5,22 @@ import java.io.Serializable;
 public class UserResonsesID implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	private int userId;
-	private int quesId;
-
-	public int getUserId() {
-		return userId;
+	private User user;
+	private Questions question;
+	
+	public User getUser() {
+		return user;
 	}
-
-	public void setUserId(int userId) {
-		this.userId = userId;
+	
+	public void setUser(User user) {
+		this.user = user;
 	}
-
-	public int getQuesId() {
-		return quesId;
+	
+	public Questions getQuestion() {
+		return question;
 	}
-
-	public void setQuesId(int quesId) {
-		this.quesId = quesId;
+	
+	public void setQuestion(Questions question) {
+		this.question = question;
 	}
 }
