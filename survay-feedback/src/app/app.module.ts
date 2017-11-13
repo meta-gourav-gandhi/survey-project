@@ -11,8 +11,28 @@ import { UserService} from './services/user.service';
 import { HttpModule } from '@angular/http';
 import { FormsModule }   from '@angular/forms';
 import { Angular2SocialLoginModule } from "angular2-social-login";
-import { AlertComponent} from './pages/alert/alert.component';
 import { AlertService } from './services/alert.service';
+import { AdminComponent } from './pages/admin/admin.component';
+import { CreateSurveyorComponent } from './pages/admin/create-surveyor/create-surveyor.component';
+import { SurveyorComponent } from './pages/surveyor/surveyor.component';
+import { ResponderComponent } from './pages/responder/responder.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { NgxPaginationModule} from 'ngx-pagination'; // 
+import { SurveyResultComponent } from './pages/survey-result/survey-result.component';
+import { SurveyService } from './services/survey.service';
+import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {MatTooltipModule, MatFormFieldModule} from '@angular/material';
+import { EditProfileComponent } from './pages/edit-profile/edit-profile.component';
+import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
+import { ManageSurveyComponent } from './pages/surveyor/manage-survey/manage-survey.component';
+import { SideNavbarComponent } from './pages/side-navbar/side-navbar.component';
+import { ClipboardModule } from 'ngx-clipboard';
+import { Ng2OrderModule } from 'ng2-order-pipe';
+import { FilterPipe } from './filters';
+import { UserFilterPipe } from './user-filter';
+import { SearchSurveyComponent } from './pages/responder/search-survey/search-survey.component';
+import { SurveyPageComponent } from './pages/responder/survey-page/survey-page.component';
+import { SafeUrlPipe } from './safe-url-pipe';
 
 let providers = {
     "google": {
@@ -30,8 +50,21 @@ let providers = {
     LoginComponent,
     HomeComponent,
     SignupComponent,
-    AlertComponent,
-    DashboardComponent
+    DashboardComponent,
+    AdminComponent,
+    SurveyorComponent,
+    ResponderComponent,
+    CreateSurveyorComponent,
+    SurveyResultComponent,
+    EditProfileComponent,
+    ForgotPasswordComponent,
+    ManageSurveyComponent,
+    SideNavbarComponent,
+    FilterPipe,
+    UserFilterPipe,
+    SearchSurveyComponent,
+    SurveyPageComponent,
+    SafeUrlPipe
   ],
   imports: [
     BrowserModule,
@@ -39,9 +72,16 @@ let providers = {
     AppRoutingModule,
     HttpModule,
     FormsModule,
-    Angular2SocialLoginModule
+    Angular2SocialLoginModule,
+    ReactiveFormsModule,
+    NgxPaginationModule,
+    NoopAnimationsModule,
+    MatTooltipModule,
+    MatFormFieldModule,
+    ClipboardModule,
+    Ng2OrderModule,
   ],
-  providers: [UserService,AlertService],
+  providers: [UserService,AlertService,SurveyService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

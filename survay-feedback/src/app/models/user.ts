@@ -1,7 +1,8 @@
 export class User{
-    status : number;
-    message : string;
+    id : number;
     accessToken : string;
     role : number;
     viewer : boolean;
+    name : string;
+    email : string;
  }

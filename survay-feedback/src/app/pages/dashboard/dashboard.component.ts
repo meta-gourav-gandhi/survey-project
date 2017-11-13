@@ -3,7 +3,8 @@ import { AuthService } from "angular2-social-login";
 import { UserService } from "../../services/user.service";
 import { Message } from '../../models/message';
 import { User } from '../../models/user';
-import { Router } from '@angular/router';
+import { Router,NavigationEnd } from '@angular/router';
+import { NgSwitch } from '@angular/common';
 
 @Component({
   selector: 'dashboard',
@@ -20,7 +21,13 @@ export class DashboardComponent implements OnInit {
   constructor(private router: Router,public _auth: AuthService, private userService: UserService){ }
 
   ngOnInit() {
-      //localStorage.clear();
+    this.router.events.subscribe((evt) => {
+      if (!(evt instanceof NavigationEnd)) {
+          return;
+      }
+      window.scrollTo(0, 0)
+    });
+
     if(JSON.parse(localStorage.getItem('currentUser')) === null) {
         // will be improve when api will be complete
         this.router.navigate(['/login']);

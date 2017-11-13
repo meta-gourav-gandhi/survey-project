@@ -1,0 +1,28 @@
+<div class="secondary" id="headLine">
+    <div class="container"><h2>WeSurve Administration</h2></div>
+</div>
+<div class="container">
+    
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-8">
+            <form>
+                <div *ngIf="errorMessageStatus">
+                    <div class="alert alert-danger flipInX animated">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        {{errorMessage}}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="comment" class="text-primary-for-heading"><h2><strong>Fill out Survey</strong></h2></label>
+                    <div class="input-box">
+                        <input type="text" class="form-control custom-input sharp-corner" id="id" placeholder="Search survey by id" #surveyID >
+                        <button class="btn btn-primary btn-custom searchIcon" (click)="checkSurveyExists(surveyID.value)"><span class="glyphicon glyphicon-search"></span></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-sm-2"></div>
+    </div>
+</div>
+<side-navbar></side-navbar>

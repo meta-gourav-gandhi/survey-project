@@ -1,1 +1,32 @@
-<h1>Hello, {{user.name}}</h1>
+<div class="secondary" id="headLine">
+    <div class="container"><h2>WeSurve Administration</h2></div>
+</div>
+<div class="container">
+    
+    <div class="row">
+        <div [ngSwitch]="user.role"> 
+            <!-- Administrator Component starts -->
+            <span *ngSwitchCase="1"><admin-content></admin-content></span>
+            <!-- Administrator Component ends -->
+            <!-- Surveyor Component starts-->
+            <span *ngSwitchCase="2"><surveyor-content></surveyor-content></span>
+            <!-- Surveyor Component ends -->
+            <!-- Responder Component starts -->
+            <span *ngSwitchCase="3"><responder-content></responder-content></span>
+            <!-- Responder Component ends -->
+        </div>
+
+        <!-- Show only if user have a viewer also -->
+        <span *ngIf="user.viewer; else elseBlock">
+            <a routerLink="/surveyResults" class="col-sm-3">
+                <div class="panel panel-default custom-panel margin-bottom-50">
+                    <div class="panel-body text-center remove-underline"><h3><span class="glyphicon glyphicon-stats"></span><br/> Survey Results</h3></div>
+                    <div class="divider"></div>
+                    <div class="text-center">View survey results</div>
+                </div>
+            </a>
+        </span>
+        
+    </div>
+</div>
+<side-navbar></side-navbar>

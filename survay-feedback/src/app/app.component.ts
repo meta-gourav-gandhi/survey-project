@@ -30,13 +30,12 @@ export class AppComponent implements OnInit{
     // }
 
     logout() {
-      localStorage.clear(); // for current use only
-      this.router.navigate(['/home']); // for current use only
       this.userService.doLogout(JSON.parse(localStorage.getItem("currentUser")).accessToken)
-      .then(message => {
-        if (message.toString() == "SUCCESS") {
+      .then(response => {
+        if (response.status.toString() == "SUCCESS") {
           localStorage.clear();
           this.router.navigate(['/home']);
+          location.reload();
         } else {
           this.router.navigate(['/dashboard']);
         }

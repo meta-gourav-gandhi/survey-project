@@ -1,7 +1,9 @@
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
 /* You can add global styles to this file, and also import other style files */
 html {
-    overflow: auto;
-}
+    height: 100%;
+    box-sizing: border-box;
+  }
 
 /* Let's get this party started */
 ::-webkit-scrollbar {
@@ -27,8 +29,10 @@ html {
 }
 
 body {
-    font-family: Roboto,Helvetica Neue Light,Helvetica Neue,Helvetica,Arial,Lucida Grande,sans-serif;  
+    font-family: 'Nunito', sans-serif;  
     background: #F5F5F5;  
+    min-width: initial;
+    overflow-y: scroll;
 }
 
 .primary {
@@ -37,12 +41,16 @@ body {
 }
 
 .secondary{
-    background: #9E9E9E;
-    color: white;
+    color: #FFFFFF;
+    background: #444B5C;
 }
 
 .margin-top-5 {
     margin-top: 5%;
+  }
+
+  .margin-bottom-50 {
+    margin-bottom: 50%;
   }
 
 .btn-success {
@@ -58,4 +66,36 @@ body {
 .btn{
     width: 30%;
     border-radius: 0px;
+}
+
+.divider {
+    border-bottom : 1px solid #cccccc; 
+    margin: 5% 0% 2% 0%;
+}
+
+.divider-2 {
+    border-bottom : 1px solid #cccccc; 
+    margin: 2% 0% 2% 0%;
+    font-weight: bold;
+}
+
+.text-primary:hover {
+    background: white;
+    color : #009cdb;
+}
+
+.padding-5{
+    padding: 5% 0% 5% 0%;
+}
+
+.margin-bottom-10 {
+    margin-bottom: 10%;
+}
+
+.sharp-corner{
+    border-radius: 0px;
+}
+
+.text-primary-for-heading{
+    color : #009cdb;
 }

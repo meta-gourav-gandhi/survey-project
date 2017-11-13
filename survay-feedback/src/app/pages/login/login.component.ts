@@ -3,7 +3,10 @@ import { AuthService } from "angular2-social-login";
 import { UserService } from "../../services/user.service";
 import { Message } from '../../models/message';
 import { User } from '../../models/user';
-import { Router } from '@angular/router';
+import { Router,NavigationEnd } from '@angular/router';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { NgClass } from '@angular/common';
+
 
 @Component({
   selector: 'login',
@@ -16,22 +19,31 @@ export class LoginComponent implements OnInit {
   sub: any;
   message : Message;
   currentLoggedInUser : User;
+  rForm : FormGroup;
 
-  constructor(private router: Router,public _auth: AuthService, private userService: UserService){ }
+  constructor(private router: Router,public _auth: AuthService, private userService: UserService,private formBuilder: FormBuilder){ }
 
   ngOnInit() {
+    this.router.events.subscribe((evt) => {
+      if (!(evt instanceof NavigationEnd)) {
+          return;
+      }
+      window.scrollTo(0, 0)
+    });
+
     this.error = false; 
+    this.validate();
   }
 
   doLogin() : void {
     this.error = false;
     this.userService.doLogin(this.user)
-    .then(user => {
-      this.currentLoggedInUser = user;
-      console.log(this.currentLoggedInUser);
-      if (this.currentLoggedInUser.status == 200) {
+    .then(response => {
+      if (response.status.toString() == "SUCCESS") {
+        this.currentLoggedInUser = response.body;
         localStorage.setItem("currentUser",JSON.stringify(this.currentLoggedInUser));
         this.router.navigate(['/dashboard']);
+        location.reload();
       } else {
         this.error = true;
       }
@@ -47,17 +59,26 @@ export class LoginComponent implements OnInit {
 
         this.error = false;
         this.userService.doSocialLogin(this.user)
-        .then(user => {
-          this.currentLoggedInUser = user;
-          if (this.currentLoggedInUser.status === 200) {
+        .then(response => {
+          console.log(response);
+          if (response.status.toString() == "SUCCESS") {
+            this.currentLoggedInUser = response.body;
             localStorage.setItem("currentUser",JSON.stringify(this.currentLoggedInUser));
             this.router.navigate(['/dashboard']);
+            location.reload();
           } else {
             this.error = true;
           }
         });
       }
     )
+  }
+
+  validate() {
+    this.rForm = this.formBuilder.group({
+        'email': [null, Validators.compose([Validators.required, Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,6}$')])],
+        'password': [null, Validators.required]
+      });
   }
 
   /*ngOnDestroy(){

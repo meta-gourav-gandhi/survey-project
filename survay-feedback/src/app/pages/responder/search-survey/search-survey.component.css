@@ -1,0 +1,47 @@
+a {
+    text-decoration: none;
+}
+
+.custom-panel {
+    padding: 24% 2%;
+}
+
+@media only screen and (max-width: 480px) {
+    #headLine {
+        padding-top: 14%;
+        margin-bottom: 10%;
+        padding-bottom: 1.5%;
+    }
+}
+
+@media only screen and (min-width: 480px) {
+    #headLine {
+        padding-top: 4%;
+        margin-bottom: 10%;
+        padding-bottom: 1.5%;
+    }
+    .custom-input{
+        height: 50px;
+        padding: 0% 5% 0% 5%;
+    }
+}
+
+input{
+    border : none;
+}
+
+.input-box{
+    border : solid thin #ccc;
+    display : flex;
+}
+
+span.searchIcon{
+    display : block;
+    padding : 5px 12px;
+    border-radius : 50%;
+}
+
+.btn-custom{
+    width: 10%;
+    border : solid thin #337ab7;
+}

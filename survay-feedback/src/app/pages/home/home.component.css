@@ -1,0 +1,38 @@
+.jumbotron {
+    padding: 14%;
+}
+
+.aboutUs {
+    margin-top: 10%;
+}
+
+#section2 {
+    background-color: white;
+    padding-top: 3%;
+    padding-bottom: 3%;
+}
+
+.section2 {
+    margin-top: 10%;
+    padding-top: 5%;
+    border-radius: 5px;
+    padding-left: 10%;
+    padding-right: 10%;
+    padding-bottom: 15%;
+    margin-bottom: 30%;
+}
+
+.section21 {
+    background-color: #59A1BD;
+    color: white; 
+}
+
+.section22 {
+    background-color: #40BCE9;
+    color: white;
+}
+
+.section23 {
+    background-color: #50676E;
+    color: white;
+}
