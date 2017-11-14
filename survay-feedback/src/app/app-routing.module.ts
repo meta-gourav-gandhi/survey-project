@@ -14,6 +14,8 @@ import { SearchSurveyComponent } from './pages/responder/search-survey/search-su
 import { SurveyPageComponent } from './pages/responder/survey-page/survey-page.component';
 import { CreateSurveyComponent } from './pages/create-survey/create-survey.component';
 import { ViewSurveyComponent } from './pages/surveyor/view-survey/view-created-survey.component';
+import { PreviousResponsesComponent } from './pages/responder/previous-responses/previous-responses.component';
+import { SurveyResponseComponent } from './pages/responder/survey-response/survey-response.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -30,6 +32,8 @@ const routes: Routes = [
   { path: 'survey/:id',  component: SurveyPageComponent },
   { path: 'createSurvey',  component: CreateSurveyComponent },
   { path: 'viewSurvey/:id',  component: ViewSurveyComponent },
+  { path: 'previousResponses',  component: PreviousResponsesComponent },
+  { path: 'surveyResponse/:id', component: SurveyResponseComponent },
 ];
 
 @NgModule({

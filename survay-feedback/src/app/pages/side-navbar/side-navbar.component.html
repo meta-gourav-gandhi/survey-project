@@ -6,10 +6,11 @@
             </span>
             <span *ngSwitchCase="2">
                 <a routerLink="/manageSurveys" >Manage Surveys</a>
-                <!-- [routerLinkActive]="['back-black']" -->
+                <a routerLink="/createSurvey" >Create Survey</a>
             </span>
-            <span *ngSwitchCase="3">
+            <span>
                 <a routerLink="/searchSurvey" >Do a survey</a>
+                <a routerLink="/previousResponses" >Previous Responses</a>
             </span>
         </div>
         <span *ngIf="user.viewer">

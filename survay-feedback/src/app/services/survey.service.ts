@@ -63,4 +63,32 @@ export class SurveyService {
         .then(res => res.json() as ServerResponse)
         .catch(this.handleError);
     }
+
+    createOrRemoveViewer(surveyId : number, userId : number, accessToken : any) : Promise<ServerResponse>  {
+        debugger;
+        this.headers = new Headers({'Content-Type': 'application/json', 'X-auth' : accessToken});
+        return this.http
+        .put(this.userServiceUrl+"edit/viewer/?id="+surveyId+"&userid="+userId, surveyId, {headers: this.headers})
+        .toPromise()
+        .then(res => res.json() as ServerResponse)
+        .catch(this.handleError);
+    }
+
+    getSurveyResponse(surveyId: number, accessToken: any): Promise<ServerResponse>  {
+        this.headers = new Headers({'Content-Type': 'application/json', 'X-auth' : accessToken});
+        return this.http
+        .get(this.userServiceUrl + 'response/?id=' + surveyId ,  {headers: this.headers})
+        .toPromise()
+        .then(res => res.json() as ServerResponse)
+        .catch(this.handleError);
+    }
+
+    createSurvey(survey: any, accessToken: any): Promise<ServerResponse>{
+        this.headers = new Headers({'Content-Type': 'application/json', 'X-auth' : accessToken});
+        return this.http
+        .post(this.userServiceUrl, survey, {headers: this.headers})
+        .toPromise()
+        .then(res => res.json() as ServerResponse)
+        .catch(this.handleError);
+    }
 }

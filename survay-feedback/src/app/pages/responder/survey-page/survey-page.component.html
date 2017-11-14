@@ -1,47 +1,42 @@
-<div class="secondary" id="headLine">
-    <div class="container"><h2>{{survey.name}}</h2></div>
-</div>
+<br/><br/><br/><br/><br/><br/><br/><br/>
 <div class="container">
-    
-    <div class="row">
-        <div class="col-sm-2"></div>
-        <div class="col-sm-8">
-                <div *ngIf="errorMessageStatus">
-                    <div class="alert alert-danger flipInX animated">
-                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                        {{errorMessage}}
-                    </div>
-                </div>
-                <!-- <form [formGroup]="myForm" novalidate (ngSubmit)="save(myForm)"> -->
-                    <div class="panel panel-default margin-bottom-10">
-                        <div class="panel-heading"><h2>{{survey.name}}</h2></div>
-                        <div class="panel-body" id="table-panel">
-                        <!-- <div formArrayName="questionResponse">  -->
-                            <div *ngFor="let question of survey.questions; let i= index">
-                                <h3>{{i+1}}. {{question.text}}</h3>
-                                <div *ngFor="let option of question.options">
-                                    <!-- <div [formGroupName]="question.id"> -->
-                                    <input type="radio" value="option.id" name="question.id"> {{option.text}}
-                                    <!-- </div> -->
+        <div class="panel panel-default">
+            <div class="panel-heading text-center">
+                <span>{{survey.name}}</span>
+            </div>
+            <div class="panel-body">
+                <form [formGroup]="surveyForm" novalidate>
+                    <!--questions-->
+                    <div class="form-group">
+                        <div class="panel panel-default" *ngFor="let question of survey.questions; let i=index">
+                            <div class="card-body text-left">
+                                <h4 class="panel-heading" [froalaView]="question.text"></h4>
+                                <div formArrayName="response">
+                                    <div *ngFor="let option of question.options; let j=index">
+                                        <div >
+                                            <span >
+                                                <input type="radio" value="{{option.id}}" class="form-control" [formControlName]="i" >
+                                            </span>
+                                            <div [froalaView]="option.text"></div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <input type="hidden" value="question.id">
                             </div>
-                        </div>
-                        <!-- </div> -->
-                        <div class="panel-footer text-center">
-                            <input type="submit" class="btn btn-primary" value="Submit"/>
+                            <div *ngIf="isSubmited && !surveyForm.controls.response.controls[i].valid"
+                            class="alert alert-danger">
+                                <div *ngIf="surveyForm.controls.response.controls[i].errors.required">
+                                    Option is required
+                                </div>
+                            </div> 
                         </div>
                     </div>
-                    
-                <!-- </form> -->
+                    <button mat-raised-button class="success-btn float-right" (click)="isSubmited = true;submitSurvey()">Submit</button>
+                    <div class="margin-20">
+                        <div>surveyForm details:-</div>
+                        <pre>Is surveyForm valid?: <br>{{surveyForm.valid | json}}</pre>
+                        <pre>form value: <br>{{surveyForm.value | json}}</pre>
+                    </div>
+                </form>
+            </div>
         </div>
-        <p>Form value: {{ myForm.value | json }}</p>
-        <div class="col-sm-2"></div>
     </div>
-
-
-
-
-    
-</div>
-    

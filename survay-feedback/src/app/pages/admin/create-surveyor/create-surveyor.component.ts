@@ -54,7 +54,7 @@ export class CreateSurveyorComponent implements OnInit {
   surveyorCheck(user : UserDetail){
     this.userService.surveyorCheck(user.id , JSON.parse(localStorage.getItem("currentUser")).accessToken)
     .then(response => { 
-        if (response.status.toString() == "SUCCESSs") {
+        if (response.status.toString() == "SUCCESS") {
 
         } else {
             this.errorMessageStatus = true;

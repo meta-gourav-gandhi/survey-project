@@ -1,45 +1,3 @@
-a {
-    text-decoration: none;
-}
-
-.custom-panel {
-    padding: 24% 2%;
-}
-
-@media only screen and (max-width: 480px) {
-    #headLine {
-        padding-top: 14%;
-        margin-bottom: 10%;
-        padding-bottom: 1.5%;
-    }
-}
-
-@media only screen and (min-width: 480px) {
-    #headLine {
-        padding-top: 4%;
-        margin-bottom: 10%;
-        padding-bottom: 1.5%;
-    }
-    .custom-input{
-        height: 50px;
-        padding: 0% 5% 0% 5%;
-    }
-}
-
-.btn-small {
-    width: 10%;
-}
-
-.btn-medium{
-    width: 20%;
-    margin-left: 1%;
-}
-
-.question-box{
-    background: rgba(0,0,0,0.4);
-    margin: 2%;
-}
-
 .btn-toggle {
     margin: 0 4rem;
     padding: 0;
@@ -70,11 +28,15 @@ a {
     bottom: 0;
     transition: opacity .25s;
   }
-
+  .btn-toggle:before {
+    /*content: 'Off';*/
+    
+  }
   .btn-toggle:after {
+    /*content: 'On';*/
+   
     opacity: .5;
   }
-
   .btn-toggle > .handle {
     position: absolute;
     top: 0.1875rem;
@@ -85,20 +47,16 @@ a {
     background: #fff;
     transition: left .25s;
   }
-
   .btn-toggle.active {
     transition: background-color 0.25s;
   }
-
   .btn-toggle.active > .handle {
     left: 1.6875rem;
     transition: left .25s;
   }
-
   .btn-toggle.active:before {
     opacity: .5;
   }
-
   .btn-toggle.active:after {
     opacity: 1;
   }
@@ -107,11 +65,9 @@ a {
   .btn-toggle:after {
     color: #6b7381;
   }
-
   .btn-toggle.active {
     background-color: #29b5a8;
   }
-
   .btn-toggle.btn-lg {
     margin: 0 2rem;
     padding: 0;
@@ -121,14 +77,12 @@ a {
     width: 5rem;
     border-radius: 2.5rem;
   }
-
   .btn-toggle.btn-lg:focus,
   .btn-toggle.btn-lg.focus,
   .btn-toggle.btn-lg:focus.active,
   .btn-toggle.btn-lg.focus.active {
     outline: none;
   }
-
   .btn-toggle.btn-lg:before,
   .btn-toggle.btn-lg:after {
     line-height: 2.5rem;
@@ -142,11 +96,12 @@ a {
     bottom: 0;
     transition: opacity .25s;
   }
-
   .btn-toggle.btn-lg:before {
+    /*content: 'Off';*/
    
   }
   .btn-toggle.btn-lg:after {
+    /*content: 'On';*/
     opacity: .5;
   }
   .btn-toggle.btn-lg > .handle {
@@ -213,7 +168,49 @@ a {
   color: #AFAEAE;
   font-size: 12px;
 }
+#table-panel {
+  height: 365px;
+}
 
-.inline-show{
-    display: flex;
+@media only screen and (max-width: 480px) {
+  #headLine {
+      padding-top: 14%;
+      margin-bottom: 10%;
+      padding-bottom: 1.5%;
+  }
+}
+
+@media only screen and (min-width: 480px) {
+  #headLine {
+      padding-top: 4%;
+      margin-bottom: 4%;
+      padding-bottom: 1.5%;
+  }
+}
+
+.small{
+    width : 35px;
+}
+
+.large {
+  width : 100%;
+}
+
+.btn-glyphicon {
+    padding:8px;
+    background:#ffffff;
+    margin-right:4px;
+}
+.icon-btn {
+    padding: 1px 0px 3px 1.25px;
+    border-radius:50px;
+}
+
+.pointer{
+  cursor: pointer;
+}
+
+.custom-input{
+  display: inline;
+  width: 50%;
 }

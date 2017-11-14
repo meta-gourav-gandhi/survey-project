@@ -75,8 +75,16 @@ export class UserService {
         .catch(this.handleError);
     }
 
+    getAllUsersForSurveyor(surveyId : number, accessToken : any) : Promise<ServerResponse>  {
+        this.headers = new Headers({'Content-Type': 'application/json', 'X-auth' : accessToken});
+        return this.http
+        .get(this.userServiceUrl+"surveyor/userlist/?id="+surveyId, {headers: this.headers})
+        .toPromise()
+        .then(res => res.json() as ServerResponse)
+        .catch(this.handleError);
+    }
+
     surveyorCheck(userId : number, accessToken : any) : Promise<ServerResponse>  {
-        debugger;
         this.headers = new Headers({'Content-Type': 'application/json', 'X-auth' : accessToken});
         return this.http
         .post(this.userServiceUrl+"createsurveyor/"+userId, userId, {headers: this.headers})
@@ -84,6 +92,7 @@ export class UserService {
         .then(res => res.json() as ServerResponse)
         .catch(this.handleError);
     }
+
 
     changePassword(passwords : any, accessToken : any) : Promise<ServerResponse> {
         this.headers = new Headers({'Content-Type': 'application/json', 'X-auth' : accessToken});
@@ -115,6 +124,15 @@ export class UserService {
         this.headers = new Headers({'Content-Type': 'application/json', 'X-auth' : accessToken});
         return this.http
         .get(this.userServiceUrl+"surveyor/surveylist", {headers: this.headers})
+        .toPromise()
+        .then(res => res.json() as ServerResponse)
+        .catch(this.handleError);
+    }
+
+    getFilledSurveyList(accessToken : any) : Promise<ServerResponse>  {
+        this.headers = new Headers({'Content-Type': 'application/json', 'X-auth' : accessToken});
+        return this.http
+        .get(this.userServiceUrl+"responder/surveylist", {headers: this.headers})
         .toPromise()
         .then(res => res.json() as ServerResponse)
         .catch(this.handleError);

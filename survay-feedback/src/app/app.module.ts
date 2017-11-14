@@ -38,6 +38,8 @@ import { MatChipsModule } from '@angular/material/chips';
 import { FroalaEditorModule, FroalaViewModule } from 'angular-froala-wysiwyg';
 import { CreateSurveyComponent } from './pages/create-survey/create-survey.component';
 import { ViewSurveyComponent } from './pages/surveyor/view-survey/view-created-survey.component';
+import { PreviousResponsesComponent } from './pages/responder/previous-responses/previous-responses.component';
+import { SurveyResponseComponent } from './pages/responder/survey-response/survey-response.component';
 
 let providers = {
     "google": {
@@ -71,7 +73,9 @@ let providers = {
     SurveyPageComponent,
     SafeUrlPipe,
     CreateSurveyComponent,
-    ViewSurveyComponent
+    ViewSurveyComponent,
+    PreviousResponsesComponent,
+    SurveyResponseComponent
   ],
   imports: [
     BrowserModule,

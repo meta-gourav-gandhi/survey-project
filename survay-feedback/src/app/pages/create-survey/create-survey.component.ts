@@ -7,6 +7,7 @@ import { FormGroup, FormArray, FormBuilder, Validators, FormControl } from '@ang
 import { Label } from '../../models/label';
 import { MatChipInputEvent } from '@angular/material';
 import { ENTER } from '@angular/cdk/keycodes';
+import { SurveyService} from '../../services/survey.service';
 
 const COMMA = 188;
 
@@ -24,7 +25,11 @@ export class CreateSurveyComponent implements OnInit {
   removable: boolean = true;
   addOnBlur: boolean = true;
   separatorKeysCodes = [ENTER, COMMA];
-  constructor(public snackBar: MatSnackBar, private _fb: FormBuilder) {}
+
+  constructor(public snackBar: MatSnackBar, private _fb: FormBuilder, private surveyService : SurveyService) {
+
+  }
+
   public questionEditor: Object = {
     charCounterCount: false,
     placeholderText: 'Write a question',
@@ -174,7 +179,21 @@ export class CreateSurveyComponent implements OnInit {
         labels: this.surveyForm.get('surveyLabels').value,
         questions: questions
       }
+
+      this.saveSurvey(survey);
     }
+  }
+
+  saveSurvey(survey : any){
+    this.surveyService.createSurvey(survey, JSON.parse(localStorage.getItem("currentUser")).accessToken)
+    .then(response => { 
+        console.log(response);
+        if (response.status.toString() == "SUCCESS") {
+          alert("Created");
+        } else {
+          alert("Not Created");
+        }
+    });
   }
 
   validateAllFormFields(formGroup: FormGroup) {

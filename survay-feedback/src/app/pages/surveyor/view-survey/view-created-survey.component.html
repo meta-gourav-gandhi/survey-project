@@ -1,5 +1,5 @@
 <div class="secondary" id="headLine">
-        <div class="container"><h2>{{survey.name}}</h2></div>
+        <div class="container"></div>
     </div>
     <div class="container">
         
@@ -13,15 +13,18 @@
                         </div>
                     </div>
                         <div class="panel panel-default margin-bottom-10">
-                            <div class="panel-heading"><h2>{{survey.name}} 
-                                <button class="btn btn-primary pull-right btn-medium flipInX animated" data-toggle="modal" data-target="#createViewerModal" (click)="onSelect(survey)" [class.selected]="survey === selectedSurvey" ><span class="glyphicon glyphicon-share-alt"></span> Share Result</button> <button class="btn btn-primary pull-right btn-small flipInX animated" [routerLink]="['/editSurvey', survey.id ]"><span class="glyphicon glyphicon-pencil"></span> Edit</button> 
+                            <div class="panel-heading"><h2>{{survey.name}}
+                                <a class="btn btn-primary pull-right btn-medium flipInX animated" data-toggle="modal" data-target="#createViewerModal" (click)="onSelect(survey)" [class.selected]="survey === selectedSurvey" ><span class="glyphicon glyphicon-share-alt"></span> Share Result</a> <a class="btn btn-primary pull-right btn-small flipInX animated" ><span class="glyphicon glyphicon-pencil"></span> Edit</a> 
                             </h2></div>
                             <div class="panel-body" id="table-panel">
                                 <div *ngFor="let question of survey.questions; let i= index">
-                                    <h3>{{i+1}}. {{question.text}}</h3>
-                                    <div *ngFor="let option of question.options; let j= index">
-                                            ({{j+1}}) {{option.text}}
+                                    <h3 class="inline-show" >{{i+1}}.&nbsp; <span [innerHTML]="question.text">
+                                    </span></h3>
+                                    <div class="inline-show" *ngFor="let option of question.options; let j= index">
+                                            ({{j+1}})&nbsp; <span [innerHTML]="option.text">
+                                                </span>
                                     </div>
+                                    <hr/>
                                 </div>
                             </div>
                         </div>
@@ -42,16 +45,43 @@
                 <div class="modal-content sharp-corner">
                 <div class="modal-header primary text-center">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Confirm Deletion</h4>
+                    <h4 class="modal-title">Create Viewer</h4>
                 </div>
                 <div class="modal-body">
-                    <label for="usr">Survey ID:</label>
-                    <p>{{selectedSurveyForDeletion.id}}</p>
-                    <label for="usr">Survey Name:</label>
-                    <p>{{selectedSurveyForDeletion.surveyName}}</p>
+                                <input type="text" class="form-control pull-right custom-input sharp-corner" [(ngModel)]="username" placeholder="Search user by name, id, email">
+                <div class="divider"></div>
+                                <table class="table ">
+                                    <thead>
+                                        <tr>
+                                        <th>Name</th>
+                                        <th class="text-right">Surveyor Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let user of allUsers | userFilter: username | paginate: { itemsPerPage: 5, currentPage: p }">
+                                        <td>{{user.name}}<br>
+                                            <span class="mailid">{{user.email}}</span></td>
+                                        
+                                        <td class="text-right"> 
+                                            <div  *ngIf="user.surveyViewer else elseBlock">
+                                                <button type="button" class="btn btn-lg btn-secondary btn-toggle  active" data-toggle="button" aria-pressed="true" autocomplete="off" (click)="createOrRemoveViewer(user)" id="uid{{user.id}}" >
+                                                    <div class="handle"></div>
+                                                </button>
+                                            </div>
+                                            <ng-template #elseBlock>
+                                                <button type="button" class="btn btn-lg btn-secondary btn-toggle" data-toggle="button" aria-pressed="true" autocomplete="off"  (click)="createOrRemoveViewer(user)" id="uid{{user.id}}">
+                                                    <div class="handle"></div>
+                                                </button>
+                                            </ng-template>
+                                        </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            <div class="panel-footer text-center">
+                                <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                            </div>
                 </div>
                 <div class="modal-footer text-center">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="deleteSurvey(selectedSurveyForDeletion.id)" >Delete</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
                 </div>
