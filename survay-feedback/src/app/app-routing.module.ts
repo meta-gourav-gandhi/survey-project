@@ -12,6 +12,8 @@ import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password
 import { ManageSurveyComponent } from './pages/surveyor/manage-survey/manage-survey.component';
 import { SearchSurveyComponent } from './pages/responder/search-survey/search-survey.component';
 import { SurveyPageComponent } from './pages/responder/survey-page/survey-page.component';
+import { CreateSurveyComponent } from './pages/create-survey/create-survey.component';
+import { ViewSurveyComponent } from './pages/surveyor/view-survey/view-created-survey.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -26,6 +28,8 @@ const routes: Routes = [
   { path: 'manageSurveys',  component: ManageSurveyComponent },
   { path: 'searchSurvey',  component: SearchSurveyComponent },
   { path: 'survey/:id',  component: SurveyPageComponent },
+  { path: 'createSurvey',  component: CreateSurveyComponent },
+  { path: 'viewSurvey/:id',  component: ViewSurveyComponent },
 ];
 
 @NgModule({

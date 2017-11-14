@@ -33,6 +33,11 @@ import { UserFilterPipe } from './user-filter';
 import { SearchSurveyComponent } from './pages/responder/search-survey/search-survey.component';
 import { SurveyPageComponent } from './pages/responder/survey-page/survey-page.component';
 import { SafeUrlPipe } from './safe-url-pipe';
+import { MatSlideToggleModule, MatInputModule, MatButtonModule, MatSnackBarModule } from '@angular/material';
+import { MatChipsModule } from '@angular/material/chips';
+import { FroalaEditorModule, FroalaViewModule } from 'angular-froala-wysiwyg';
+import { CreateSurveyComponent } from './pages/create-survey/create-survey.component';
+import { ViewSurveyComponent } from './pages/surveyor/view-survey/view-created-survey.component';
 
 let providers = {
     "google": {
@@ -64,7 +69,9 @@ let providers = {
     UserFilterPipe,
     SearchSurveyComponent,
     SurveyPageComponent,
-    SafeUrlPipe
+    SafeUrlPipe,
+    CreateSurveyComponent,
+    ViewSurveyComponent
   ],
   imports: [
     BrowserModule,
@@ -80,6 +87,13 @@ let providers = {
     MatFormFieldModule,
     ClipboardModule,
     Ng2OrderModule,
+    MatSlideToggleModule,
+    MatInputModule,
+    MatButtonModule,
+    MatSnackBarModule,
+    MatChipsModule,
+    FroalaEditorModule.forRoot(),
+    FroalaViewModule.forRoot()
   ],
   providers: [UserService,AlertService,SurveyService],
   bootstrap: [AppComponent]

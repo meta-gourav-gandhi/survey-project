@@ -12,9 +12,11 @@
             <span *ngSwitchCase="2"><surveyor-content></surveyor-content></span>
             <!-- Surveyor Component ends -->
             <!-- Responder Component starts -->
-            <span *ngSwitchCase="3"><responder-content></responder-content></span>
+            <!-- <span *ngSwitchDefault><responder-content></responder-content></span> -->
             <!-- Responder Component ends -->
         </div>
+
+        <responder-content></responder-content>
 
         <!-- Show only if user have a viewer also -->
         <span *ngIf="user.viewer; else elseBlock">

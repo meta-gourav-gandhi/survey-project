@@ -31,7 +31,7 @@
                                     <span class="mailid">{{survey.description | slice:0:50}}...</span>
                                 </td>
                                 <td  width="40%" class="text-right">
-                                        <a class="btn icon-btn btn-warning small flipInX animated" href="#">
+                                        <a class="btn icon-btn btn-warning small flipInX animated" [routerLink]="['/viewSurvey', survey.id ]">
                                             <span class="glyphicon btn-glyphicon glyphicon-eye-open img-circle text-warning"></span>
                                           
                                         </a>

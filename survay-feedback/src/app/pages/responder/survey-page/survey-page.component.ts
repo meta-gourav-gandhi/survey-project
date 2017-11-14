@@ -7,8 +7,12 @@ import { User } from '../../../models/user';
 import { Router,NavigationEnd } from '@angular/router';
 import { Survey } from '../../../models/survey';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { FormGroup, FormArray, FormBuilder, Validators } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
+import { SurveyResponse } from '../../../models/survey-response';
+import { QuestionResponse } from '../../../models/question-responses';
+import { NavigationCancel } from '@angular/router';
+import { URLSearchParams, } from '@angular/http';
 
 @Component({
   selector: 'survey-page',
@@ -20,8 +24,12 @@ export class SurveyPageComponent implements OnInit {
     errorMessageStatus : boolean; 
     errorMessage : string;
     survey : Survey;
+    surveyResponse : SurveyResponse;
+    public myForm: FormGroup;
+    formId : number;
+    
   
-    constructor(private _sanitizer: DomSanitizer, private router: Router,public _auth: AuthService, private route: ActivatedRoute, private surveyService: SurveyService, private formBuilder: FormBuilder){ 
+    constructor(private _fb: FormBuilder, private _sanitizer: DomSanitizer, private router: Router,public _auth: AuthService, private route: ActivatedRoute, private surveyService: SurveyService, private formBuilder: FormBuilder){ 
         
     }
 
@@ -40,9 +48,31 @@ export class SurveyPageComponent implements OnInit {
             this.user = JSON.parse(localStorage.getItem('currentUser'));
         }
 
-        this.route.paramMap
-        .switchMap((params: ParamMap) => this.surveyService.getSurveyFromId(+params.get('id'), JSON.parse(localStorage.getItem("currentUser")).accessToken))
-        .subscribe(response => this.survey = response.body);
+         this.route.paramMap
+         .switchMap((params: ParamMap) => this.surveyService.getSurveyFromId(this.formId =+params.get('id'), JSON.parse(localStorage.getItem("currentUser")).accessToken))
+         .subscribe(response => this.survey = response.body);
+
+        //  this.myForm = this._fb.group({
+        //     'name': [this.survey.name],
+        //     'questionResponse': this._fb.array([
+        //         this.initQuestionResponse(),
+        //     ])
+        // });
+    }
+    
+    initQuestionResponse() {
+        return this._fb.group({
+            'questionId': ['', Validators.required],
+            'responseId': ['']
+        });
+    }
+
+    addQuestionResponse() {
+        const control = <FormArray>this.myForm.controls['questionResponse'];
+        const addrCtrl = this.initQuestionResponse();
+        
+        control.push(addrCtrl);
+        
     }
 
     getEmbbedUrl(url : string) {

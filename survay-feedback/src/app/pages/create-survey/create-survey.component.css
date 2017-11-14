@@ -1,0 +1,63 @@
+.survey-back{
+    /* background: url("../../../assets/survey_new.png"); */
+    height: auto;
+    /* margin-top: -1%; */
+  }
+  
+  .box {
+    margin-top : 2%;
+    background : white;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.5);
+  }
+  
+  
+  .panel {
+    border-radius: 0px;
+    margin : 0% -5% 5% -5%;
+    font-weight: bold;
+    text-align: center;
+    border: 0px;
+    background: #009cdb;
+    color: white;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.5);
+    font-size: 20px;
+  }
+  
+  .btn-success {
+    background : #009cdb;
+    border: none;
+  }
+  
+  .success-btn {
+    background : #009cdb;
+    color: white;
+    border: none;
+  }
+  
+  .btn-icon {
+    color:#757575;
+    padding-left:10px;
+    padding-right:10px;
+    background: #fff;
+    border: none;
+  }
+  
+  .vertical-divider {
+    border-left: 1px solid #eee;
+  }
+  
+  .card-header {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    background-color: rgb(252, 248, 248);
+    z-index: 100000;
+  }
+  
+  .card-block {
+    margin-top: 500px;
+  }
+  
+  .fr-box{
+    width:100%;
+  }

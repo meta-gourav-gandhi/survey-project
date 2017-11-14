@@ -1,0 +1,61 @@
+<div class="secondary" id="headLine">
+        <div class="container"><h2>{{survey.name}}</h2></div>
+    </div>
+    <div class="container">
+        
+        <div class="row">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-8">
+                    <div *ngIf="errorMessageStatus">
+                        <div class="alert alert-danger flipInX animated">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                            {{errorMessage}}
+                        </div>
+                    </div>
+                        <div class="panel panel-default margin-bottom-10">
+                            <div class="panel-heading"><h2>{{survey.name}} 
+                                <button class="btn btn-primary pull-right btn-medium flipInX animated" data-toggle="modal" data-target="#createViewerModal" (click)="onSelect(survey)" [class.selected]="survey === selectedSurvey" ><span class="glyphicon glyphicon-share-alt"></span> Share Result</button> <button class="btn btn-primary pull-right btn-small flipInX animated" [routerLink]="['/editSurvey', survey.id ]"><span class="glyphicon glyphicon-pencil"></span> Edit</button> 
+                            </h2></div>
+                            <div class="panel-body" id="table-panel">
+                                <div *ngFor="let question of survey.questions; let i= index">
+                                    <h3>{{i+1}}. {{question.text}}</h3>
+                                    <div *ngFor="let option of question.options; let j= index">
+                                            ({{j+1}}) {{option.text}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+            </div>
+            <div class="col-sm-2"></div>
+        </div>
+    
+    
+    
+    
+        
+    </div>
+
+    <div *ngIf="selectedSurvey" id="createViewerModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+            
+                <!-- Modal content-->
+                <div class="modal-content sharp-corner">
+                <div class="modal-header primary text-center">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Confirm Deletion</h4>
+                </div>
+                <div class="modal-body">
+                    <label for="usr">Survey ID:</label>
+                    <p>{{selectedSurveyForDeletion.id}}</p>
+                    <label for="usr">Survey Name:</label>
+                    <p>{{selectedSurveyForDeletion.surveyName}}</p>
+                </div>
+                <div class="modal-footer text-center">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="deleteSurvey(selectedSurveyForDeletion.id)" >Delete</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+                </div>
+            
+            </div>
+            </div>
+        

@@ -12,34 +12,36 @@
                         {{errorMessage}}
                     </div>
                 </div>
-                <form>
+                <!-- <form [formGroup]="myForm" novalidate (ngSubmit)="save(myForm)"> -->
                     <div class="panel panel-default margin-bottom-10">
                         <div class="panel-heading"><h2>{{survey.name}}</h2></div>
                         <div class="panel-body" id="table-panel">
+                        <!-- <div formArrayName="questionResponse">  -->
                             <div *ngFor="let question of survey.questions; let i= index">
                                 <h3>{{i+1}}. {{question.text}}</h3>
                                 <div *ngFor="let option of question.options">
-                                    <div [ngSwitch]="true"> 
-                                        <span *ngSwitchCase="option.type === 'IMAGE'">
-                                            <input type="radio" value="{{option.id}}" name="{{question.id}}" ><img [src]="option.text" />
-                                        </span>
-                                        <span *ngSwitchCase="option.type === 'VIDEO'">
-                                            <!-- <input type="radio" value="{{option.id}}" name="{{question.id}}" ><iframe width="560" height="315" [src]="option.text | safeUrl" allowfullscreen></iframe> -->
-                                        </span>
-                                        <span *ngSwitchCase="option.type === 'TEXT'">
-                                            <input type="radio" value="{{option.id}}" name="{{question.id}}" >{{option.text}}
-                                        </span>
-                                    </div>
+                                    <!-- <div [formGroupName]="question.id"> -->
+                                    <input type="radio" value="option.id" name="question.id"> {{option.text}}
+                                    <!-- </div> -->
                                 </div>
+                                <input type="hidden" value="question.id">
                             </div>
                         </div>
+                        <!-- </div> -->
                         <div class="panel-footer text-center">
                             <input type="submit" class="btn btn-primary" value="Submit"/>
                         </div>
                     </div>
-                </form>
+                    
+                <!-- </form> -->
         </div>
+        <p>Form value: {{ myForm.value | json }}</p>
         <div class="col-sm-2"></div>
     </div>
+
+
+
+
+    
 </div>
     
