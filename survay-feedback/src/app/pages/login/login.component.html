@@ -1,0 +1,71 @@
+<div>
+    <div class="container-fluid fadeIn animated">
+            <div class="row">
+            <div class="col-sm-4"></div>
+            <div class="col-sm-4 box">
+                <div class="panel panel-default">
+                    <div class="panel-body">Login</div>
+                </div>
+<!--
+                    <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input [(ngModel)]="user.email" #email="ngModel" type="email" class="form-control" id="email" placeholder="Enter email">
+                    </div>
+                    <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input [(ngModel)]="user.password" #password="ngModel" type="password" class="form-control" id="password" placeholder="Enter password">
+                    </div>
+                -->
+                
+                <form [formGroup]="rForm">
+                        <div class="form-group has-success has-feedback" [ngClass]="{'has-error': rForm.controls['email'].errors && rForm.controls['email'].touched , 'has-success': !rForm.controls['email'].errors}">
+                            <label for="email">Email:</label>
+                            <div style="position: relative; ">
+                                <input [(ngModel)]="user.email" style="padding-right: 30px;"formControlName="email" type="email" class="form-control" id="email" >
+                                <span class="glyphicon glyphicon-ok" [ngClass]="{'glyphicon-ok': !rForm.controls['email'].errors , 'glyphicon-remove': rForm.controls['email'].errors && rForm.controls['email'].touched}"  style="position: absolute; padding: 10px; right: 0px;" ></span>
+                            </div>
+                        </div>
+                        
+                        <div *ngIf="!rForm.controls['email'].valid && rForm.controls['email'].touched"
+                        >
+                            <div *ngIf="rForm.controls['email'].errors.pattern || rForm.controls['email'].errors.required">
+                                   
+                            </div>
+                        </div>
+
+                        <div class="form-group has-success has-feedback" [ngClass]="{'has-error': rForm.controls['password'].errors && rForm.controls['password'].touched , 'has-success': !rForm.controls['password'].errors}">
+                        <label for="password">Password:</label>
+                        <input [(ngModel)]="user.password" formControlName="password" type="password" class="form-control" id="password">
+                        <span class="glyphicon glyphicon-ok form-control-feedback" [ngClass]="{'glyphicon-ok': !rForm.controls['password'].errors , 'glyphicon-remove': rForm.controls['password'].errors && rForm.controls['password'].touched}"></span>
+
+                        <div *ngIf="!rForm.controls['password'].valid && rForm.controls['password'].touched"
+                          class="alert alert-danger">
+                              <div *ngIf="rForm.controls['password'].errors.required">
+                              Password is required
+                              </div>
+                          </div>
+                        </div>
+                    <div class="form-group margin-top-5 text-center">
+                    <button  [disabled]="!rForm.valid" class="btn btn-success" (click)="doLogin();" >Login</button> <div class="text-right"><a routerLink="/forgotPassword">Forgot Password?</a></div>
+                    </div>
+                    
+                </form>
+                    <div *ngIf="error" class="alert alert-danger alert-dismissable flipInX animated">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                Email or Password is incorrect!
+                    </div>
+
+                    
+
+                    <div class="divider"><div class="divider-text">OR</div></div>
+                    <div class="social-btn-group">
+                        <button (click)="signIn('google')" class="google"><i class="fa fa-google left" aria-hidden="true"></i> Google</button>
+                        <button (click)="signIn('facebook')" class="facebook"><i class="fa fa-facebook left" aria-hidden="true"></i> Facebook</button>
+                    </div> 
+                <!-- <button (click)="logout()">logout</button> -->
+               <!-- Facebook Ends Here -->
+                  </div>
+            <div class="col-sm-4"></div>
+            </div>
+    </div>
+</div>

@@ -1,0 +1,51 @@
+
+.mailid {
+    color: #AFAEAE;
+    font-size: 12px;
+  }
+  #table-panel {
+    height: 365px;
+  }
+  
+  @media only screen and (max-width: 480px) {
+    #headLine {
+        padding-top: 14%;
+        margin-bottom: 10%;
+        padding-bottom: 1.5%;
+    }
+  }
+  
+  @media only screen and (min-width: 480px) {
+    #headLine {
+        padding-top: 4%;
+        margin-bottom: 4%;
+        padding-bottom: 1.5%;
+    }
+  }
+  
+  .small{
+      width : 35px;
+  }
+  
+  .large {
+    width : 100%;
+  }
+  
+  .btn-glyphicon {
+      padding:8px;
+      background:#ffffff;
+      margin-right:4px;
+  }
+  .icon-btn {
+      padding: 1px 0px 3px 1.25px;
+      border-radius:50px;
+  }
+  
+  .pointer{
+    cursor: pointer;
+  }
+  
+  .custom-input{
+    display: inline;
+    width: 50%;
+  }

@@ -1,0 +1,133 @@
+<div class="secondary" id="headLine">
+    <div class="container"><h2>WeSurve Administration</h2></div>
+</div>
+<div class="container">
+    <div class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-8">
+                    <div *ngIf="errorMessageStatus">
+                        <div class="alert alert-danger flipInX animated">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                            {{errorMessage}}
+                        </div>
+                    </div>
+                    <div class="panel panel-default margin-bottom-10">
+                        <div class="panel-heading"><h3>Survey List <input type="text" class="form-control pull-right custom-input sharp-corner" [(ngModel)]="name" placeholder="filter using label name, survey name, id, description"></h3></div>
+                        <div class="panel-body" id="table-panel">
+                        <table class="table ">
+                            <thead>
+                                <tr class="pointer">
+                                <th [class]="order === 'id'"
+                                (click)="setOrder('id')">Survey ID<span [hidden]="reverse">▼</span><span [hidden]="!reverse">▲</span></th>
+                                <th class="pointer">Survey </th>
+                                <th class="text-right">Survey Controls</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let survey of surveyList | orderBy: order:reverse:'case-insensitive' | filter: name | paginate: { itemsPerPage: 5, currentPage: p }">
+                                <td width="20%">{{survey.id}}
+                                </td>
+                                <td width="40%">{{survey.surveyName}}<br>
+                                    <span class="mailid">{{survey.description | slice:0:50}}...</span>
+                                </td>
+                                <td  width="40%" class="text-right">
+                                        <a class="btn icon-btn btn-warning small flipInX animated" [routerLink]="['/viewSurvey', survey.id ]">
+                                            <span class="glyphicon btn-glyphicon glyphicon-eye-open img-circle text-warning"></span>
+                                          
+                                        </a>
+                                    <!-- <button type="button" class="btn btn-default btn-sm small"><span class="glyphicon glyphicon-eye-open"></span></button> 
+                                    <button type="button" class="btn btn-default btn-sm small"><span class="glyphicon glyphicon-trash"></span></button>  -->
+                                    <a class="btn icon-btn btn-danger small flipInX animated" data-toggle="modal" data-target="#deleteModal" [class.selected]="survey === selectedSurveyForDeletion"
+                                    (click)="onSelectForDeletion(survey)">
+                                        <span class="glyphicon btn-glyphicon glyphicon-trash img-circle text-danger"></span>
+                                    </a>
+                                    
+                                    <!-- <button type="button" class="btn btn-default btn-sm small"><span class="glyphicon glyphicon-share-alt"></span></button>  -->
+                                   
+                                    <span *ngIf="survey.status == 'LIVE' else elseblock">
+                                        <a class="btn icon-btn btn-info small flipInX animated" data-toggle="modal" data-target="#myModal" [class.selected]="survey === selectedSurvey"
+                                        (click)="onSelect(survey)">
+                                            <span class="glyphicon btn-glyphicon glyphicon-share-alt img-circle text-info" title="Share"></span>
+                                            
+                                        </a>
+                                        <button type="button" class="btn btn-lg btn-secondary btn-toggle active" data-toggle="button" aria-pressed="true" autocomplete="off" (click)="changeSurveyStatus(survey.id)" id="sid{{survey.id}}" >
+                                            <div class="handle"></div>
+                                        </button>
+                                    </span>
+                                    <ng-template #elseblock>
+                                        <a class="btn icon-btn btn-info small flipInX animated disabled" href="#">
+                                            <span class="glyphicon btn-glyphicon glyphicon-share-alt img-circle text-info"></span>
+                                            
+                                        </a>
+                                        <button type="button" class="btn btn-lg btn-secondary btn-toggle" data-toggle="button" aria-pressed="true" autocomplete="off"  (click)="changeSurveyStatus(survey.id)" id="sid{{survey.id}}" >
+                                            <div class="handle"></div>
+                                        </button>
+                                    </ng-template>
+                                </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="panel-footer text-center">
+                        <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                    </div>
+                </div>
+                </div>
+                <div class="col-sm-2"></div>
+    </div>
+</div>
+<side-navbar></side-navbar>
+
+<div *ngIf="selectedSurvey" id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+      
+          <!-- Modal content-->
+          <div class="modal-content sharp-corner">
+            <div class="modal-header primary text-center">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">{{selectedSurvey.surveyName}}</h4>
+            </div>
+            <div class="modal-body">
+                <label for="usr">Survey ID:</label>
+                <p>{{selectedSurvey.id}}</p>
+                <label for="usr">Survey Link:</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" [(ngModel)]="selectedSurvey.surveyUrl" placeholder="content will be copy after click the copy button"
+                         #inputTarget>
+                    <span class="input-group-btn">
+                        <button class="btn btn-default large" [class.btn-success]= "isCopied" type="button" [ngxClipboard]="inputTarget" (cbOnSuccess)="isCopied2 = true"><span class="	glyphicon glyphicon-copy"></span></button>
+                    </span>
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+      
+        </div>
+      </div>
+
+
+      <div *ngIf="selectedSurveyForDeletion" id="deleteModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+        
+            <!-- Modal content-->
+            <div class="modal-content sharp-corner">
+            <div class="modal-header primary text-center">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Confirm Deletion</h4>
+            </div>
+            <div class="modal-body">
+                <label for="usr">Survey ID:</label>
+                <p>{{selectedSurveyForDeletion.id}}</p>
+                <label for="usr">Survey Name:</label>
+                <p>{{selectedSurveyForDeletion.surveyName}}</p>
+            </div>
+            <div class="modal-footer text-center">
+                <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="deleteSurvey(selectedSurveyForDeletion.id)" >Delete</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+            </div>
+        
+        </div>
+        </div>

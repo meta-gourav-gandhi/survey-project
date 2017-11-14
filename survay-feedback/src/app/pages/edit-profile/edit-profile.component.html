@@ -1,0 +1,48 @@
+<div class="secondary" id="headLine">
+        <div class="container"><h2>WeSurve Administration</h2></div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-8">
+                <form>
+                <div class="panel panel-default margin-bottom-10">
+                    <div class="panel-heading"><h3>Change Password</h3></div>
+                    <div class="panel-body" id="table-panel">
+                        <div *ngIf="infoMessageStatus">
+                            <div class="{{infoMessageClass}} flipInX animated">
+                                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                {{infoMessage}}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                                <input id="password" [(ngModel)]="passwords.currentPassword"  type="password" class="form-control" name="currentPassword" placeholder="Current Password" id="currentPassword">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                                <input id="password" [(ngModel)]="passwords.newPassword" type="password"  class="form-control" name="newPassword" placeholder="New Password" id="newPassword">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                                <input id="password" type="password"  class="form-control" name="confNewPassword" placeholder="Confirm New Password" id="confNewPassword">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer text-center">
+                        <p class="form-group margin-top-5 text-center">
+                            <button type="submit"  class="btn btn-success" (click)="changePassword();">Change Password</button>
+                        </p>    
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-sm-2"></div>
+    </div>
+</div>
+<side-navbar></side-navbar>

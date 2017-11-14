@@ -1,0 +1,50 @@
+<div class="secondary" id="headLine">
+<div class="container"><h2>WeSurve Administration</h2></div>
+</div>
+
+<!-- Userlist container start --> 
+<div class="container">
+    <div class="row">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-8">
+                <div class="panel panel-default margin-bottom-10">
+                    <div class="panel-heading"><h3>Users List <input type="text" class="form-control pull-right custom-input sharp-corner" [(ngModel)]="username" placeholder="Search user by name, id, email"></h3></div>
+                    <div class="panel-body" id="table-panel">
+                    <table class="table ">
+                        <thead>
+                            <tr>
+                            <th>Name</th>
+                            <th class="text-right">Surveyor Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let user of allUsers | userFilter: username | paginate: { itemsPerPage: 5, currentPage: p }">
+                            <td>{{user.name}}<br>
+                                <span class="mailid">{{user.email}}</span></td>
+                            
+                            <td [ngSwitch]="user.role" class="text-right"> 
+                                <div *ngSwitchDefault>
+                                    <button type="button" class="btn btn-lg btn-secondary btn-toggle" data-toggle="button" aria-pressed="true" autocomplete="off" (click)="surveyorCheck(user)" id="uid{{user.id}}" >
+                                        <div class="handle"></div>
+                                    </button>
+                                </div>
+                                <div *ngSwitchCase="2">
+                                    <button type="button" class="btn btn-lg btn-secondary btn-toggle active" data-toggle="button" aria-pressed="true" autocomplete="off"  (click)="surveyorCheck(user)" id="uid{{user.id}}">
+                                        <div class="handle"></div>
+                                    </button>
+                                </div>
+                            </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="panel-footer text-center">
+                    <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                </div>
+            </div>
+            </div>
+            <div class="col-sm-2"></div>
+    </div>
+</div>
+<!-- Userlist container end --> 
+<side-navbar></side-navbar>

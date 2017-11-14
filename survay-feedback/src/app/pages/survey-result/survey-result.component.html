@@ -1,0 +1,49 @@
+<br/><br/><br/><br/>
+<div class="container">
+    <div class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-8">
+                    <div *ngIf="errorMessageStatus">
+                        <div class="alert alert-danger flipInX animated">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                            {{errorMessage}}
+                        </div>
+                    </div>
+                    <div class="panel panel-default margin-bottom-10">
+                        <div class="panel-heading"><h3>Survey List <input type="text" class="form-control pull-right custom-input sharp-corner" [(ngModel)]="name" placeholder="filter using survey name, id, description"></h3></div>
+                        <div class="panel-body" id="table-panel">
+                        <table class="table ">
+                            <thead>
+                                <tr class="pointer">
+                                <th [class]="order === 'id'"
+                                (click)="setOrder('id')">Survey ID<span [hidden]="reverse">▼</span><span [hidden]="!reverse">▲</span></th>
+                                <th class="pointer">Survey </th>
+                                <th class="text-right">Survey Controls</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let survey of allViewableSurveys | orderBy: order:reverse:'case-insensitive' | filter: name  | paginate: { itemsPerPage: 5, currentPage: p }">
+                                <td width="20%">{{survey.id}}
+                                </td>
+                                <td width="40%">{{survey.surveyName}}<br>
+                                    <span class="mailid">{{survey.description | slice:0:50}}...</span>
+                                </td>
+                                <td  width="40%" class="text-right">
+                                        <a class="btn icon-btn btn-warning small flipInX animated" href="#">
+                                            <span class="glyphicon btn-glyphicon glyphicon-eye-open img-circle text-warning"></span>
+                                          
+                                        </a>
+                                </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="panel-footer text-center">
+                        <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                    </div>
+                </div>
+                </div>
+                <div class="col-sm-2"></div>
+    </div>
+</div>
+<side-navbar></side-navbar>

@@ -1,0 +1,42 @@
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<div class="container">
+        <div class="panel panel-default">
+            <div class="panel-heading text-center">
+                <span>{{survey.name}}</span>
+            </div>
+            <div class="panel-body">
+                <form [formGroup]="surveyForm" novalidate>
+                    <!--questions-->
+                    <div class="form-group">
+                        <div class="panel panel-default" *ngFor="let question of survey.questions; let i=index">
+                            <div class="card-body text-left">
+                                <h4 class="panel-heading" [froalaView]="question.text"></h4>
+                                <div formArrayName="response">
+                                    <div *ngFor="let option of question.options; let j=index">
+                                        <div >
+                                            <span >
+                                                <input type="radio" value="{{option.id}}" class="form-control" [formControlName]="i" >
+                                            </span>
+                                            <div [froalaView]="option.text"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div *ngIf="isSubmited && !surveyForm.controls.response.controls[i].valid"
+                            class="alert alert-danger">
+                                <div *ngIf="surveyForm.controls.response.controls[i].errors.required">
+                                    Option is required
+                                </div>
+                            </div> 
+                        </div>
+                    </div>
+                    <button mat-raised-button class="success-btn float-right" (click)="isSubmited = true;submitSurvey()">Submit</button>
+                    <div class="margin-20">
+                        <div>surveyForm details:-</div>
+                        <pre>Is surveyForm valid?: <br>{{surveyForm.valid | json}}</pre>
+                        <pre>form value: <br>{{surveyForm.value | json}}</pre>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>

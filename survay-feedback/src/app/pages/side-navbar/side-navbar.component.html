@@ -1,0 +1,19 @@
+<div class="sidenav">
+        <div [ngSwitch]="user.role"> 
+            <span *ngSwitchCase="1">     
+                <a routerLink="/createSurveyor" >Create Surveyor</a>
+                <a >Surveys</a>
+            </span>
+            <span *ngSwitchCase="2">
+                <a routerLink="/manageSurveys" >Manage Surveys</a>
+                <a routerLink="/createSurvey" >Create Survey</a>
+            </span>
+            <span>
+                <a routerLink="/searchSurvey" >Do a survey</a>
+                <a routerLink="/previousResponses" >Previous Responses</a>
+            </span>
+        </div>
+        <span *ngIf="user.viewer">
+            <a routerLink="/surveyResults">Survey Results</a>
+        </span>
+</div>

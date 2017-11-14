@@ -1,11 +1,35 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div class="jumbotron" style="text-align:center">
-  <h1 class="display-3"> <i class="fa fa-flag" aria-hidden="true"></i> {{title}} Started!</h1>
-  <p class="lead"><img width="300" src="https://static1.squarespace.com/static/57cde36e2994ca4d3c1de081/57db19a9bebafb407ca42be1/57db19c4ebbd1a047885f82a/1474926336449/logo-black+%283%29.png?format=500w">
-  </p>
-  <hr class="my-4">
-  <h2><p>Here is the link to help you start:</p></h2>
-  <p class="lead">
-    <a class="btn btn-primary btn-lg" href="https://github.com/meta-gourav-gandhi/survey-project" role="button">GitHub Link</a>
-  </p>
-</div>
+<nav class="navbar navbar-inverse custom-navbar">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>                        
+            </button>
+            <a class="navbar-brand" routerLink="/home"><img src="../assets/logo.png" style="width:40px;height:40px;position:relative;top:-35%;" class="img-responsive"/></a>
+            <a class="navbar-brand" routerLink="/home">WeSurve</a>
+          </div>
+          <div class="collapse navbar-collapse" id="myNavbar">
+          <ul *ngIf="displayUser" class="nav navbar-nav">
+            <li><a routerLink="/dashboard">Dashboard</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li *ngIf="!displayUser else other_content"><a  routerLink="/signup"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+            <li *ngIf="!displayUser"><a  routerLink="/login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+            <ng-template #other_content>
+              <li data-toggle="dropdown"><a><span class="glyphicon glyphicon-user"></span> {{userName}} <span class="caret"></span></a></li>
+                <ul class="dropdown-menu">
+                    <li><a href="/editProfile"><span class="glyphicon glyphicon-cog"></span> Edit Profile</a></li>
+                    <li><a (click)="logout();"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                </ul>
+            </ng-template>
+          </ul>
+        </div>
+        </div>
+      </nav>
+
+  <router-outlet></router-outlet>
+
+  <footer class="footer secondary">
+      Copyright &copy; 1999-2020 WeSurve
+  </footer>
