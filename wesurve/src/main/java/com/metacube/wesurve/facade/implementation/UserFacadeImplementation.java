@@ -17,6 +17,7 @@ import com.metacube.wesurve.dto.LoginResponseDto;
 import com.metacube.wesurve.dto.ResponseDto;
 import com.metacube.wesurve.dto.SurveyInfoDto;
 import com.metacube.wesurve.dto.UserDetailsDto;
+import com.metacube.wesurve.dto.UserDetailsForSurveyorDto;
 import com.metacube.wesurve.dto.UserDto;
 import com.metacube.wesurve.enums.Role;
 import com.metacube.wesurve.enums.Status;
@@ -54,7 +55,7 @@ public class UserFacadeImplementation implements UserFacade {
 		if (validateUser(userDto)) {
 			if (!userService.checkIfEmailExists(userDto.getEmail())) {
 				User newUser = userService.createNewUser(convertDtoToModel(userDto));
-				if(newUser != null) {
+				if (newUser != null) {
 					status = Status.SUCCESS;
 				} else {
 					status = Status.FAILURE;
@@ -105,10 +106,9 @@ public class UserFacadeImplementation implements UserFacade {
 		user.setDob(date);
 		user.setEmail(userDto.getEmail());
 		String gender = userDto.getGender();
-		if(StringUtils.validateString(gender)) {
+		if (StringUtils.validateString(gender)) {
 			user.setGender(gender.charAt(0));
 		}
-		
 
 		try {
 			user.setPassword(MD5Encryption.encrypt(userDto.getPassword()));
@@ -257,7 +257,7 @@ public class UserFacadeImplementation implements UserFacade {
 				} catch (NoSuchAlgorithmException e1) {
 					e1.printStackTrace();
 				}
-				if(status != Status.FAILURE) {
+				if (status != Status.FAILURE) {
 					String emailBody = "Hello " + user.getName() + ",\nYour new password is: \n" + newPassword
 							+ "\n\nYou can use this password for login and you can change the password from the user profile.\n\nThanks & Regards,\nWeServe Helpline";
 					try {
@@ -271,7 +271,7 @@ public class UserFacadeImplementation implements UserFacade {
 				}
 			}
 		}
-		
+
 		response.setStatus(status);
 		return response;
 	}
@@ -280,12 +280,12 @@ public class UserFacadeImplementation implements UserFacade {
 	public Iterable<UserDetailsDto> getAllUsers(String accessToken) {
 		Set<UserDetailsDto> userDetailsDtoSet = new HashSet<>();
 		Iterable<User> iterableOfUsers = userService.getAllUsers();
-		if(iterableOfUsers != null) {
+		if (iterableOfUsers != null) {
 			for (User user : iterableOfUsers) {
 				if (user.getToken() != null && user.getToken().equals(accessToken)) {
 					continue;
 				}
-				
+
 				userDetailsDtoSet.add(modelToDto(user));
 			}
 		}
@@ -356,15 +356,15 @@ public class UserFacadeImplementation implements UserFacade {
 	public Iterable<SurveyInfoDto> getSurveyListForViewers(String accessToken) {
 		User user = userService.getUserByAccessToken(accessToken);
 		Set<SurveyInfoDto> surveyInfoList = new HashSet<>();
-		if(user != null && user.getSurveyListToView().size() != 0) {
+		if (user != null && user.getSurveyListToView().size() != 0) {
 			Set<Survey> surveys = user.getSurveyListToView();
-			for(Survey curSurvey : surveys) {
-				if(curSurvey.getSurveyStatus() != SurveyStatus.DELETED) {
+			for (Survey curSurvey : surveys) {
+				if (curSurvey.getSurveyStatus() != SurveyStatus.DELETED) {
 					surveyInfoList.add(convertModeltoDtoSurveyInfo(curSurvey));
 				}
 			}
 		}
-		
+
 		return surveyInfoList;
 	}
 
@@ -376,40 +376,40 @@ public class UserFacadeImplementation implements UserFacade {
 		surveyInfoDtoObject.setStatus(curSurvey.getSurveyStatus());
 		surveyInfoDtoObject.setSurveyUrl(surveyService.getSurveyURL(curSurvey));
 		String labels = convertModelToDtoLabel(curSurvey.getLabels());
-		labels = labels.substring(0, labels.length()-1);
+		labels = labels.substring(0, labels.length() - 1);
 		surveyInfoDtoObject.setLabels(labels);
 		return surveyInfoDtoObject;
 	}
 
 	private String convertModelToDtoLabel(Set<Labels> labels) {
-		String label = "" ; 
-		if(labels != null) {
-			for(Labels currObj : labels) {
-				label += currObj.getLabelName() + "," ;
+		String label = "";
+		if (labels != null) {
+			for (Labels currObj : labels) {
+				label += currObj.getLabelName() + ",";
 			}
 		}
-		
+
 		return label;
 	}
-	
+
 	@Override
 	public ResponseDto<Void> changePassword(String accessToken, String currentPassword, String newPassword) {
 		ResponseDto<Void> response = new ResponseDto<>();
 		Status status = Status.FAILURE;
 		User user = userService.getUserByAccessToken(accessToken);
-		
+
 		try {
 			if (currentPassword.equals(newPassword)) {
 				status = Status.DUPLICATE;
 			} else if (user != null && user.getPassword().equals(MD5Encryption.encrypt(currentPassword))) {
 				user.setPassword(MD5Encryption.encrypt(newPassword));
 				status = userService.update(user);
-				
+
 			}
 		} catch (NoSuchAlgorithmException exception) {
 			exception.printStackTrace();
 		}
-		
+
 		response.setStatus(status);
 		return response;
 	}
@@ -417,14 +417,15 @@ public class UserFacadeImplementation implements UserFacade {
 	@Override
 	public Iterable<SurveyInfoDto> getSurveyListOfSurveyor(String accessToken) {
 		User user = userService.getUserByAccessToken(accessToken);
-		Set<SurveyInfoDto> surveyInfoList = new HashSet<>();;
+		Set<SurveyInfoDto> surveyInfoList = new HashSet<>();
+		;
 		Set<Survey> surveys = user.getCreatedSurveyList();
-		for(Survey curSurvey : surveys) {
-			if(curSurvey.getSurveyStatus() != SurveyStatus.DELETED) {
+		for (Survey curSurvey : surveys) {
+			if (curSurvey.getSurveyStatus() != SurveyStatus.DELETED) {
 				surveyInfoList.add(convertModeltoDtoSurveyInfo(curSurvey));
 			}
 		}
-		
+
 		return surveyInfoList;
 	}
 
@@ -433,12 +434,45 @@ public class UserFacadeImplementation implements UserFacade {
 		User user = userService.getUserByAccessToken(accessToken);
 		Set<SurveyInfoDto> filledSurveysInfo = new HashSet<>();
 		Set<Survey> filledSurveys = user.getFilledSurveyList();
-		for(Survey currentSurvey : filledSurveys) {
-			if(currentSurvey.getSurveyStatus() != SurveyStatus.DELETED) {
+		for (Survey currentSurvey : filledSurveys) {
+			if (currentSurvey.getSurveyStatus() != SurveyStatus.DELETED) {
 				filledSurveysInfo.add(convertModeltoDtoSurveyInfo(currentSurvey));
 			}
 		}
-		
+
 		return filledSurveysInfo;
+	}
+
+	@Override
+	public Iterable<UserDetailsForSurveyorDto> getAllUsersForSurveyor(String accessToken, int surveyId) {
+		Set<UserDetailsForSurveyorDto> userDetailsForSurveyorDtoSet = new HashSet<>();
+		Iterable<User> iterableOfUsers = userService.getAllUsers();
+		if (iterableOfUsers != null) {
+			Survey surveyObj = surveyService.getSurveyById(surveyId);
+			for (User user : iterableOfUsers) {
+				if (user.getToken() != null && user.getToken().equals(accessToken)) {
+					continue;
+				}
+
+				UserDetailsForSurveyorDto curObj = modelToDtoForSurveyor(user);
+				if (surveyObj.getViewers().contains(user)) {
+					curObj.setSurveyViewer(true);
+				} else {
+					curObj.setSurveyViewer(false);
+				}
+
+				userDetailsForSurveyorDtoSet.add(curObj);
+			}
+		}
+
+		return userDetailsForSurveyorDtoSet;
+	}
+
+	private UserDetailsForSurveyorDto modelToDtoForSurveyor(User user) {
+		UserDetailsForSurveyorDto curUser = new UserDetailsForSurveyorDto();
+		curUser.setId(user.getUserId());
+		curUser.setEmail(user.getEmail());
+		curUser.setName(user.getName());
+		return curUser;
 	}
 }

@@ -5,6 +5,7 @@ import com.metacube.wesurve.dto.LoginResponseDto;
 import com.metacube.wesurve.dto.ResponseDto;
 import com.metacube.wesurve.dto.SurveyInfoDto;
 import com.metacube.wesurve.dto.UserDetailsDto;
+import com.metacube.wesurve.dto.UserDetailsForSurveyorDto;
 import com.metacube.wesurve.dto.UserDto;
 import com.metacube.wesurve.enums.Role;
 import com.metacube.wesurve.enums.Status;
@@ -22,4 +23,5 @@ public interface UserFacade {
 	public ResponseDto<Void> changePassword(String accessToken, String currentPassword, String newPassword);
 	public Iterable<SurveyInfoDto> getSurveyListOfSurveyor(String accessToken);
 	public Iterable<SurveyInfoDto> getListOfFilledSurveys(String accessToken);
+	Iterable<UserDetailsForSurveyorDto> getAllUsersForSurveyor(String accessToken, int surveyId);
 }

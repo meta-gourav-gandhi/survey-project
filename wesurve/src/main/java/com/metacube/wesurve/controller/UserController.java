@@ -19,6 +19,7 @@ import com.metacube.wesurve.dto.PasswordsDto;
 import com.metacube.wesurve.dto.ResponseDto;
 import com.metacube.wesurve.dto.SurveyInfoDto;
 import com.metacube.wesurve.dto.UserDetailsDto;
+import com.metacube.wesurve.dto.UserDetailsForSurveyorDto;
 import com.metacube.wesurve.dto.UserDto;
 import com.metacube.wesurve.enums.Role;
 import com.metacube.wesurve.enums.Status;
@@ -98,7 +99,7 @@ public class UserController {
 		Iterable<UserDetailsDto> userList = null;
 		Status status = Status.ACCESS_DENIED;
 		
-		if (role == Role.ADMIN) {
+		if (role == Role.ADMIN || role == Role.SURVEYOR) {
 			status = Status.ACCESS_GRANTED;
 			userList =	userFacade.getAllUsers(accessToken);
 		} 
@@ -108,6 +109,25 @@ public class UserController {
 		response.setBody(userList);
 		return response;
 	}
+	
+	@RequestMapping(value = "/surveyor/userlist", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody ResponseDto<Iterable<UserDetailsForSurveyorDto>> getUserToAssignViewer(
+   		 @RequestHeader(value = Constants.ACCESSTOKEN) String accessToken, @RequestParam("id") int surveyId) {
+   	 Role role = checkAuthorization(accessToken);
+   	 Iterable<UserDetailsForSurveyorDto> userList = null;
+   	 Status status = Status.ACCESS_DENIED;
+   	 
+   	 if (role == Role.SURVEYOR) {
+   		 status = Status.ACCESS_GRANTED;
+   		 userList = userFacade.getAllUsersForSurveyor(accessToken, surveyId);
+   	 }
+   	 
+   	 ResponseDto<Iterable<UserDetailsForSurveyorDto>> response = new ResponseDto<>();
+   	 response.setStatus(status);
+   	 response.setBody(userList);
+   	 return response;
+    }
+
 	
 	@RequestMapping(value = "/changepassword", method= RequestMethod.PUT)
 	public @ResponseBody ResponseDto<Void> changePassword(@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken, @RequestBody PasswordsDto password){

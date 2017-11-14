@@ -5,6 +5,5 @@ import com.metacube.wesurve.model.Labels;
 
 public interface LabelsDao extends AbstractDao<Labels, Integer> {
 	Labels getByLabelName(String label);
-
 	Iterable<Labels> getLabelsByNameAlike(String searchString);
 }

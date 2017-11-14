@@ -32,5 +32,4 @@ public class HibernateSurveyDaoImplementation extends GenericHibernateDao<Survey
    	 
    	 return criteria.list();
     }
-
 }

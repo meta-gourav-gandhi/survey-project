@@ -57,12 +57,12 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 	QuestionsService questionsService;
 
 	@Override
-	public ResponseDto<SurveyResponseDto> createSurvey(int surveyorId, SurveyDto surveyDto) {
+	public ResponseDto<SurveyResponseDto> createSurvey(String accessToken, SurveyDto surveyDto) {
 		ResponseDto<SurveyResponseDto> response = new ResponseDto<>();
 		Status status;
 		SurveyResponseDto surveyResponse = null;
 		if (validateSurvey(surveyDto)) {
-			User user = userService.getUserById(surveyorId);
+			User user = userService.getUserByAccessToken(accessToken);
 			Survey survey = convertDtoToModel(surveyDto, new Date());
 
 			survey.setSurveyOwner(user);
@@ -136,7 +136,6 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 			}
 
 			currOption.setOptionValue(optionDto.getText());
-			currOption.setOptionType(optionDto.getType());
 			currOption.setUpdatedDate(new Date());
 			currOption.setCreatedDate(createdDate);
 
@@ -278,7 +277,6 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 		optionDto = new OptionDto();
 		optionDto.setId(option.getOptionId());
 		optionDto.setText(option.getOptionValue());
-		optionDto.setType(option.getOptionType());
 		return optionDto;
 	}
 
@@ -515,10 +513,10 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 	}
 
 	@Override
-	public ResponseDto<Map<Integer, OptionDto>> getSuveyResponse(String accessToken, int surveyId) {
-		ResponseDto<Map<Integer, OptionDto>> response = new ResponseDto<>();
+	public ResponseDto<Map<Integer, String>> getSuveyResponse(String accessToken, int surveyId) {
+		ResponseDto<Map<Integer, String>> response = new ResponseDto<>();
 		Status status = null;
-		Map<Integer, OptionDto> selectedOptions = null;
+		Map<Integer, String> selectedOptions = null;
 		User responder = userService.getUserByAccessToken(accessToken);
 		Survey survey = surveyService.getSurveyById(surveyId);
 		if (survey != null) {
@@ -528,8 +526,7 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 					UserResponses userResponse = userResponsesService.getUserResponseById(responder, question);
 					if (userResponse != null) {
 						Options option = userResponse.getOption();
-						OptionDto optionDto = convertModelToDtoOption(option);
-						selectedOptions.put(question.getQuesId(), optionDto);
+						selectedOptions.put(question.getQuesId(), option.getOptionValue());
 					} else {
 						selectedOptions.put(question.getQuesId(), null);
 					}

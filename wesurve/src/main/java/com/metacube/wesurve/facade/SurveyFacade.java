@@ -2,7 +2,6 @@ package com.metacube.wesurve.facade;
 
 import java.util.Map;
 
-import com.metacube.wesurve.dto.OptionDto;
 import com.metacube.wesurve.dto.ResponderDto;
 import com.metacube.wesurve.dto.ResponseDto;
 import com.metacube.wesurve.dto.SurveyDto;
@@ -13,7 +12,7 @@ import com.metacube.wesurve.enums.Role;
 import com.metacube.wesurve.enums.Status;
 
 public interface SurveyFacade {
-	ResponseDto<SurveyResponseDto> createSurvey(int surveyorId, SurveyDto surveyDto);
+	ResponseDto<SurveyResponseDto> createSurvey(String accessToken, SurveyDto surveyDto);
 	Role checkAuthorization(String accessToken);
 	ResponseDto<Void> deleteSurvey(String accessToken, int surveyId);
 	ResponseDto<SurveyDto> getSurvey(int surveyId);
@@ -24,5 +23,5 @@ public interface SurveyFacade {
 	Status checkIfSurveyExists(int surveyId);
 	Status saveResponse(String accessToken, ResponderDto responderDto);
 	ResponseDto<SurveyResultDto> getSurveyResult(String accessToken, int surveyId);
-	ResponseDto<Map<Integer, OptionDto>> getSuveyResponse(String accessToken, int surveyId);
+	ResponseDto<Map<Integer, String>> getSuveyResponse(String accessToken, int surveyId);
 }

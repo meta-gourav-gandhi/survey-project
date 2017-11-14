@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.metacube.wesurve.dto.OptionDto;
 import com.metacube.wesurve.dto.ResponderDto;
 import com.metacube.wesurve.dto.ResponseDto;
 import com.metacube.wesurve.dto.SurveyDto;
@@ -33,12 +32,12 @@ public class SurveyController {
 
 	@RequestMapping(value = "/", method = RequestMethod.POST, consumes = "application/json")
 	public @ResponseBody ResponseDto<SurveyResponseDto> createSurvey(
-			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken, @RequestParam("id") int surveyorId,
+			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken, 
 			@RequestBody SurveyDto surveyDto) {
 
 		ResponseDto<SurveyResponseDto> response;
 		if (checkAuthorization(accessToken) == Role.SURVEYOR) {
-			response = surveyFacade.createSurvey(surveyorId, surveyDto);
+			response = surveyFacade.createSurvey(accessToken, surveyDto);
 		} else {
 			response = new ResponseDto<>();
 			response.setStatus(Status.ACCESS_DENIED);
@@ -176,10 +175,10 @@ public class SurveyController {
 		return response;
 	}
 
-	@RequestMapping(value = "/get/response", method = RequestMethod.GET)
-	public @ResponseBody ResponseDto<Map<Integer, OptionDto>> getSurveyResponse(
+	@RequestMapping(value = "/response", method = RequestMethod.GET)
+	public @ResponseBody ResponseDto<Map<Integer, String>> getSurveyResponse(
 			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken, @RequestParam("id") int surveyId) {
-		ResponseDto<Map<Integer, OptionDto>> response = new ResponseDto<>();
+		ResponseDto<Map<Integer, String>> response = new ResponseDto<>();
 
 		if (Role.INVALID != checkAuthorization(accessToken)) {
 			response = surveyFacade.getSuveyResponse(accessToken, surveyId);

@@ -37,5 +37,4 @@ public class HibernateLabelsDaoImplementation extends GenericHibernateDao<Labels
    	 criteria.add(Restrictions.like("labelName", searchString , MatchMode.ANYWHERE));
    	 return criteria.list();
     }
-
 }

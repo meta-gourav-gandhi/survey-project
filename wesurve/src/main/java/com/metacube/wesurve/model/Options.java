@@ -1,16 +1,13 @@
 package com.metacube.wesurve.model;
 
 import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import com.metacube.wesurve.enums.OptionType;
 
 @Entity
 @Table(name = "optionstb")
@@ -23,9 +20,6 @@ public class Options {
 	
 	@Column(name = "option_value ", length = 500, nullable = false)
 	private String optionValue;
-
-	@Enumerated(EnumType.STRING)
-	private OptionType optionType;
 
 	@Column(name = "created_date", nullable = true)
 	private Date createdDate;
@@ -49,15 +43,7 @@ public class Options {
 	public void setOptionValue(String optionValue) {
 		this.optionValue = optionValue;
 	}
-
-	public OptionType getOptionType() {
-		return optionType;
-	}
-
-	public void setOptionType(OptionType optionType) {
-		this.optionType = optionType;
-	}
-
+	
 	public Date getCreatedDate() {
 		return createdDate;
 	}
