@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.annotation.Resource;
-import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
@@ -16,7 +15,6 @@ import com.metacube.wesurve.model.User;
 import com.metacube.wesurve.service.LabelsService;
 
 @Service("labelService")
-@Transactional
 public class LabelsServiceImplementation implements LabelsService {
 
 	@Resource(name = "hibernateLabelsDaoImplementation")

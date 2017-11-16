@@ -80,11 +80,11 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 			createdSurvey.setLabels(changeStringSetToLabelsSet(surveyDto.getLabels()));
 			surveyService.edit(createdSurvey);*/
 			
-			String url = surveyService.getSurveyURL(surveyResult);
+			//String url = surveyService.getSurveyURL(surveyResult);
 			surveyResponse = new SurveyResponseDto();
 			surveyResponse.setId(surveyResult.getSurveyId());
 			surveyResponse.setName(surveyResult.getSurveyName());
-			surveyResponse.setUrl(url);
+			surveyResponse.setUrl("aaa");
 			status = Status.SUCCESS;
 		} else {
 			status = Status.INVALID_CONTENT;
@@ -160,7 +160,7 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 				curlabel = new Labels();
 				curlabel.setLabelName(label);
 			}
-
+			
 			setOflabels.add(curlabel);
 		}
 

@@ -1,7 +1,6 @@
 package com.metacube.wesurve.service.implementation;
 
 import javax.annotation.Resource;
-import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
@@ -13,7 +12,6 @@ import com.metacube.wesurve.model.UserRole;
 import com.metacube.wesurve.service.UserService;
 
 @Service("userService")
-@Transactional
 public class UserServiceImplementation implements UserService {
 
 	@Resource(name = "hibernateUserDaoImplementation")

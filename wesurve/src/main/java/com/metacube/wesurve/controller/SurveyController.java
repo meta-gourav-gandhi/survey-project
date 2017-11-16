@@ -2,6 +2,8 @@ package com.metacube.wesurve.controller;
 
 import java.util.Map;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -26,6 +28,7 @@ import com.metacube.wesurve.utils.Constants;
 @Controller
 @CrossOrigin
 @RequestMapping("/survey")
+@Transactional
 public class SurveyController {
 	@Autowired
 	SurveyFacade surveyFacade;

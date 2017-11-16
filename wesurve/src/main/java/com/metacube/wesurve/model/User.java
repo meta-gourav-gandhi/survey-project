@@ -7,7 +7,6 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -57,15 +56,15 @@ public class User {
 	@Column(name = "updated_date", nullable = true)
 	private Date updatedDate;
 
-	@ManyToMany(fetch = FetchType.EAGER, mappedBy = "viewers")
+	@ManyToMany(mappedBy = "viewers")
 	private Set<Survey> surveyListToView = new HashSet<>();
 	
-	@OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
+	@OneToMany(cascade = { CascadeType.ALL })
 	@JoinTable(name = "survey_owner", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "survey_id") })
 	private Set<Survey> createdSurveyList = new HashSet<>();
 	
-	@ManyToMany(fetch = FetchType.EAGER, mappedBy = "respondersList", cascade = { CascadeType.MERGE })
+	@ManyToMany(mappedBy = "respondersList", cascade = { CascadeType.MERGE })
 	private Set<Survey> filledSurveyList = new HashSet<>();
 
 	public int getUserId() {

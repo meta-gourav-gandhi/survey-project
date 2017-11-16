@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.annotation.Resource;
-import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
@@ -17,7 +16,6 @@ import com.metacube.wesurve.service.SurveyService;
 import com.metacube.wesurve.utils.Constants;
 
 @Service("surveyService")
-@Transactional
 public class SurveyServiceImplementation implements SurveyService {
 
 	@Resource(name = "hibernateSurveyDaoImplementation")

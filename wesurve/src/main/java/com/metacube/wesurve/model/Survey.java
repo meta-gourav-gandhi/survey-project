@@ -9,7 +9,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,6 +18,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Cascade;
 
 import com.metacube.wesurve.enums.SurveyStatus;
 
@@ -50,22 +51,23 @@ public class Survey {
 	@Column(name = "updated_date", nullable = true)
 	private Date updatedDate;
 
-	@ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
+	@ManyToMany()
+	@Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
 	@JoinTable(name = "survey_label", joinColumns = { @JoinColumn(name = "survey_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "label_id") })
 	private Set<Labels> labels = new HashSet<>();
 
-	@ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
+	@ManyToMany(cascade = { CascadeType.ALL })
 	@JoinTable(name = "survey_viewer", joinColumns = { @JoinColumn(name = "survey_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "user_id") })
 	private Set<User> viewers = new HashSet<>();
 	
-	@OneToMany(fetch = FetchType.EAGER ,cascade = { CascadeType.ALL })
+	@OneToMany(cascade = { CascadeType.ALL })
 	@JoinTable(name = "survey_question", joinColumns = { @JoinColumn(name = "survey_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "ques_id") })
 	private Set<Questions> questions = new HashSet<>();
 	
-	@ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE })
+	@ManyToMany(cascade = { CascadeType.MERGE })
 	@JoinTable(name = "survey_responses", joinColumns = { @JoinColumn(name = "survey_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "user_id") })
 	private Set<User> respondersList = new HashSet<>();

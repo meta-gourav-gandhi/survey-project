@@ -1,6 +1,7 @@
 package com.metacube.wesurve.controller;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,6 +30,7 @@ import com.metacube.wesurve.utils.Constants;
 @Controller
 @CrossOrigin
 @RequestMapping("/user")
+@Transactional
 public class UserController {
 
 	@Autowired

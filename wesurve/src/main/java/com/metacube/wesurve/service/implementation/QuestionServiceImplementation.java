@@ -1,7 +1,6 @@
 package com.metacube.wesurve.service.implementation;
 
 import javax.annotation.Resource;
-import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
@@ -12,7 +11,6 @@ import com.metacube.wesurve.model.Questions;
 import com.metacube.wesurve.service.QuestionsService;
 
 @Service("questionsService")
-@Transactional
 public class QuestionServiceImplementation implements QuestionsService {
 	@Resource(name = "hibernateQuestionsDaoImplementation")
 	QuestionsDao questionsDao;
