@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 import com.metacube.wesurve.dao.GenericHibernateDao;
 import com.metacube.wesurve.model.User;
 
-
 @Repository("hibernateUserDaoImplementation")
 public class HibernateUserDaoImplementation extends GenericHibernateDao<User, Integer> implements UserDao {
 	public HibernateUserDaoImplementation() {
@@ -18,10 +17,10 @@ public class HibernateUserDaoImplementation extends GenericHibernateDao<User, In
 	@Override
 	public boolean checkIfEmailExists(String email) {
 		boolean result = false;
-		if(getUserByEmail(email) != null) {
+		if (getUserByEmail(email) != null) {
 			result = true;
 		}
-		
+
 		return result;
 	}
 
@@ -30,7 +29,7 @@ public class HibernateUserDaoImplementation extends GenericHibernateDao<User, In
 		Session session = getSessionFactory().getCurrentSession();
 		Criteria criteria = session.createCriteria(User.class);
 		criteria.add(Restrictions.eq("email", email)).uniqueResult();
-		User userDetails = (User)criteria.add(Restrictions.eq("password", password)).uniqueResult();
+		User userDetails = (User) criteria.add(Restrictions.eq("password", password)).uniqueResult();
 		return userDetails;
 	}
 

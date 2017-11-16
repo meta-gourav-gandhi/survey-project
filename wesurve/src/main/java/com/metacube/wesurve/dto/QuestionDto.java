@@ -7,27 +7,27 @@ public class QuestionDto {
 	private String text;
 	private Set<OptionDto> options;
 	private boolean required;
-	
+
 	public String getText() {
 		return text;
 	}
-	
+
 	public void setText(String text) {
 		this.text = text;
 	}
-	
+
 	public Set<OptionDto> getOptions() {
 		return options;
 	}
-	
+
 	public void setOptions(Set<OptionDto> options) {
 		this.options = options;
 	}
-	
+
 	public boolean isRequired() {
 		return required;
 	}
-	
+
 	public void setRequired(boolean required) {
 		this.required = required;
 	}
@@ -38,5 +38,5 @@ public class QuestionDto {
 
 	public void setId(int id) {
 		this.id = id;
-	}	
+	}
 }

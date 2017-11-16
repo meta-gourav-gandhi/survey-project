@@ -14,7 +14,7 @@ import com.metacube.wesurve.service.QuestionsService;
 public class QuestionServiceImplementation implements QuestionsService {
 	@Resource(name = "hibernateQuestionsDaoImplementation")
 	QuestionsDao questionsDao;
-	
+
 	@Resource(name = "hibernateOptionsDaoImplementation")
 	OptionsDao optionsDao;
 
@@ -27,7 +27,7 @@ public class QuestionServiceImplementation implements QuestionsService {
 			question = null;
 			exception.printStackTrace();
 		}
-		
+
 		return question;
 	}
 
@@ -40,7 +40,7 @@ public class QuestionServiceImplementation implements QuestionsService {
 			option = null;
 			exception.printStackTrace();
 		}
-		
+
 		return option;
 	}
 }

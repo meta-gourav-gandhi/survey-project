@@ -11,17 +11,17 @@ import com.metacube.wesurve.enums.Role;
 import com.metacube.wesurve.enums.Status;
 
 public interface UserFacade {
-	public ResponseDto<Void> createNewUser(UserDto userDetailsDto);
-	public ResponseDto<LoginResponseDto> login(LoginCredentialsDto loginDto);
-	public ResponseDto<LoginResponseDto> socialLogin(UserDto socialLoginCredentials);
-	public ResponseDto<Void> forgotPassword(String email);
-	public Iterable<UserDetailsDto> getAllUsers(String accessToken);
-	public Status logout(String accessToken);
-	public Role checkAuthorization(String accessToken);
-	public Status changeUserRole(int userId);
-	public Iterable<SurveyInfoDto> getSurveyListForViewers(String accessToken);
-	public ResponseDto<Void> changePassword(String accessToken, String currentPassword, String newPassword);
-	public Iterable<SurveyInfoDto> getSurveyListOfSurveyor(String accessToken);
-	public Iterable<SurveyInfoDto> getListOfFilledSurveys(String accessToken);
+	ResponseDto<Void> createNewUser(UserDto userDetailsDto);
+	ResponseDto<LoginResponseDto> login(LoginCredentialsDto loginDto);
+	ResponseDto<LoginResponseDto> socialLogin(UserDto socialLoginCredentials);
+	ResponseDto<Void> forgotPassword(String email);
+	Iterable<UserDetailsDto> getAllUsers(String accessToken);
+	Status logout(String accessToken);
+	Role checkAuthorization(String accessToken);
+	Status changeUserRole(int userId);
+	Iterable<SurveyInfoDto> getSurveyListForViewers(String accessToken);
+	ResponseDto<Void> changePassword(String accessToken, String currentPassword, String newPassword);
+	Iterable<SurveyInfoDto> getSurveyListOfSurveyor(String accessToken);
+	Iterable<SurveyInfoDto> getListOfFilledSurveys(String accessToken);
 	Iterable<UserDetailsForSurveyorDto> getAllUsersForSurveyor(String accessToken, int surveyId);
 }

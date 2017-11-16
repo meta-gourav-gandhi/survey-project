@@ -6,7 +6,8 @@ import com.metacube.wesurve.dao.GenericHibernateDao;
 import com.metacube.wesurve.model.Questions;
 
 @Repository("hibernateQuestionsDaoImplementation")
-public class HibernateQuestionsDaoImplementation extends GenericHibernateDao<Questions, Integer> implements QuestionsDao {
+public class HibernateQuestionsDaoImplementation extends GenericHibernateDao<Questions, Integer>
+		implements QuestionsDao {
 
 	public HibernateQuestionsDaoImplementation() {
 		super(Questions.class);

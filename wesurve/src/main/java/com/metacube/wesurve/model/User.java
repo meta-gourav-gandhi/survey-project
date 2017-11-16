@@ -58,12 +58,12 @@ public class User {
 
 	@ManyToMany(mappedBy = "viewers")
 	private Set<Survey> surveyListToView = new HashSet<>();
-	
+
 	@OneToMany(cascade = { CascadeType.ALL })
 	@JoinTable(name = "survey_owner", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "survey_id") })
 	private Set<Survey> createdSurveyList = new HashSet<>();
-	
+
 	@ManyToMany(mappedBy = "respondersList", cascade = { CascadeType.MERGE })
 	private Set<Survey> filledSurveyList = new HashSet<>();
 

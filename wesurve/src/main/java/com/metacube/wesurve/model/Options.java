@@ -17,7 +17,7 @@ public class Options implements Comparable<Options> {
 	@Column(name = "option_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int optionId;
-	
+
 	@Column(name = "option_value ", length = 500, nullable = false)
 	private String optionValue;
 
@@ -35,7 +35,6 @@ public class Options implements Comparable<Options> {
 		this.optionId = optionId;
 	}
 
-
 	public String getOptionValue() {
 		return optionValue;
 	}
@@ -43,7 +42,7 @@ public class Options implements Comparable<Options> {
 	public void setOptionValue(String optionValue) {
 		this.optionValue = optionValue;
 	}
-	
+
 	public Date getCreatedDate() {
 		return createdDate;
 	}

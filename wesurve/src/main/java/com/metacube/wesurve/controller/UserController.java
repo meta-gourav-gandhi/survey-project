@@ -37,7 +37,7 @@ public class UserController {
 	UserFacade userFacade;
 
 	/**
-	 * @param userDto contains the details user that register contains email ,password, dob and name
+	 * @param userDto contains the details user that register contains email, password, dob and name
 	 * @return the status, message and access token for the user
 	 */
 	@RequestMapping(value = "/register", method = RequestMethod.POST, consumes = "application/json")
@@ -51,7 +51,8 @@ public class UserController {
 	 * @return the success status if the user is valid else 400 status will be returned
 	 */
 	@RequestMapping(value = "/login", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	public @ResponseBody ResponseDto<LoginResponseDto> login(HttpServletRequest request, @RequestBody LoginCredentialsDto loginDto) {
+	public @ResponseBody ResponseDto<LoginResponseDto> login(HttpServletRequest request,
+			@RequestBody LoginCredentialsDto loginDto) {
 		return userFacade.login(loginDto);
 	}
 
@@ -76,7 +77,7 @@ public class UserController {
 		if (checkAuthorization(accessToken) != Role.INVALID) {
 			status = userFacade.logout(accessToken);
 		}
-		
+
 		ResponseDto<Void> response = new ResponseDto<>();
 		response.setStatus(status);
 		return response;
@@ -87,139 +88,139 @@ public class UserController {
 	 * @return the status
 	 */
 	@RequestMapping(value = "/forgotpassword", method = RequestMethod.GET)
-	public @ResponseBody ResponseDto<Void> forgotPassword(@RequestParam("email") String email) {
+	public @ResponseBody ResponseDto<Void> forgotPassword(@RequestParam(Constants.EMAIL) String email) {
 		return userFacade.forgotPassword(email);
 	}
 
 	/**
-	 * @param accessToken token of the requester 
+	 * @param accessToken token of the requester
 	 * @return list of the user
 	 */
 	@RequestMapping(value = "/", method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody ResponseDto<Iterable<UserDetailsDto>> getAllUser(@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken) {
+	public @ResponseBody ResponseDto<Iterable<UserDetailsDto>> getAllUser(
+			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken) {
 		Role role = checkAuthorization(accessToken);
 		Iterable<UserDetailsDto> userList = null;
 		Status status = Status.ACCESS_DENIED;
-		
+
 		if (role == Role.ADMIN || role == Role.SURVEYOR) {
 			status = Status.ACCESS_GRANTED;
-			userList =	userFacade.getAllUsers(accessToken);
-		} 
-		
+			userList = userFacade.getAllUsers(accessToken);
+		}
+
 		ResponseDto<Iterable<UserDetailsDto>> response = new ResponseDto<>();
 		response.setStatus(status);
 		response.setBody(userList);
 		return response;
 	}
-	
-	@RequestMapping(value = "/surveyor/userlist", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody ResponseDto<Iterable<UserDetailsForSurveyorDto>> getUserToAssignViewer(
-   		 @RequestHeader(value = Constants.ACCESSTOKEN) String accessToken, @RequestParam("id") int surveyId) {
-   	 Role role = checkAuthorization(accessToken);
-   	 Iterable<UserDetailsForSurveyorDto> userList = null;
-   	 Status status = Status.ACCESS_DENIED;
-   	 
-   	 if (role == Role.SURVEYOR) {
-   		 status = Status.ACCESS_GRANTED;
-   		 userList = userFacade.getAllUsersForSurveyor(accessToken, surveyId);
-   	 }
-   	 
-   	 ResponseDto<Iterable<UserDetailsForSurveyorDto>> response = new ResponseDto<>();
-   	 response.setStatus(status);
-   	 response.setBody(userList);
-   	 return response;
-    }
 
-	
-	@RequestMapping(value = "/changepassword", method= RequestMethod.PUT)
-	public @ResponseBody ResponseDto<Void> changePassword(@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken, @RequestBody PasswordsDto password){
+	@RequestMapping(value = "/surveyor/userlist", method = RequestMethod.GET, produces = "application/json")
+	public @ResponseBody ResponseDto<Iterable<UserDetailsForSurveyorDto>> getUserToAssignViewer(
+			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken,
+			@RequestParam(Constants.SURVEYID) int surveyId) {
+		Role role = checkAuthorization(accessToken);
+		Iterable<UserDetailsForSurveyorDto> userList = null;
+		Status status = Status.ACCESS_DENIED;
+
+		if (role == Role.SURVEYOR) {
+			status = Status.ACCESS_GRANTED;
+			userList = userFacade.getAllUsersForSurveyor(accessToken, surveyId);
+		}
+
+		ResponseDto<Iterable<UserDetailsForSurveyorDto>> response = new ResponseDto<>();
+		response.setStatus(status);
+		response.setBody(userList);
+		return response;
+	}
+
+	@RequestMapping(value = "/changepassword", method = RequestMethod.PUT)
+	public @ResponseBody ResponseDto<Void> changePassword(
+			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken, @RequestBody PasswordsDto password) {
 		ResponseDto<Void> response = null;
-		
-		if(checkAuthorization(accessToken) != Role.INVALID) {
+
+		if (checkAuthorization(accessToken) != Role.INVALID) {
 			response = userFacade.changePassword(accessToken, password.getCurrentPassword(), password.getNewPassword());
 		} else {
 			response = new ResponseDto<>();
 			response.setStatus(Status.ACCESS_DENIED);
 			response.setBody(null);
 		}
-		
+
 		return response;
 	}
-	
+
 	/**
 	 * @param token access token of the user
 	 * @param userId is the id of the user who's role needs to be changed
-	 * @return the Status
-	 * function to create or remove surveyor  
+	 * @return the Status function to create or remove surveyor
 	 */
 	@RequestMapping(value = "/createsurveyor/{userId}", method = RequestMethod.POST, consumes = "application/json")
-	public @ResponseBody ResponseDto<Void>  changeRoleofUser(@RequestHeader(value = Constants.ACCESSTOKEN) String token, @PathVariable int userId) {
+	public @ResponseBody ResponseDto<Void> changeRoleofUser(@RequestHeader(value = Constants.ACCESSTOKEN) String token,
+			@PathVariable int userId) {
 		ResponseDto<Void> response = new ResponseDto<>();
 		Status status = Status.FAILURE;
-		if(Role.ADMIN == checkAuthorization(token)) {
+		if (Role.ADMIN == checkAuthorization(token)) {
 			status = userFacade.changeUserRole(userId);
 		}
-		
+
 		response.setStatus(status);
 		return response;
 	}
-	
-	@RequestMapping(value = "/viewer/surveylist",  method = RequestMethod.GET)
-	public @ResponseBody ResponseDto<Iterable<SurveyInfoDto>> getSurveyListForViewers(@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken) {
+
+	@RequestMapping(value = "/viewer/surveylist", method = RequestMethod.GET)
+	public @ResponseBody ResponseDto<Iterable<SurveyInfoDto>> getSurveyListForViewers(
+			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken) {
 		ResponseDto<Iterable<SurveyInfoDto>> response = new ResponseDto<>();
 		Iterable<SurveyInfoDto> surveyList = null;
 		Status status = Status.ACCESS_DENIED;
-		if(Role.INVALID != checkAuthorization(accessToken)) {
+		if (Role.INVALID != checkAuthorization(accessToken)) {
 			surveyList = userFacade.getSurveyListForViewers(accessToken);
 			status = Status.SUCCESS;
 		}
-		
+
 		response.setStatus(status);
 		response.setBody(surveyList);
 		return response;
 	}
 
-	@RequestMapping(value = "/surveyor/surveylist",  method = RequestMethod.GET)
-	public @ResponseBody ResponseDto<Iterable<SurveyInfoDto>> getSurveyListOfSurveyor(@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken) {
+	@RequestMapping(value = "/surveyor/surveylist", method = RequestMethod.GET)
+	public @ResponseBody ResponseDto<Iterable<SurveyInfoDto>> getSurveyListOfSurveyor(
+			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken) {
 		ResponseDto<Iterable<SurveyInfoDto>> response = new ResponseDto<>();
 		Iterable<SurveyInfoDto> surveyList = null;
 		Status status = Status.ACCESS_DENIED;
-		
-		if(Role.SURVEYOR == checkAuthorization(accessToken)) {
+
+		if (Role.SURVEYOR == checkAuthorization(accessToken)) {
 			surveyList = userFacade.getSurveyListOfSurveyor(accessToken);
 			status = Status.SUCCESS;
 		}
-		
+
 		response.setStatus(status);
 		response.setBody(surveyList);
 		return response;
 	}
-	
-	@RequestMapping(value = "/responder/surveylist",  method = RequestMethod.GET)
-	public @ResponseBody ResponseDto<Iterable<SurveyInfoDto>> getListOfFilledSurveys(@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken) {
+
+	@RequestMapping(value = "/responder/surveylist", method = RequestMethod.GET)
+	public @ResponseBody ResponseDto<Iterable<SurveyInfoDto>> getListOfFilledSurveys(
+			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken) {
 		ResponseDto<Iterable<SurveyInfoDto>> response = new ResponseDto<>();
-		
+
 		Iterable<SurveyInfoDto> surveyList = null;
 		Status status = Status.ACCESS_DENIED;
-		
-		if(Role.INVALID != checkAuthorization(accessToken)) {
+
+		if (Role.INVALID != checkAuthorization(accessToken)) {
 			surveyList = userFacade.getListOfFilledSurveys(accessToken);
 			status = Status.SUCCESS;
 		}
-		
+
 		response.setStatus(status);
 		response.setBody(surveyList);
 		return response;
-	}
-	
-	@RequestMapping(value = "/welcome")
-	public @ResponseBody String welcome() {
-		return "Hello";
 	}
 
 	/**
 	 * @param accessToken of the user
-	 * @return the role of the given user 
+	 * @return the role of the given user
 	 */
 	private Role checkAuthorization(String accessToken) {
 		Role role = Role.INVALID;

@@ -7,7 +7,7 @@ public class LoginResponseDto {
 	private boolean viewer;
 	private String name;
 	private String email;
-	
+
 	public int getId() {
 		return id;
 	}
@@ -15,27 +15,27 @@ public class LoginResponseDto {
 	public void setId(int id) {
 		this.id = id;
 	}
-	
+
 	public String getAccessToken() {
 		return accessToken;
 	}
-	
+
 	public void setAccessToken(String accessToken) {
 		this.accessToken = accessToken;
 	}
-	
+
 	public int getRole() {
 		return role;
 	}
-	
+
 	public void setRole(int role) {
 		this.role = role;
 	}
-	
+
 	public boolean isViewer() {
 		return viewer;
 	}
-	
+
 	public void setViewer(boolean viewer) {
 		this.viewer = viewer;
 	}

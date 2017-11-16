@@ -15,7 +15,7 @@ public abstract class GenericHibernateDao<T, ID extends Serializable> implements
 	private Class<T> modelClass;
 
 	public abstract String getPrimaryKey();
-	
+
 	public GenericHibernateDao(Class<T> modelClass) {
 		this.modelClass = modelClass;
 	}
@@ -49,7 +49,6 @@ public abstract class GenericHibernateDao<T, ID extends Serializable> implements
 		return (T) criteria.add(Restrictions.eq(getPrimaryKey(), primaryKey)).uniqueResult();
 	}
 
-
 	@Override
 	public <S extends T> S save(final S entity) {
 		Session session = this.sessionFactory.getCurrentSession();
@@ -60,10 +59,10 @@ public abstract class GenericHibernateDao<T, ID extends Serializable> implements
 	@Override
 	public boolean exists(final ID primaryKey) {
 		boolean result = false;
-		if(findOne(primaryKey) != null) {
+		if (findOne(primaryKey) != null) {
 			result = true;
 		}
-		
+
 		return result;
 	}
 
@@ -77,7 +76,7 @@ public abstract class GenericHibernateDao<T, ID extends Serializable> implements
 	public Long count() {
 		return (long) 0;
 	}
-	
+
 	@Override
 	public void update(T entity) {
 		Session session = getSessionFactory().getCurrentSession();

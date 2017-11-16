@@ -1,8 +1,5 @@
 package com.metacube.wesurve.service.implementation;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -20,7 +17,7 @@ public class SurveyServiceImplementation implements SurveyService {
 
 	@Resource(name = "hibernateSurveyDaoImplementation")
 	SurveyDao surveyDao;
-	
+
 	@Override
 	public Survey createSurvey(Survey survey) {
 		Survey newSurvey;
@@ -30,7 +27,7 @@ public class SurveyServiceImplementation implements SurveyService {
 			newSurvey = null;
 			exception.printStackTrace();
 		}
-		
+
 		return newSurvey;
 	}
 
@@ -38,7 +35,7 @@ public class SurveyServiceImplementation implements SurveyService {
 	public Status changeSurveyStatus(Survey survey, SurveyStatus status) {
 		Status changeStatus;
 		try {
-			if(survey.getSurveyStatus() != SurveyStatus.DELETED) {
+			if (survey.getSurveyStatus() != SurveyStatus.DELETED) {
 				survey.setSurveyStatus(status);
 				surveyDao.update(survey);
 			}
@@ -47,7 +44,7 @@ public class SurveyServiceImplementation implements SurveyService {
 			exception.printStackTrace();
 			changeStatus = Status.FAILURE;
 		}
-		
+
 		return changeStatus;
 	}
 
@@ -60,9 +57,9 @@ public class SurveyServiceImplementation implements SurveyService {
 			exception.printStackTrace();
 			survey = null;
 		}
-		
+
 		return survey;
-		
+
 	}
 
 	@Override
@@ -75,7 +72,7 @@ public class SurveyServiceImplementation implements SurveyService {
 			exception.printStackTrace();
 			status = Status.FAILURE;
 		}
-		
+
 		return status;
 	}
 
@@ -91,10 +88,10 @@ public class SurveyServiceImplementation implements SurveyService {
 			surveyDao.update(survey);
 			status = Status.SUCCESS;
 		} catch (Exception exception) {
-			status =Status.FAILURE;
+			status = Status.FAILURE;
 			exception.printStackTrace();
 		}
-		
+
 		return status;
 	}
 
@@ -105,10 +102,10 @@ public class SurveyServiceImplementation implements SurveyService {
 			survey.getViewers().add(viewer);
 			surveyDao.update(survey);
 			status = Status.SUCCESS;
-		} catch(Exception exception) {
+		} catch (Exception exception) {
 			status = Status.FAILURE;
 		}
-		
+
 		return status;
 	}
 
@@ -119,27 +116,10 @@ public class SurveyServiceImplementation implements SurveyService {
 			survey.getViewers().remove(viewer);
 			surveyDao.update(survey);
 			status = Status.SUCCESS;
-		} catch(Exception exception) {
+		} catch (Exception exception) {
 			status = Status.FAILURE;
 		}
-		
+
 		return status;
 	}
-	
-	@Override
-    public Set<Survey> getMatchedSurveys(User surveyor, String searchString) {
-   	 Set<Survey> matchedSurveys = new HashSet<>();
-   	 
-   	 Iterable<Survey> surveyList = surveyDao.getMatchedSurvey(surveyor, searchString);
-   	 
-   	 if(surveyList !=null) {
-   		 for(Survey survey : surveyList) {
-   			 
-   			 if(survey.getSurveyStatus() != SurveyStatus.DELETED) {
-   				 matchedSurveys.add(survey);
-   			 }
-   		 }
-   	 }
-   	 return matchedSurveys;
-    }
 }

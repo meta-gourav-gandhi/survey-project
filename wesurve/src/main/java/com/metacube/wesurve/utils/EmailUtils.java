@@ -22,7 +22,8 @@ public class EmailUtils {
 	 * @throws AddressException
 	 * @throws MessagingException
 	 */
-	public static void sendEmail(final String from, final String password, String to, String subject, String body) throws AddressException, MessagingException {
+	public static void sendEmail(final String from, final String password, String to, String subject, String body)
+			throws AddressException, MessagingException {
 		Message message;
 
 		Properties properties = new Properties();

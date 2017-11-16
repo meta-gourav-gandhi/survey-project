@@ -6,19 +6,19 @@ public class SurveyResultDto {
 	private int surveyId;
 	private int numOfResponders;
 	private Set<QuestionResultDto> questionResults;
-	
+
 	public int getSurveyId() {
 		return surveyId;
 	}
-	
+
 	public void setSurveyId(int surveyId) {
 		this.surveyId = surveyId;
 	}
-	
+
 	public int getNumOfResponders() {
 		return numOfResponders;
 	}
-	
+
 	public void setNumOfResponders(int numOfResponders) {
 		this.numOfResponders = numOfResponders;
 	}

@@ -6,7 +6,7 @@ import com.metacube.wesurve.dao.GenericHibernateDao;
 import com.metacube.wesurve.model.Options;
 
 @Repository("hibernateOptionsDaoImplementation")
-public class HibernateOptionsDaoImplementation extends GenericHibernateDao<Options, Integer> implements OptionsDao  {
+public class HibernateOptionsDaoImplementation extends GenericHibernateDao<Options, Integer> implements OptionsDao {
 
 	public HibernateOptionsDaoImplementation() {
 		super(Options.class);

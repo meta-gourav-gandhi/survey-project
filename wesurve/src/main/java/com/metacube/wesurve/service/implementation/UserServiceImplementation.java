@@ -25,24 +25,24 @@ public class UserServiceImplementation implements UserService {
 			userRole.setRoleId(3);
 			user.setUserRole(userRole);
 			newUser = userDao.save(user);
-		} catch(Exception exception) {
+		} catch (Exception exception) {
 			newUser = null;
 			exception.printStackTrace();
 		}
-		
+
 		return newUser;
 	}
 
 	@Override
 	public boolean checkIfEmailExists(String email) {
 		boolean result;
-		try{
+		try {
 			result = userDao.checkIfEmailExists(email);
 		} catch (Exception exception) {
 			result = false;
 			exception.printStackTrace();
 		}
-		
+
 		return result;
 	}
 
@@ -54,7 +54,7 @@ public class UserServiceImplementation implements UserService {
 		} catch (Exception exception) {
 			user = null;
 		}
-		
+
 		return user;
 	}
 
@@ -66,11 +66,10 @@ public class UserServiceImplementation implements UserService {
 			if (user.getSurveyListToView().size() != 0) {
 				result = true;
 			}
-		} catch(Exception exception) {
+		} catch (Exception exception) {
 			result = false;
 			exception.printStackTrace();
 		}
-		
 
 		return result;
 	}
@@ -85,7 +84,7 @@ public class UserServiceImplementation implements UserService {
 		} catch (Exception exception) {
 			status = Status.FAILURE;
 		}
-		
+
 		return status;
 	}
 
@@ -98,7 +97,7 @@ public class UserServiceImplementation implements UserService {
 			user = null;
 			exception.printStackTrace();
 		}
-		
+
 		return user;
 	}
 
@@ -123,9 +122,9 @@ public class UserServiceImplementation implements UserService {
 			status = Status.FAILURE;
 			exception.printStackTrace();
 		}
-		
+
 		return status;
-		
+
 	}
 
 	@Override
@@ -137,7 +136,7 @@ public class UserServiceImplementation implements UserService {
 			iterableOfUsers = null;
 			excpetion.printStackTrace();
 		}
-		
+
 		return iterableOfUsers;
 	}
 
@@ -175,7 +174,7 @@ public class UserServiceImplementation implements UserService {
 			user = null;
 			exception.printStackTrace();
 		}
-		
+
 		return user;
 	}
 
@@ -188,7 +187,7 @@ public class UserServiceImplementation implements UserService {
 			user = null;
 			exception.printStackTrace();
 		}
-		
+
 		return user;
 	}
 
@@ -202,7 +201,7 @@ public class UserServiceImplementation implements UserService {
 			status = Status.FAILURE;
 			exception.printStackTrace();
 		}
-		
+
 		return status;
 	}
 }

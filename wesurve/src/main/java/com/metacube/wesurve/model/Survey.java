@@ -31,17 +31,17 @@ public class Survey {
 	@Column(name = "survey_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int surveyId;
-	
+
 	@Column(name = "survey_name", length = 500, nullable = false)
 	private String surveyName;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User surveyOwner;
 
 	@Enumerated(EnumType.STRING)
 	private SurveyStatus surveyStatus = SurveyStatus.NOTLIVE;
-	
+
 	@Column(name = "description", nullable = true)
 	private String description;
 
@@ -52,7 +52,7 @@ public class Survey {
 	private Date updatedDate;
 
 	@ManyToMany()
-	@Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
+	@Cascade({ org.hibernate.annotations.CascadeType.SAVE_UPDATE })
 	@JoinTable(name = "survey_label", joinColumns = { @JoinColumn(name = "survey_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "label_id") })
 	private Set<Labels> labels = new HashSet<>();
@@ -61,12 +61,12 @@ public class Survey {
 	@JoinTable(name = "survey_viewer", joinColumns = { @JoinColumn(name = "survey_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "user_id") })
 	private Set<User> viewers = new HashSet<>();
-	
+
 	@OneToMany(cascade = { CascadeType.ALL })
 	@JoinTable(name = "survey_question", joinColumns = { @JoinColumn(name = "survey_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "ques_id") })
 	private Set<Questions> questions = new HashSet<>();
-	
+
 	@ManyToMany(cascade = { CascadeType.MERGE })
 	@JoinTable(name = "survey_responses", joinColumns = { @JoinColumn(name = "survey_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "user_id") })
@@ -95,7 +95,7 @@ public class Survey {
 	public void setSurveyStatus(SurveyStatus surveyStatus) {
 		this.surveyStatus = surveyStatus;
 	}
-	
+
 	public String getDescription() {
 		return description;
 	}
@@ -180,5 +180,5 @@ public class Survey {
 
 	public void setRespondersList(Set<User> respondersList) {
 		this.respondersList = respondersList;
-	}	
+	}
 }

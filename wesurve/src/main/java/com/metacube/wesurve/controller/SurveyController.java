@@ -1,3 +1,6 @@
+/**
+ * The class SurveyController is a controller level class for all operations related surveys.
+ */
 package com.metacube.wesurve.controller;
 
 import java.util.Map;
@@ -17,7 +20,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.metacube.wesurve.dto.ResponderDto;
 import com.metacube.wesurve.dto.ResponseDto;
 import com.metacube.wesurve.dto.SurveyDto;
-import com.metacube.wesurve.dto.SurveyInfoDto;
 import com.metacube.wesurve.dto.SurveyResponseDto;
 import com.metacube.wesurve.dto.SurveyResultDto;
 import com.metacube.wesurve.enums.Role;
@@ -33,10 +35,16 @@ public class SurveyController {
 	@Autowired
 	SurveyFacade surveyFacade;
 
+	/**
+	 * This method
+	 * 
+	 * @param accessToken
+	 * @param surveyDto
+	 * @return
+	 */
 	@RequestMapping(value = "/", method = RequestMethod.POST, consumes = "application/json")
 	public @ResponseBody ResponseDto<SurveyResponseDto> createSurvey(
-			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken, 
-			@RequestBody SurveyDto surveyDto) {
+			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken, @RequestBody SurveyDto surveyDto) {
 
 		ResponseDto<SurveyResponseDto> response;
 		if (checkAuthorization(accessToken) == Role.SURVEYOR) {
@@ -52,7 +60,8 @@ public class SurveyController {
 
 	@RequestMapping(value = "/", method = RequestMethod.DELETE)
 	public @ResponseBody ResponseDto<Void> deleteSurvey(
-			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken, @RequestParam("id") int surveyId) {
+			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken,
+			@RequestParam(Constants.SURVEYID) int surveyId) {
 
 		ResponseDto<Void> response;
 		if (checkAuthorization(accessToken) == Role.SURVEYOR) {
@@ -68,12 +77,13 @@ public class SurveyController {
 
 	@RequestMapping(value = "/exists", method = RequestMethod.GET)
 	public @ResponseBody ResponseDto<Void> checkIfSurveyExists(
-			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken, @RequestParam("id") int surveyId) {
+			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken,
+			@RequestParam(Constants.SURVEYID) int surveyId) {
 		ResponseDto<Void> response = new ResponseDto<>();
 		Status status = Status.ACCESS_DENIED;
-	
+
 		if (checkAuthorization(accessToken) != Role.INVALID) {
-			status = surveyFacade.checkIfSurveyExists(surveyId , accessToken);
+			status = surveyFacade.checkIfSurveyExists(surveyId, accessToken);
 		}
 
 		response.setStatus(status);
@@ -82,7 +92,8 @@ public class SurveyController {
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public @ResponseBody ResponseDto<SurveyDto> getSurvey(
-			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken, @RequestParam("id") int surveyId) {
+			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken,
+			@RequestParam(Constants.SURVEYID) int surveyId) {
 		ResponseDto<SurveyDto> response;
 		if (checkAuthorization(accessToken) != Role.INVALID) {
 			response = surveyFacade.getSurvey(surveyId);
@@ -111,7 +122,8 @@ public class SurveyController {
 
 	@RequestMapping(value = "/changestatus", method = RequestMethod.PUT)
 	public @ResponseBody ResponseDto<Void> changeSurveyStatus(
-			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken, @RequestParam("id") int surveyId) {
+			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken,
+			@RequestParam(Constants.SURVEYID) int surveyId) {
 		ResponseDto<Void> response;
 		if (checkAuthorization(accessToken) == Role.SURVEYOR) {
 			response = surveyFacade.changeSurveyStatus(accessToken, surveyId);
@@ -125,8 +137,8 @@ public class SurveyController {
 
 	@RequestMapping(value = "/edit/viewer", method = RequestMethod.PUT)
 	public @ResponseBody ResponseDto<Void> addOrRemoveSurveyViewer(
-			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken, @RequestParam("id") int surveyId,
-			@RequestParam("userid") int userId) {
+			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken,
+			@RequestParam(Constants.SURVEYID) int surveyId, @RequestParam(Constants.USERID) int userId) {
 		ResponseDto<Void> response;
 		if (checkAuthorization(accessToken) == Role.SURVEYOR) {
 			response = surveyFacade.addOrRemoveSurveyViewer(accessToken, surveyId, userId);
@@ -135,32 +147,6 @@ public class SurveyController {
 			response.setStatus(Status.ACCESS_DENIED);
 		}
 
-		return response;
-	}
-
-	/**
-	 * method to search the survey for the surveyor and returning the matched
-	 * surveys either by name or label in the string
-	 *
-	 * @param accessToken
-	 * @return
-	 */
-	@RequestMapping(value = "/searchsurvey", method = RequestMethod.GET)
-	public @ResponseBody ResponseDto<Iterable<SurveyInfoDto>> searchSurveyForSurveyor(
-			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken,
-			@RequestParam("query") String searchString) {
-
-		ResponseDto<Iterable<SurveyInfoDto>> response = new ResponseDto<>();
-		Iterable<SurveyInfoDto> surveyList = null;
-		Status status = Status.ACCESS_DENIED;
-		if (Role.SURVEYOR == checkAuthorization(accessToken)) {
-			surveyList = surveyFacade.searchSurvey(accessToken, searchString);
-			status = Status.SUCCESS;
-
-		}
-
-		response.setStatus(status);
-		response.setBody(surveyList);
 		return response;
 	}
 
@@ -180,7 +166,8 @@ public class SurveyController {
 
 	@RequestMapping(value = "/response", method = RequestMethod.GET)
 	public @ResponseBody ResponseDto<Map<Integer, String>> getSurveyResponse(
-			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken, @RequestParam("id") int surveyId) {
+			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken,
+			@RequestParam(Constants.SURVEYID) int surveyId) {
 		ResponseDto<Map<Integer, String>> response = new ResponseDto<>();
 
 		if (Role.INVALID != checkAuthorization(accessToken)) {
@@ -196,7 +183,8 @@ public class SurveyController {
 
 	@RequestMapping(value = "/result", method = RequestMethod.GET)
 	public @ResponseBody ResponseDto<SurveyResultDto> getSurveyResult(
-			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken, @RequestParam("id") int surveyId) {
+			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken,
+			@RequestParam(Constants.SURVEYID) int surveyId) {
 
 		ResponseDto<SurveyResultDto> response = new ResponseDto<>();
 		Status status = Status.ACCESS_DENIED;

@@ -14,8 +14,7 @@ import com.metacube.wesurve.model.User;
 import com.metacube.wesurve.model.UserResponses;
 
 @Repository("hibernateUserResponsesDaoImplementation")
-public class HibernateUserResponsesDaoImplementation extends GenericHibernateDao<UserResponses, Integer>
-		implements UserResponsesDao {
+public class HibernateUserResponsesDaoImplementation extends GenericHibernateDao<UserResponses, Integer> implements UserResponsesDao {
 
 	public HibernateUserResponsesDaoImplementation() {
 		super(UserResponses.class);

@@ -16,26 +16,26 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="questionstb")
+@Table(name = "questionstb")
 public class Questions {
 
 	@Id
 	@Column(name = "ques_id")
-	@GeneratedValue(strategy= GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int quesId;
-	
+
 	@Column(name = "question", length = 500, nullable = false)
 	private String question;
-	
+
 	@Column(name = "created_date", nullable = true)
 	private Date createdDate;
-	
+
 	@Column(name = "updated_date", nullable = true)
 	private Date updatedDate;
-	
+
 	@Column(name = "required", nullable = false)
 	private boolean required;
-	
+
 	@OneToMany(cascade = { CascadeType.ALL })
 	@JoinTable(name = "question_option", joinColumns = { @JoinColumn(name = "ques_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "option_id") })
@@ -56,7 +56,6 @@ public class Questions {
 	public void setQuesId(int quesId) {
 		this.quesId = quesId;
 	}
-
 
 	public String getQuestion() {
 		return question;
@@ -81,7 +80,7 @@ public class Questions {
 	public void setUpdatedDate(Date updatedDate) {
 		this.updatedDate = updatedDate;
 	}
-	
+
 	public boolean isRequired() {
 		return required;
 	}
@@ -90,5 +89,4 @@ public class Questions {
 		this.required = required;
 	}
 
-	
 }

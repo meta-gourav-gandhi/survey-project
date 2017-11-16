@@ -20,7 +20,6 @@ import com.metacube.wesurve.dto.QuestionResultDto;
 import com.metacube.wesurve.dto.ResponderDto;
 import com.metacube.wesurve.dto.ResponseDto;
 import com.metacube.wesurve.dto.SurveyDto;
-import com.metacube.wesurve.dto.SurveyInfoDto;
 import com.metacube.wesurve.dto.SurveyResponseDto;
 import com.metacube.wesurve.dto.SurveyResultDto;
 import com.metacube.wesurve.enums.Role;
@@ -75,16 +74,12 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 
 			Survey surveyResult = surveyService.createSurvey(survey);
 			userService.update(user);
-			
-			/*Survey createdSurvey = surveyService.getSurveyById(surveyResult.getSurveyId());
-			createdSurvey.setLabels(changeStringSetToLabelsSet(surveyDto.getLabels()));
-			surveyService.edit(createdSurvey);*/
-			
-			//String url = surveyService.getSurveyURL(surveyResult);
+
+			String url = surveyService.getSurveyURL(surveyResult);
 			surveyResponse = new SurveyResponseDto();
 			surveyResponse.setId(surveyResult.getSurveyId());
 			surveyResponse.setName(surveyResult.getSurveyName());
-			surveyResponse.setUrl("aaa");
+			surveyResponse.setUrl(url);
 			status = Status.SUCCESS;
 		} else {
 			status = Status.INVALID_CONTENT;
@@ -160,7 +155,7 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 				curlabel = new Labels();
 				curlabel.setLabelName(label);
 			}
-			
+
 			setOflabels.add(curlabel);
 		}
 
@@ -248,7 +243,7 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 		surveyDto.setDescription(survey.getDescription());
 		surveyDto.setLabels(changeLabelsSetToStringSet(survey.getLabels()));
 		surveyDto.setQuestions(convertModelToDtoQuestion(survey.getQuestions()));
-		
+		surveyDto.setStatus(survey.getSurveyStatus());
 		return surveyDto;
 	}
 
@@ -373,39 +368,15 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 	}
 
 	@Override
-	public Iterable<SurveyInfoDto> searchSurvey(String accessToken, String searchString) {
-		User surveyor = userService.getUserByAccessToken(accessToken);
-		Set<Survey> surveyListmatchedByName = surveyService.getMatchedSurveys(surveyor, searchString);
-		Set<Survey> surveyListmatchedByLabel = labelsService.getMatchedSurveyByLabelName(surveyor, searchString);
-		surveyListmatchedByLabel.addAll(surveyListmatchedByName);
-		Set<SurveyInfoDto> surveylist = new HashSet<>();
-		for (Survey surveyObj : surveyListmatchedByLabel) {
-			surveylist.add(convertModeltoDtoSurveyInfo(surveyObj));
-		}
-
-		return surveylist;
-	}
-
-	private SurveyInfoDto convertModeltoDtoSurveyInfo(Survey curSurvey) {
-		SurveyInfoDto surveyInfoDtoObject = new SurveyInfoDto();
-		surveyInfoDtoObject.setId(curSurvey.getSurveyId());
-		surveyInfoDtoObject.setDescription(curSurvey.getDescription());
-		surveyInfoDtoObject.setSurveyName(curSurvey.getSurveyName());
-		surveyInfoDtoObject.setStatus(curSurvey.getSurveyStatus());
-		surveyInfoDtoObject.setSurveyUrl(surveyService.getSurveyURL(curSurvey));
-		return surveyInfoDtoObject;
-	}
-
-	@Override
-	public Status checkIfSurveyExists(int surveyId , String accessToken) {
+	public Status checkIfSurveyExists(int surveyId, String accessToken) {
 		Status status;
 		Survey survey = surveyService.getSurveyById(surveyId);
 		User user = userService.getUserByAccessToken(accessToken);
 		if (survey != null) {
-			if(survey.getSurveyStatus().equals(SurveyStatus.LIVE)) {
-				if(!survey.getRespondersList().contains(user)) {
+			if (survey.getSurveyStatus().equals(SurveyStatus.LIVE)) {
+				if (!survey.getRespondersList().contains(user)) {
 					status = Status.SUCCESS;
-				}else {
+				} else {
 					status = Status.DUPLICATE;
 				}
 			} else {
@@ -496,7 +467,7 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 				for (Questions curQues : surveyQuestion) {
 					QuestionResultDto questionResultDto = new QuestionResultDto();
 					questionResultDto.setId(curQues.getQuesId());
-					
+
 					List<String> options = new ArrayList<>();
 					List<Double> data = new ArrayList<>();
 					String optionText = "Option ";
@@ -506,7 +477,7 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 					Collections.sort(optionsList);
 					int index = 1;
 					for (Options curOption : optionsList) {
-						
+
 						Double curOptionResponsesSize = userResponsesService
 								.getUserResponsesOfAQuestionAndOption(curQues, curOption);
 						options.add(optionText + index);

@@ -17,7 +17,7 @@ public class MD5Encryption {
 		if (null == input) {
 			return null;
 		}
-		
+
 		// Create MessageDigest object for MD5
 		MessageDigest digest = MessageDigest.getInstance("MD5");
 		// Update input string in message digest
