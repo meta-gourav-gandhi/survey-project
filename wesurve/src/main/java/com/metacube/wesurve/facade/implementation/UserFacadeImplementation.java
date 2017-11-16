@@ -376,7 +376,10 @@ public class UserFacadeImplementation implements UserFacade {
 		surveyInfoDtoObject.setStatus(curSurvey.getSurveyStatus());
 		surveyInfoDtoObject.setSurveyUrl(surveyService.getSurveyURL(curSurvey));
 		String labels = convertModelToDtoLabel(curSurvey.getLabels());
-		labels = labels.substring(0, labels.length() - 1);
+		if(labels.length() > 1) {
+			labels = labels.substring(0, labels.length() - 1);
+		}
+		
 		surveyInfoDtoObject.setLabels(labels);
 		return surveyInfoDtoObject;
 	}

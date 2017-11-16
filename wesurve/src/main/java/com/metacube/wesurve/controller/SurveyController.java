@@ -68,9 +68,9 @@ public class SurveyController {
 			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken, @RequestParam("id") int surveyId) {
 		ResponseDto<Void> response = new ResponseDto<>();
 		Status status = Status.ACCESS_DENIED;
-		;
+	
 		if (checkAuthorization(accessToken) != Role.INVALID) {
-			status = surveyFacade.checkIfSurveyExists(surveyId);
+			status = surveyFacade.checkIfSurveyExists(surveyId , accessToken);
 		}
 
 		response.setStatus(status);

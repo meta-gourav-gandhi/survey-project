@@ -1,10 +1,11 @@
 package com.metacube.wesurve.dto;
 
-import java.util.Map;
+import java.util.List;
 
 public class QuestionResultDto {
 	private int id;
-	private Map<Integer, Double> optionData; 
+	private List<String> option;
+	private List<Double> data;
 
 	public int getId() {
 		return id;
@@ -14,11 +15,19 @@ public class QuestionResultDto {
 		this.id = id;
 	}
 
-	public Map<Integer, Double> getOptionData() {
-		return optionData;
+	public List<String> getOption() {
+		return option;
 	}
 
-	public void setOptionData(Map<Integer, Double> optionData) {
-		this.optionData = optionData;
+	public void setOption(List<String> option) {
+		this.option = option;
+	}
+
+	public List<Double> getData() {
+		return data;
+	}
+
+	public void setData(List<Double> data) {
+		this.data = data;
 	}
 }

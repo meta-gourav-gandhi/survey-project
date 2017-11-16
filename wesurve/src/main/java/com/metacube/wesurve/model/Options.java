@@ -11,7 +11,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "optionstb")
-public class Options {
+public class Options implements Comparable<Options> {
 
 	@Id
 	@Column(name = "option_id")
@@ -58,5 +58,10 @@ public class Options {
 
 	public void setUpdatedDate(Date updatedDate) {
 		this.updatedDate = updatedDate;
+	}
+
+	@Override
+	public int compareTo(Options option) {
+		return this.optionId - option.optionId;
 	}
 }

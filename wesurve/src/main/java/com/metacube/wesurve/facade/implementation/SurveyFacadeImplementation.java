@@ -1,5 +1,7 @@
 package com.metacube.wesurve.facade.implementation;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -73,7 +75,11 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 
 			Survey surveyResult = surveyService.createSurvey(survey);
 			userService.update(user);
-
+			
+			/*Survey createdSurvey = surveyService.getSurveyById(surveyResult.getSurveyId());
+			createdSurvey.setLabels(changeStringSetToLabelsSet(surveyDto.getLabels()));
+			surveyService.edit(createdSurvey);*/
+			
 			String url = surveyService.getSurveyURL(surveyResult);
 			surveyResponse = new SurveyResponseDto();
 			surveyResponse.setId(surveyResult.getSurveyId());
@@ -163,8 +169,7 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 
 	private boolean validateSurvey(SurveyDto survey) {
 		boolean result = false;
-		boolean condition1 = StringUtils.validateString(survey.getName())
-				&& StringUtils.validateString(survey.getDescription());
+		boolean condition1 = StringUtils.validateString(survey.getName());
 
 		boolean condition2 = survey.getQuestions() != null && survey.getQuestions().size() != 0;
 
@@ -243,7 +248,7 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 		surveyDto.setDescription(survey.getDescription());
 		surveyDto.setLabels(changeLabelsSetToStringSet(survey.getLabels()));
 		surveyDto.setQuestions(convertModelToDtoQuestion(survey.getQuestions()));
-
+		
 		return surveyDto;
 	}
 
@@ -300,6 +305,7 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 			if (validateSurvey(surveyDto)) {
 				Survey newSurvey = convertDtoToModel(surveyDto, survey.getCreatedDate());
 				newSurvey.setSurveyOwner(surveyor);
+				newSurvey.setLabels(changeStringSetToLabelsSet(surveyDto.getLabels()));
 				status = surveyService.edit(newSurvey);
 			} else {
 				status = Status.INVALID_CONTENT;
@@ -391,12 +397,22 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 	}
 
 	@Override
-	public Status checkIfSurveyExists(int surveyId) {
+	public Status checkIfSurveyExists(int surveyId , String accessToken) {
 		Status status;
-		if (surveyService.getSurveyById(surveyId) != null) {
-			status = Status.SUCCESS;
+		Survey survey = surveyService.getSurveyById(surveyId);
+		User user = userService.getUserByAccessToken(accessToken);
+		if (survey != null) {
+			if(survey.getSurveyStatus().equals(SurveyStatus.LIVE)) {
+				if(!survey.getRespondersList().contains(user)) {
+					status = Status.SUCCESS;
+				}else {
+					status = Status.DUPLICATE;
+				}
+			} else {
+				status = Status.NOT_ACCESSIBLE;
+			}
 		} else {
-			status = Status.FAILURE;
+			status = Status.NOT_FOUND;
 		}
 
 		return status;
@@ -480,17 +496,26 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 				for (Questions curQues : surveyQuestion) {
 					QuestionResultDto questionResultDto = new QuestionResultDto();
 					questionResultDto.setId(curQues.getQuesId());
-					Map<Integer, Double> optionValue = new HashMap<>();
-
+					
+					List<String> options = new ArrayList<>();
+					List<Double> data = new ArrayList<>();
+					String optionText = "Option ";
 					Set<Options> questionOptions = new HashSet<>();
 					questionOptions = curQues.getOptions();
-					for (Options curOption : questionOptions) {
+					List<Options> optionsList = new ArrayList<>(questionOptions);
+					Collections.sort(optionsList);
+					int index = 1;
+					for (Options curOption : optionsList) {
+						
 						Double curOptionResponsesSize = userResponsesService
 								.getUserResponsesOfAQuestionAndOption(curQues, curOption);
-						optionValue.put(curOption.getOptionId(), curOptionResponsesSize);
+						options.add(optionText + index);
+						data.add(curOptionResponsesSize);
+						index++;
 					}
 
-					questionResultDto.setOptionData(optionValue);
+					questionResultDto.setOption(options);
+					questionResultDto.setData(data);
 					questionResultSetDto.add(questionResultDto);
 				}
 

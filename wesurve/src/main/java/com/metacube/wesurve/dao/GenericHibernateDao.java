@@ -80,8 +80,7 @@ public abstract class GenericHibernateDao<T, ID extends Serializable> implements
 	
 	@Override
 	public void update(T entity) {
-		Session session = getSessionFactory().getCurrentSession();	
-		session.clear();
+		Session session = getSessionFactory().getCurrentSession();
 		session.update(entity);
 	}
 }

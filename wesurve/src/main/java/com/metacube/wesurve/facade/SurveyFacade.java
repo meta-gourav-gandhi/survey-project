@@ -20,7 +20,7 @@ public interface SurveyFacade {
 	ResponseDto<Void> changeSurveyStatus(String accessToken, int surveyId);
 	ResponseDto<Void> addOrRemoveSurveyViewer(String accessToken, int surveyId, int userId);
 	Iterable<SurveyInfoDto> searchSurvey(String accessToken, String searchString);
-	Status checkIfSurveyExists(int surveyId);
+	Status checkIfSurveyExists(int surveyId, String accessToken);
 	Status saveResponse(String accessToken, ResponderDto responderDto);
 	ResponseDto<SurveyResultDto> getSurveyResult(String accessToken, int surveyId);
 	ResponseDto<Map<Integer, String>> getSuveyResponse(String accessToken, int surveyId);
