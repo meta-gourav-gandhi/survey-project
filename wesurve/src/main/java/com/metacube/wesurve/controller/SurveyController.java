@@ -5,8 +5,6 @@ package com.metacube.wesurve.controller;
 
 import java.util.Map;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -17,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.metacube.wesurve.authorize.UserData;
 import com.metacube.wesurve.dto.ResponderDto;
 import com.metacube.wesurve.dto.ResponseDto;
 import com.metacube.wesurve.dto.SurveyDto;
@@ -30,7 +29,6 @@ import com.metacube.wesurve.utils.Constants;
 @Controller
 @CrossOrigin
 @RequestMapping("/survey")
-@Transactional
 public class SurveyController {
 	@Autowired
 	SurveyFacade surveyFacade;
@@ -45,10 +43,11 @@ public class SurveyController {
 	@RequestMapping(value = "/", method = RequestMethod.POST, consumes = "application/json")
 	public @ResponseBody ResponseDto<SurveyResponseDto> createSurvey(
 			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken, @RequestBody SurveyDto surveyDto) {
-
+		
 		ResponseDto<SurveyResponseDto> response;
-		if (checkAuthorization(accessToken) == Role.SURVEYOR) {
-			response = surveyFacade.createSurvey(accessToken, surveyDto);
+		UserData currentUser = checkAuthorization(accessToken);
+		if (currentUser.getRole() == Role.SURVEYOR) {
+			response = surveyFacade.createSurvey(currentUser.getUserId(), surveyDto);
 		} else {
 			response = new ResponseDto<>();
 			response.setStatus(Status.ACCESS_DENIED);
@@ -64,8 +63,9 @@ public class SurveyController {
 			@RequestParam(Constants.SURVEYID) int surveyId) {
 
 		ResponseDto<Void> response;
-		if (checkAuthorization(accessToken) == Role.SURVEYOR) {
-			response = surveyFacade.deleteSurvey(accessToken, surveyId);
+		UserData currentUser = checkAuthorization(accessToken);
+		if (currentUser.getRole() == Role.SURVEYOR) {
+			response = surveyFacade.deleteSurvey(currentUser.getUserId(), surveyId);
 		} else {
 			response = new ResponseDto<>();
 			response.setStatus(Status.ACCESS_DENIED);
@@ -82,8 +82,9 @@ public class SurveyController {
 		ResponseDto<Void> response = new ResponseDto<>();
 		Status status = Status.ACCESS_DENIED;
 
-		if (checkAuthorization(accessToken) != Role.INVALID) {
-			status = surveyFacade.checkIfSurveyExists(surveyId, accessToken);
+		UserData currentUser = checkAuthorization(accessToken);
+		if (currentUser.getRole() != Role.INVALID) {
+			status = surveyFacade.checkIfSurveyExists(surveyId, currentUser.getUserId());
 		}
 
 		response.setStatus(status);
@@ -94,8 +95,10 @@ public class SurveyController {
 	public @ResponseBody ResponseDto<SurveyDto> getSurvey(
 			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken,
 			@RequestParam(Constants.SURVEYID) int surveyId) {
+		
 		ResponseDto<SurveyDto> response;
-		if (checkAuthorization(accessToken) != Role.INVALID) {
+		
+		if (checkAuthorization(accessToken).getRole() != Role.INVALID) {
 			response = surveyFacade.getSurvey(surveyId);
 		} else {
 			response = new ResponseDto<>();
@@ -110,8 +113,10 @@ public class SurveyController {
 	public @ResponseBody ResponseDto<Void> editSurvey(@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken,
 			@RequestBody SurveyDto surveyDto) {
 		ResponseDto<Void> response;
-		if (checkAuthorization(accessToken) == Role.SURVEYOR) {
-			response = surveyFacade.editSurvey(accessToken, surveyDto);
+		
+		UserData currentUser = checkAuthorization(accessToken);
+		if (currentUser.getRole() == Role.SURVEYOR) {
+			response = surveyFacade.editSurvey(currentUser.getUserId(), surveyDto);
 		} else {
 			response = new ResponseDto<>();
 			response.setStatus(Status.ACCESS_DENIED);
@@ -125,8 +130,10 @@ public class SurveyController {
 			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken,
 			@RequestParam(Constants.SURVEYID) int surveyId) {
 		ResponseDto<Void> response;
-		if (checkAuthorization(accessToken) == Role.SURVEYOR) {
-			response = surveyFacade.changeSurveyStatus(accessToken, surveyId);
+		
+		UserData currentUser = checkAuthorization(accessToken);
+		if (currentUser.getRole() == Role.SURVEYOR) {
+			response = surveyFacade.changeSurveyStatus(currentUser.getUserId(), surveyId);
 		} else {
 			response = new ResponseDto<>();
 			response.setStatus(Status.ACCESS_DENIED);
@@ -140,8 +147,10 @@ public class SurveyController {
 			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken,
 			@RequestParam(Constants.SURVEYID) int surveyId, @RequestParam(Constants.USERID) int userId) {
 		ResponseDto<Void> response;
-		if (checkAuthorization(accessToken) == Role.SURVEYOR) {
-			response = surveyFacade.addOrRemoveSurveyViewer(accessToken, surveyId, userId);
+		
+		UserData currentUser = checkAuthorization(accessToken);
+		if (currentUser.getRole() == Role.SURVEYOR) {
+			response = surveyFacade.addOrRemoveSurveyViewer(currentUser.getUserId(), surveyId, userId);
 		} else {
 			response = new ResponseDto<>();
 			response.setStatus(Status.ACCESS_DENIED);
@@ -156,8 +165,10 @@ public class SurveyController {
 
 		ResponseDto<Void> response = new ResponseDto<>();
 		Status status = Status.ACCESS_DENIED;
-		if (Role.INVALID != checkAuthorization(accessToken)) {
-			status = surveyFacade.saveResponse(accessToken, ResponderDto);
+		
+		UserData currentUser = checkAuthorization(accessToken);
+		if (Role.INVALID != currentUser.getRole()) {
+			status = surveyFacade.saveResponse(currentUser.getUserId(), ResponderDto);
 		}
 
 		response.setStatus(status);
@@ -170,8 +181,9 @@ public class SurveyController {
 			@RequestParam(Constants.SURVEYID) int surveyId) {
 		ResponseDto<Map<Integer, String>> response = new ResponseDto<>();
 
-		if (Role.INVALID != checkAuthorization(accessToken)) {
-			response = surveyFacade.getSuveyResponse(accessToken, surveyId);
+		UserData currentUser = checkAuthorization(accessToken);
+		if (Role.INVALID != currentUser.getRole()) {
+			response = surveyFacade.getSuveyResponse(currentUser.getUserId(), surveyId);
 		} else {
 			Status status = Status.ACCESS_DENIED;
 			response.setStatus(status);
@@ -189,8 +201,9 @@ public class SurveyController {
 		ResponseDto<SurveyResultDto> response = new ResponseDto<>();
 		Status status = Status.ACCESS_DENIED;
 
-		if (Role.INVALID != checkAuthorization(accessToken)) {
-			response = surveyFacade.getSurveyResult(accessToken, surveyId);
+		UserData currentUser = checkAuthorization(accessToken);
+		if (Role.INVALID != currentUser.getRole()) {
+			response = surveyFacade.getSurveyResult(currentUser.getUserId(), surveyId);
 
 		} else {
 			status = Status.ACCESS_DENIED;
@@ -200,12 +213,19 @@ public class SurveyController {
 		return response;
 	}
 
-	public Role checkAuthorization(String accessToken) {
+	/**
+	 * @param accessToken of the user
+	 * @return the role of the given user
+	 */
+	private UserData checkAuthorization(String accessToken) {
+		UserData user = new UserData();
 		Role role = Role.INVALID;
 		if (accessToken != null) {
-			role = surveyFacade.checkAuthorization(accessToken);
+			user = surveyFacade.checkAuthorization(accessToken);
+		} else {
+			user.setRole(role);
 		}
-
-		return role;
+	
+		return user;
 	}
 }

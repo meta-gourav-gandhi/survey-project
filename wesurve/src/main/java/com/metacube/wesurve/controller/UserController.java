@@ -1,7 +1,6 @@
 package com.metacube.wesurve.controller;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.metacube.wesurve.authorize.UserData;
 import com.metacube.wesurve.dto.LoginCredentialsDto;
 import com.metacube.wesurve.dto.LoginResponseDto;
 import com.metacube.wesurve.dto.PasswordsDto;
@@ -30,7 +30,6 @@ import com.metacube.wesurve.utils.Constants;
 @Controller
 @CrossOrigin
 @RequestMapping("/user")
-@Transactional
 public class UserController {
 
 	@Autowired
@@ -74,8 +73,9 @@ public class UserController {
 	@RequestMapping(value = "/logout", method = RequestMethod.GET, consumes = "application/json", produces = "application/json")
 	public @ResponseBody ResponseDto<Void> logout(@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken) {
 		Status status = Status.FAILURE;
-		if (checkAuthorization(accessToken) != Role.INVALID) {
-			status = userFacade.logout(accessToken);
+		UserData currentUser = checkAuthorization(accessToken);
+		if (currentUser.getRole() != Role.INVALID) {
+			status = userFacade.logout(currentUser.getUserId());
 		}
 
 		ResponseDto<Void> response = new ResponseDto<>();
@@ -99,13 +99,14 @@ public class UserController {
 	@RequestMapping(value = "/", method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody ResponseDto<Iterable<UserDetailsDto>> getAllUser(
 			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken) {
-		Role role = checkAuthorization(accessToken);
+		UserData currentUser = checkAuthorization(accessToken);
+		Role role = currentUser.getRole();
 		Iterable<UserDetailsDto> userList = null;
 		Status status = Status.ACCESS_DENIED;
 
-		if (role == Role.ADMIN || role == Role.SURVEYOR) {
+		if (role == Role.ADMIN) {
 			status = Status.ACCESS_GRANTED;
-			userList = userFacade.getAllUsers(accessToken);
+			userList = userFacade.getAllUsers(currentUser.getUserId());
 		}
 
 		ResponseDto<Iterable<UserDetailsDto>> response = new ResponseDto<>();
@@ -118,13 +119,14 @@ public class UserController {
 	public @ResponseBody ResponseDto<Iterable<UserDetailsForSurveyorDto>> getUserToAssignViewer(
 			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken,
 			@RequestParam(Constants.SURVEYID) int surveyId) {
-		Role role = checkAuthorization(accessToken);
+		UserData currentUser = checkAuthorization(accessToken);
+		Role role = currentUser.getRole();
 		Iterable<UserDetailsForSurveyorDto> userList = null;
 		Status status = Status.ACCESS_DENIED;
 
 		if (role == Role.SURVEYOR) {
 			status = Status.ACCESS_GRANTED;
-			userList = userFacade.getAllUsersForSurveyor(accessToken, surveyId);
+			userList = userFacade.getAllUsersForSurveyor(currentUser.getUserId(), surveyId);
 		}
 
 		ResponseDto<Iterable<UserDetailsForSurveyorDto>> response = new ResponseDto<>();
@@ -138,8 +140,9 @@ public class UserController {
 			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken, @RequestBody PasswordsDto password) {
 		ResponseDto<Void> response = null;
 
-		if (checkAuthorization(accessToken) != Role.INVALID) {
-			response = userFacade.changePassword(accessToken, password.getCurrentPassword(), password.getNewPassword());
+		UserData currentUser = checkAuthorization(accessToken);
+		if (currentUser.getRole() != Role.INVALID) {
+			response = userFacade.changePassword(currentUser.getUserId(), password.getCurrentPassword(), password.getNewPassword());
 		} else {
 			response = new ResponseDto<>();
 			response.setStatus(Status.ACCESS_DENIED);
@@ -159,7 +162,7 @@ public class UserController {
 			@PathVariable int userId) {
 		ResponseDto<Void> response = new ResponseDto<>();
 		Status status = Status.FAILURE;
-		if (Role.ADMIN == checkAuthorization(token)) {
+		if (Role.ADMIN == checkAuthorization(token).getRole()) {
 			status = userFacade.changeUserRole(userId);
 		}
 
@@ -170,11 +173,13 @@ public class UserController {
 	@RequestMapping(value = "/viewer/surveylist", method = RequestMethod.GET)
 	public @ResponseBody ResponseDto<Iterable<SurveyInfoDto>> getSurveyListForViewers(
 			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken) {
+		UserData currentUser = checkAuthorization(accessToken);
+		
 		ResponseDto<Iterable<SurveyInfoDto>> response = new ResponseDto<>();
 		Iterable<SurveyInfoDto> surveyList = null;
 		Status status = Status.ACCESS_DENIED;
-		if (Role.INVALID != checkAuthorization(accessToken)) {
-			surveyList = userFacade.getSurveyListForViewers(accessToken);
+		if (Role.INVALID != currentUser.getRole()) {
+			surveyList = userFacade.getSurveyListForViewers(currentUser.getUserId());
 			status = Status.SUCCESS;
 		}
 
@@ -186,12 +191,13 @@ public class UserController {
 	@RequestMapping(value = "/surveyor/surveylist", method = RequestMethod.GET)
 	public @ResponseBody ResponseDto<Iterable<SurveyInfoDto>> getSurveyListOfSurveyor(
 			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken) {
+		UserData currentUser = checkAuthorization(accessToken);
 		ResponseDto<Iterable<SurveyInfoDto>> response = new ResponseDto<>();
 		Iterable<SurveyInfoDto> surveyList = null;
 		Status status = Status.ACCESS_DENIED;
 
-		if (Role.SURVEYOR == checkAuthorization(accessToken)) {
-			surveyList = userFacade.getSurveyListOfSurveyor(accessToken);
+		if (Role.SURVEYOR == currentUser.getRole()) {
+			surveyList = userFacade.getSurveyListOfSurveyor(currentUser.getUserId());
 			status = Status.SUCCESS;
 		}
 
@@ -204,12 +210,12 @@ public class UserController {
 	public @ResponseBody ResponseDto<Iterable<SurveyInfoDto>> getListOfFilledSurveys(
 			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken) {
 		ResponseDto<Iterable<SurveyInfoDto>> response = new ResponseDto<>();
-
+		UserData currentUser = checkAuthorization(accessToken);
 		Iterable<SurveyInfoDto> surveyList = null;
 		Status status = Status.ACCESS_DENIED;
 
-		if (Role.INVALID != checkAuthorization(accessToken)) {
-			surveyList = userFacade.getListOfFilledSurveys(accessToken);
+		if (Role.INVALID != currentUser.getRole()) {
+			surveyList = userFacade.getListOfFilledSurveys(currentUser.getUserId());
 			status = Status.SUCCESS;
 		}
 
@@ -222,12 +228,15 @@ public class UserController {
 	 * @param accessToken of the user
 	 * @return the role of the given user
 	 */
-	private Role checkAuthorization(String accessToken) {
+	private UserData checkAuthorization(String accessToken) {
+		UserData user = new UserData();
 		Role role = Role.INVALID;
 		if (accessToken != null) {
-			role = userFacade.checkAuthorization(accessToken);
+			user = userFacade.checkAuthorization(accessToken);
+		} else {
+			user.setRole(role);
 		}
-
-		return role;
+	
+		return user;
 	}
 }

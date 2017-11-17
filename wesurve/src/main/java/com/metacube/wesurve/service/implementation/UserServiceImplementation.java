@@ -4,6 +4,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.metacube.wesurve.authorize.UserData;
 import com.metacube.wesurve.dao.userdetails.UserDao;
 import com.metacube.wesurve.enums.Role;
 import com.metacube.wesurve.enums.Status;
@@ -141,11 +142,15 @@ public class UserServiceImplementation implements UserService {
 	}
 
 	@Override
-	public Role checkAuthorization(String accessToken) {
+	public UserData checkAuthorization(String accessToken) {
+		UserData userData = new UserData();
+		
 		User user = userDao.getUserByAccessToken(accessToken);
+		int userId;
 		Role role = null;
 		try {
 			int roleId = user.getUserRole().getRoleId();
+			userId = user.getUserId();
 			switch (roleId) {
 			case 1:
 				role = Role.ADMIN;
@@ -160,22 +165,12 @@ public class UserServiceImplementation implements UserService {
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			role = Role.INVALID;
+			userId = 0;
 		}
-
-		return role;
-	}
-
-	@Override
-	public User getUserByAccessToken(String accessToken) {
-		User user;
-		try {
-			user = userDao.getUserByAccessToken(accessToken);
-		} catch (Exception exception) {
-			user = null;
-			exception.printStackTrace();
-		}
-
-		return user;
+		
+		userData.setRole(role);
+		userData.setUserId(userId);
+		return userData;
 	}
 
 	@Override

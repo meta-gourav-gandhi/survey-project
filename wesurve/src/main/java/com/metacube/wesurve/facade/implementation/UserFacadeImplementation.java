@@ -8,10 +8,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.mail.MessagingException;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.metacube.wesurve.authorize.UserData;
 import com.metacube.wesurve.dto.LoginCredentialsDto;
 import com.metacube.wesurve.dto.LoginResponseDto;
 import com.metacube.wesurve.dto.ResponseDto;
@@ -19,7 +21,6 @@ import com.metacube.wesurve.dto.SurveyInfoDto;
 import com.metacube.wesurve.dto.UserDetailsDto;
 import com.metacube.wesurve.dto.UserDetailsForSurveyorDto;
 import com.metacube.wesurve.dto.UserDto;
-import com.metacube.wesurve.enums.Role;
 import com.metacube.wesurve.enums.Status;
 import com.metacube.wesurve.enums.SurveyStatus;
 import com.metacube.wesurve.facade.UserFacade;
@@ -33,6 +34,7 @@ import com.metacube.wesurve.utils.MD5Encryption;
 import com.metacube.wesurve.utils.StringUtils;
 
 @Component("userFacade")
+@Transactional
 public class UserFacadeImplementation implements UserFacade {
 	@Autowired
 	UserService userService;
@@ -44,8 +46,7 @@ public class UserFacadeImplementation implements UserFacade {
 	}
 
 	/**
-	 * @param userDto
-	 *            details of the user to save in the database
+	 * @param userDto details of the user to save in the database
 	 * @return return the success, failure, success, duplicate
 	 */
 	@Override
@@ -277,12 +278,12 @@ public class UserFacadeImplementation implements UserFacade {
 	}
 
 	@Override
-	public Iterable<UserDetailsDto> getAllUsers(String accessToken) {
+	public Iterable<UserDetailsDto> getAllUsers(int userId) {
 		Set<UserDetailsDto> userDetailsDtoSet = new HashSet<>();
 		Iterable<User> iterableOfUsers = userService.getAllUsers();
 		if (iterableOfUsers != null) {
 			for (User user : iterableOfUsers) {
-				if (user.getToken() != null && user.getToken().equals(accessToken)) {
+				if (user.getUserId() == userId) {
 					continue;
 				}
 
@@ -307,8 +308,8 @@ public class UserFacadeImplementation implements UserFacade {
 	}
 
 	@Override
-	public Status logout(String accessToken) {
-		User user = userService.getUserByAccessToken(accessToken);
+	public Status logout(int userId) {
+		User user = userService.getUserById(userId);
 		Status status = null;
 		try {
 			userService.setAccessToken(user, "");
@@ -322,7 +323,7 @@ public class UserFacadeImplementation implements UserFacade {
 	}
 
 	@Override
-	public Role checkAuthorization(String accessToken) {
+	public UserData checkAuthorization(String accessToken) {
 		return userService.checkAuthorization(accessToken);
 	}
 
@@ -353,8 +354,8 @@ public class UserFacadeImplementation implements UserFacade {
 	}
 
 	@Override
-	public Iterable<SurveyInfoDto> getSurveyListForViewers(String accessToken) {
-		User user = userService.getUserByAccessToken(accessToken);
+	public Iterable<SurveyInfoDto> getSurveyListForViewers(int userId) {
+		User user = userService.getUserById(userId);
 		Set<SurveyInfoDto> surveyInfoList = new HashSet<>();
 		if (user != null && user.getSurveyListToView().size() != 0) {
 			Set<Survey> surveys = user.getSurveyListToView();
@@ -396,10 +397,10 @@ public class UserFacadeImplementation implements UserFacade {
 	}
 
 	@Override
-	public ResponseDto<Void> changePassword(String accessToken, String currentPassword, String newPassword) {
+	public ResponseDto<Void> changePassword(int userId, String currentPassword, String newPassword) {
 		ResponseDto<Void> response = new ResponseDto<>();
 		Status status = Status.FAILURE;
-		User user = userService.getUserByAccessToken(accessToken);
+		User user = userService.getUserById(userId);
 
 		try {
 			if (currentPassword.equals(newPassword)) {
@@ -418,8 +419,8 @@ public class UserFacadeImplementation implements UserFacade {
 	}
 
 	@Override
-	public Iterable<SurveyInfoDto> getSurveyListOfSurveyor(String accessToken) {
-		User user = userService.getUserByAccessToken(accessToken);
+	public Iterable<SurveyInfoDto> getSurveyListOfSurveyor(int userId) {
+		User user = userService.getUserById(userId);
 		Set<SurveyInfoDto> surveyInfoList = new HashSet<>();
 		;
 		Set<Survey> surveys = user.getCreatedSurveyList();
@@ -433,8 +434,8 @@ public class UserFacadeImplementation implements UserFacade {
 	}
 
 	@Override
-	public Iterable<SurveyInfoDto> getListOfFilledSurveys(String accessToken) {
-		User user = userService.getUserByAccessToken(accessToken);
+	public Iterable<SurveyInfoDto> getListOfFilledSurveys(int userId) {
+		User user = userService.getUserById(userId);
 		Set<SurveyInfoDto> filledSurveysInfo = new HashSet<>();
 		Set<Survey> filledSurveys = user.getFilledSurveyList();
 		for (Survey currentSurvey : filledSurveys) {
@@ -447,13 +448,13 @@ public class UserFacadeImplementation implements UserFacade {
 	}
 
 	@Override
-	public Iterable<UserDetailsForSurveyorDto> getAllUsersForSurveyor(String accessToken, int surveyId) {
+	public Iterable<UserDetailsForSurveyorDto> getAllUsersForSurveyor(int surveyorId, int surveyId) {
 		Set<UserDetailsForSurveyorDto> userDetailsForSurveyorDtoSet = new HashSet<>();
 		Iterable<User> iterableOfUsers = userService.getAllUsers();
 		if (iterableOfUsers != null) {
 			Survey surveyObj = surveyService.getSurveyById(surveyId);
 			for (User user : iterableOfUsers) {
-				if (user.getToken() != null && user.getToken().equals(accessToken)) {
+				if (user.getUserId() == surveyorId) {
 					continue;
 				}
 
