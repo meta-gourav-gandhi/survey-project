@@ -27,6 +27,7 @@ import com.metacube.wesurve.facade.UserFacade;
 import com.metacube.wesurve.model.Labels;
 import com.metacube.wesurve.model.Survey;
 import com.metacube.wesurve.model.User;
+import com.metacube.wesurve.model.UserRole;
 import com.metacube.wesurve.service.SurveyService;
 import com.metacube.wesurve.service.UserService;
 import com.metacube.wesurve.utils.EmailUtils;
@@ -338,13 +339,15 @@ public class UserFacadeImplementation implements UserFacade {
 		User user = userService.getUserById(userId);
 		if (user != null) {
 			if (user.getUserRole().getRoleId() == 2) {
-				user.getUserRole().setRoleId(3);
+				UserRole role = userService.getUserRoleById(3);
+				user.setUserRole(role);
 				Set<Survey> createdSurveys = user.getCreatedSurveyList();
 				for (Survey survey : createdSurveys) {
 					surveyService.changeSurveyStatus(survey, SurveyStatus.NOTLIVE);
 				}
 			} else if (user.getUserRole().getRoleId() == 3) {
-				user.getUserRole().setRoleId(2);
+				UserRole role = userService.getUserRoleById(2);
+				user.setUserRole(role);
 			}
 
 			status = userService.update(user);
@@ -403,12 +406,18 @@ public class UserFacadeImplementation implements UserFacade {
 		User user = userService.getUserById(userId);
 
 		try {
-			if (currentPassword.equals(newPassword)) {
-				status = Status.DUPLICATE;
-			} else if (user != null && user.getPassword().equals(MD5Encryption.encrypt(currentPassword))) {
-				user.setPassword(MD5Encryption.encrypt(newPassword));
-				status = userService.update(user);
+			if (StringUtils.validateString(newPassword) && StringUtils.validateString(currentPassword) && newPassword.length() >= 8) {
+				if (currentPassword.equals(newPassword)) {
+					status = Status.DUPLICATE;
+				} else if (user != null && user.getPassword().equals(MD5Encryption.encrypt(currentPassword))) {
+					user.setPassword(MD5Encryption.encrypt(newPassword));
+					status = userService.update(user);
 
+				}
+			}
+			else {
+				System.out.println("failed");
+				status = Status.INVALID_CONTENT;
 			}
 		} catch (NoSuchAlgorithmException exception) {
 			exception.printStackTrace();

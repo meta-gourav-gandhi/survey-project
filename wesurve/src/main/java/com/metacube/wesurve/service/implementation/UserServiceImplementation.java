@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.metacube.wesurve.authorize.UserData;
 import com.metacube.wesurve.dao.userdetails.UserDao;
+import com.metacube.wesurve.dao.userrole.UserRoleDao;
 import com.metacube.wesurve.enums.Role;
 import com.metacube.wesurve.enums.Status;
 import com.metacube.wesurve.model.User;
@@ -17,6 +18,9 @@ public class UserServiceImplementation implements UserService {
 
 	@Resource(name = "hibernateUserDaoImplementation")
 	UserDao userDao;
+	
+	@Resource(name = "hibernateUserRoleDaoImplementation")
+	UserRoleDao userRoleDao;
 
 	@Override
 	public User createNewUser(User user) {
@@ -198,5 +202,18 @@ public class UserServiceImplementation implements UserService {
 		}
 
 		return status;
+	}
+
+	@Override
+	public UserRole getUserRoleById(int primaryKey) {
+		UserRole userRole;
+		try {
+			userRole = userRoleDao.findOne(primaryKey);
+		} catch(Exception exception) {
+			exception.printStackTrace();
+			userRole = null;
+		}
+		
+		return userRole;
 	}
 }

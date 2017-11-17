@@ -3,6 +3,7 @@ package com.metacube.wesurve.service;
 import com.metacube.wesurve.authorize.UserData;
 import com.metacube.wesurve.enums.Status;
 import com.metacube.wesurve.model.User;
+import com.metacube.wesurve.model.UserRole;
 
 public interface UserService {
 	User createNewUser(User user);
@@ -17,4 +18,5 @@ public interface UserService {
 	UserData checkAuthorization(String accessToken);
 	User getUserById(int primaryKey);
 	Status update(User user);
+	UserRole getUserRoleById(int primaryKey);
 }

@@ -331,17 +331,21 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 		Status status;
 		User surveyor = userService.getUserById(surveyorId);
 		Survey survey = surveyService.getSurveyById(surveyDto.getId());
-		if (surveyor.getCreatedSurveyList().contains(survey)) {
-			if (validateSurvey(surveyDto)) {
-				Survey newSurvey = convertDtoToModel(surveyDto, survey.getCreatedDate());
-				newSurvey.setSurveyOwner(surveyor);
-				newSurvey.setLabels(changeStringSetToLabelsSet(surveyDto.getLabels()));
-				status = surveyService.edit(newSurvey);
+		if(survey != null) {
+			if (surveyor.getCreatedSurveyList().contains(survey)) {
+				if (validateSurvey(surveyDto)) {
+					Survey newSurvey = convertDtoToModel(surveyDto, survey.getCreatedDate());
+					newSurvey.setSurveyOwner(surveyor);
+					newSurvey.setSurveyStatus(SurveyStatus.NOTLIVE);
+					status = surveyService.edit(newSurvey);
+				} else {
+					status = Status.INVALID_CONTENT;
+				}
 			} else {
-				status = Status.INVALID_CONTENT;
+				status = Status.ACCESS_DENIED;
 			}
 		} else {
-			status = Status.ACCESS_DENIED;
+			status = Status.INVALID_CONTENT;
 		}
 
 		response.setStatus(status);
