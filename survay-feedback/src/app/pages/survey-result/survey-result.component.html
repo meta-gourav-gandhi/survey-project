@@ -1,18 +1,33 @@
-<br/><br/><br/><br/>
+<div [ngClass]="{'pace-running' : loading , 'pace-done' : !loading}">
+    <div class="pace" [ngClass]="{'pace-active' : loading , 'pace-inactive' : !loading}">
+        <div class="pace-progress" data-progress-text="100%" data-progress="99" style="transform: translate3d(100%, 0px, 0px);">
+            <div class="pace-progress-inner"></div>
+    </div>
+    <div class="pace-activity"></div></div>
+<div class="secondary" id="headLine">
+    <div class="container"><h2>View Survey Result</h2></div>
+</div>
 <div class="container">
     <div class="row">
                 <div class="col-sm-2"></div>
                 <div class="col-sm-8">
                     <div *ngIf="errorMessageStatus">
                         <div class="alert alert-danger flipInX animated">
-                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                            {{errorMessage}}
+                            {{errorMessage}} 
+                            <a (click)="getViewableSurveyList()">
+                            <span class="pull-right glyphicon alert-glyphicon glyphicon-refresh img-circle text-warning" title="reload"></span>
+                            </a>
                         </div>
                     </div>
                     <div class="panel panel-default margin-bottom-10">
-                        <div class="panel-heading"><h3>Survey List <input type="text" class="form-control pull-right custom-input sharp-corner" [(ngModel)]="name" placeholder="filter using survey name, id, description"></h3></div>
+                        <div class="panel-heading"><h3>Survey List <input type="text" class="form-control pull-right custom-input sharp-corner" [(ngModel)]="name" placeholder="Search Surveys"></h3></div>
                         <div class="panel-body" id="table-panel">
-                        <table class="table ">
+                            <div *ngIf="!resultFetched" id="loading">
+                                <div id="ball-1" class="circle"></div>
+                                <div id="ball-2" class="circle"></div>
+                                <div id="ball-3" class="circle"></div>
+                            </div>
+                        <table class="table " *ngIf="resultFetched">
                             <thead>
                                 <tr class="pointer">
                                 <th [class]="order === 'id'"
@@ -29,7 +44,7 @@
                                     <span class="mailid">{{survey.description | slice:0:50}}...</span>
                                 </td>
                                 <td  width="40%" class="text-right">
-                                        <a class="btn icon-btn btn-warning small flipInX animated" href="#">
+                                        <a class="btn icon-btn btn-warning small flipInX animated"  [routerLink]="['/surveyResult', survey.id ]" title="View">
                                             <span class="glyphicon btn-glyphicon glyphicon-eye-open img-circle text-warning"></span>
                                           
                                         </a>
@@ -39,7 +54,7 @@
                         </table>
                     </div>
                     <div class="panel-footer text-center">
-                        <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                        <pagination-controls *ngIf="resultFetched" (pageChange)="p = $event"></pagination-controls>
                     </div>
                 </div>
                 </div>

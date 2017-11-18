@@ -20,8 +20,13 @@ export class LoginComponent implements OnInit {
   message : Message;
   currentLoggedInUser : User;
   rForm : FormGroup;
+  loadingData : boolean;
 
-  constructor(private router: Router,public _auth: AuthService, private userService: UserService,private formBuilder: FormBuilder){ }
+  constructor(private router: Router,public _auth: AuthService, private userService: UserService,private formBuilder: FormBuilder){ 
+    if(JSON.parse(localStorage.getItem('currentUser')) !== null) {
+      this.router.navigate(['/dashboard']);
+    }
+  }
 
   ngOnInit() {
     this.router.events.subscribe((evt) => {
@@ -36,9 +41,14 @@ export class LoginComponent implements OnInit {
   }
 
   doLogin() : void {
+    this.loadingData = true;
     this.error = false;
+    setTimeout(function(){ 
+      document.getElementById("loginMessage").innerHTML = "It's taking longer than expected.. Please Wait.";
+     }, 5000);
     this.userService.doLogin(this.user)
     .then(response => {
+      this.loadingData = false;
       if (response.status.toString() == "SUCCESS") {
         this.currentLoggedInUser = response.body;
         localStorage.setItem("currentUser",JSON.stringify(this.currentLoggedInUser));
@@ -51,16 +61,15 @@ export class LoginComponent implements OnInit {
   }
   
   signIn(provider){
-    
+    this.loadingData = true;
     this.sub = this._auth.login(provider).subscribe(
       (data) => {
-        console.log(data);
         this.user=data;
 
         this.error = false;
         this.userService.doSocialLogin(this.user)
         .then(response => {
-          console.log(response);
+          this.loadingData = false;
           if (response.status.toString() == "SUCCESS") {
             this.currentLoggedInUser = response.body;
             localStorage.setItem("currentUser",JSON.stringify(this.currentLoggedInUser));

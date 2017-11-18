@@ -29,7 +29,12 @@ export class SurveyResponseComponent implements OnInit {
         public _auth: AuthService,
         private route: ActivatedRoute,
         private surveyService: SurveyService) {
-          this.survey = new Survey();
+        this.survey = new Survey();
+        if (JSON.parse(localStorage.getItem('currentUser')) === null) {
+            this.router.navigate(['/login']);
+        } else {
+            this.user = JSON.parse(localStorage.getItem('currentUser'));
+        }
     }
 
     ngOnInit() {
@@ -39,12 +44,6 @@ export class SurveyResponseComponent implements OnInit {
             }
             window.scrollTo(0, 0);
         });
-
-        if (JSON.parse(localStorage.getItem('currentUser')) === null) {
-            this.router.navigate(['/login']);
-        } else {
-            this.user = JSON.parse(localStorage.getItem('currentUser'));
-        }
 
         this.route.paramMap
         .switchMap((params: ParamMap) =>

@@ -23,12 +23,6 @@ export class AppComponent implements OnInit{
       }
     }
 
-    // logout(){
-    //   this._auth.logout().subscribe(
-    //     (data)=>{console.log(data);this.user=null;}
-    //   )
-    // }
-
     logout() {
       this.userService.doLogout(JSON.parse(localStorage.getItem("currentUser")).accessToken)
       .then(response => {

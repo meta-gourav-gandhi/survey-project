@@ -25,3 +25,37 @@ a {
         padding: 0% 5% 0% 5%;
     }
 }
+
+.radio-btn {
+    background: transparent;
+    border: none;
+}
+
+.required{
+    color : #009cdb;
+}
+
+.inline-show{
+    display: flex;
+}
+
+.requiredError{
+    background: #f2dede;
+    -webkit-animation-name: example; /* Safari 4.0 - 8.0 */
+    -webkit-animation-duration: 4s; /* Safari 4.0 - 8.0 */
+    animation-name: example;
+    animation-duration: 4s;
+}
+
+@-webkit-keyframes example {
+    0% {background-color: #f2dede;}
+    50% {background-color: #F8ABAB;}
+    100% {background-color: #f2dede;}
+}
+
+/* Standard syntax */
+@keyframes example {
+    0% {background-color: #f2dede;}
+    50% {background-color: #F8ABAB;}
+    100% {background-color: #f2dede;}
+}

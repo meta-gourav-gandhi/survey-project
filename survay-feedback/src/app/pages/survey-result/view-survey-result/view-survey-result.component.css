@@ -1,0 +1,54 @@
+a {
+    text-decoration: none;
+}
+
+@media only screen and (max-width: 480px) {
+    #headLine {
+        padding-top: 14%;
+        margin-bottom: 10%;
+        padding-bottom: 1.5%;
+    }
+}
+
+@media only screen and (min-width: 480px) {
+    #headLine {
+        padding-top: 4%;
+        margin-bottom: 10%;
+        padding-bottom: 1.5%;
+    }
+    .custom-input{
+        height: 50px;
+        padding: 0% 5% 0% 5%;
+    }
+}
+
+.btn-small {
+    width: 10%;
+}
+
+.btn-medium{
+    width: 20%;
+    margin-left: 1%;
+}
+
+.inline-show{
+    display: flex;
+}
+
+.refresh {
+    width: 10%;
+    background-color: white;
+    color: black;
+}
+
+.refresh:hover {
+    background-color: #ddd;
+}
+
+#pie{ 
+    height: 300px;
+}
+
+#bar{
+    height: 300px;
+}

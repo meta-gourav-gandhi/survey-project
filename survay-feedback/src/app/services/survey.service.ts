@@ -10,7 +10,7 @@ import { ServerResponse } from '../models/server-response';
 export class SurveyService {
 
     private headers = new Headers({'Content-Type': 'application/json'});
-    private userServiceUrl = 'http://172.16.33.118:8080/wesurve/survey/';  // <--- will change here
+    private surveyServiceUrl = 'http://172.16.33.118:8080/wesurve/survey/';  // <--- will change here
 
     constructor(private http: Http) { }
 
@@ -22,7 +22,7 @@ export class SurveyService {
     getViewableSurveyList(accessToken : any) : Promise<ServerResponse>  {
         this.headers = new Headers({'Content-Type': 'application/json', 'X-auth' : accessToken});
         return this.http
-        .get(this.userServiceUrl+"viewable", {headers: this.headers})  
+        .get(this.surveyServiceUrl+"viewable", {headers: this.headers})  
         .toPromise()
         .then(res => res.json() as ServerResponse)
         .catch(this.handleError);
@@ -31,7 +31,7 @@ export class SurveyService {
     deleteSurvey(surveyId : number, accessToken : any) : Promise<ServerResponse>  {
         this.headers = new Headers({'Content-Type': 'application/json', 'X-auth' : accessToken});
         return this.http
-        .delete(this.userServiceUrl+"?id="+surveyId, {headers: this.headers}) 
+        .delete(this.surveyServiceUrl+"?id="+surveyId, {headers: this.headers}) 
         .toPromise()
         .then(res => res.json() as ServerResponse)
         .catch(this.handleError);
@@ -40,7 +40,7 @@ export class SurveyService {
     changeSurveyStatus(surveyId : number, accessToken : any) : Promise<ServerResponse>  {
         this.headers = new Headers({'Content-Type': 'application/json', 'X-auth' : accessToken});
         return this.http
-        .put(this.userServiceUrl+"changestatus/?id="+surveyId , surveyId,  {headers: this.headers}) 
+        .put(this.surveyServiceUrl+"changestatus/?id="+surveyId , surveyId,  {headers: this.headers}) 
         .toPromise()
         .then(res => res.json() as ServerResponse)
         .catch(this.handleError);
@@ -49,7 +49,7 @@ export class SurveyService {
     getSurveyFromId(surveyId : number, accessToken : any) : Promise<ServerResponse>  {
         this.headers = new Headers({'Content-Type': 'application/json', 'X-auth' : accessToken});
         return this.http
-        .get(this.userServiceUrl+"?id="+surveyId ,  {headers: this.headers}) 
+        .get(this.surveyServiceUrl+"?id="+surveyId ,  {headers: this.headers}) 
         .toPromise()
         .then(res => res.json() as ServerResponse)
         .catch(this.handleError);
@@ -58,17 +58,16 @@ export class SurveyService {
     checkSurveyExists(surveyId : number, accessToken : any) : Promise<ServerResponse>  {
         this.headers = new Headers({'Content-Type': 'application/json', 'X-auth' : accessToken});
         return this.http
-        .get(this.userServiceUrl+"exists/?id="+surveyId ,  {headers: this.headers}) 
+        .get(this.surveyServiceUrl+"exists/?id="+surveyId ,  {headers: this.headers}) 
         .toPromise()
         .then(res => res.json() as ServerResponse)
         .catch(this.handleError);
     }
 
     createOrRemoveViewer(surveyId : number, userId : number, accessToken : any) : Promise<ServerResponse>  {
-        debugger;
         this.headers = new Headers({'Content-Type': 'application/json', 'X-auth' : accessToken});
         return this.http
-        .put(this.userServiceUrl+"edit/viewer/?id="+surveyId+"&userid="+userId, surveyId, {headers: this.headers})
+        .put(this.surveyServiceUrl+"edit/viewer/?id="+surveyId+"&userid="+userId, surveyId, {headers: this.headers})
         .toPromise()
         .then(res => res.json() as ServerResponse)
         .catch(this.handleError);
@@ -77,7 +76,7 @@ export class SurveyService {
     getSurveyResponse(surveyId: number, accessToken: any): Promise<ServerResponse>  {
         this.headers = new Headers({'Content-Type': 'application/json', 'X-auth' : accessToken});
         return this.http
-        .get(this.userServiceUrl + 'response/?id=' + surveyId ,  {headers: this.headers})
+        .get(this.surveyServiceUrl + 'response/?id=' + surveyId ,  {headers: this.headers})
         .toPromise()
         .then(res => res.json() as ServerResponse)
         .catch(this.handleError);
@@ -86,7 +85,34 @@ export class SurveyService {
     createSurvey(survey: any, accessToken: any): Promise<ServerResponse>{
         this.headers = new Headers({'Content-Type': 'application/json', 'X-auth' : accessToken});
         return this.http
-        .post(this.userServiceUrl, survey, {headers: this.headers})
+        .post(this.surveyServiceUrl, survey, {headers: this.headers})
+        .toPromise()
+        .then(res => res.json() as ServerResponse)
+        .catch(this.handleError);
+    }
+
+    submitSurvey(surveyResponse : any, accessToken : any): Promise<ServerResponse>{
+        this.headers = new Headers({'Content-Type': 'application/json', 'X-auth' : accessToken});
+        return this.http
+        .post(this.surveyServiceUrl+"save/response", surveyResponse, {headers: this.headers})
+        .toPromise()
+        .then(res => res.json() as ServerResponse)
+        .catch(this.handleError);
+    }
+
+    getSurveyResult(surveyId: number, accessToken: any): Promise<ServerResponse>  {
+        this.headers = new Headers({'Content-Type': 'application/json', 'X-auth' : accessToken});
+        return this.http
+        .get(this.surveyServiceUrl + 'result/?id=' + surveyId ,  {headers: this.headers})
+        .toPromise()
+        .then(res => res.json() as ServerResponse)
+        .catch(this.handleError);
+    }
+
+    editSurvey(survey: any, accessToken: any): Promise<ServerResponse>{
+        this.headers = new Headers({'Content-Type': 'application/json', 'X-auth' : accessToken});
+        return this.http
+        .put(this.surveyServiceUrl, survey, {headers: this.headers})
         .toPromise()
         .then(res => res.json() as ServerResponse)
         .catch(this.handleError);

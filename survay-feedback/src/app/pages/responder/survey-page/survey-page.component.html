@@ -1,42 +1,78 @@
-<br/><br/><br/><br/><br/><br/><br/><br/>
-<div class="container">
-        <div class="panel panel-default">
+<div *ngIf="success" id="successModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+      
+          <!-- Modal content-->
+          <div class="modal-content sharp-corner">
+            <div class="modal-header primary text-center">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Thank You</h4>
+            </div>
+            <div class="modal-body">
+                <p><strong>Your Response Successfuly Saved.</strong></p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+      
+        </div>
+      </div>
+
+
+      
+<div class="secondary" id="headLine">
+    <div class="container"><h2>Fill Survey</h2></div>
+</div>
+<div class="container" *ngIf="survey">
+        <div *ngIf="errorMessageStatus">
+            <div class="{{errorMessageClass}}">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                {{errorMessage}}
+            </div>
+        </div>
+        <div *ngIf="survey.status == 'LIVE' else elseBlock" class="panel panel-default">
             <div class="panel-heading text-center">
-                <span>{{survey.name}}</span>
+                <span><h2>{{survey.name}}</h2></span>
             </div>
             <div class="panel-body">
                 <form [formGroup]="surveyForm" novalidate>
                     <!--questions-->
                     <div class="form-group">
-                        <div class="panel panel-default" *ngFor="let question of survey.questions; let i=index">
-                            <div class="card-body text-left">
-                                <h4 class="panel-heading" [froalaView]="question.text"></h4>
+                        <div class="panel panel-default" *ngFor="let question of survey.questions; let i=index" [ngClass]="{'requiredError': isSubmited && surveyForm.controls.response.controls[i].errors , 'has-success': !surveyForm.controls.response.controls[i].errors}">
+                            <div class="card-body text-left" >
+                                <h4 class="panel-heading inline-show">{{i+1}}.&nbsp; <span [froalaView]="question.text"></span><span *ngIf="question.required" class="required">*</span><span *ngIf="isSubmited && surveyForm.controls.response.controls[i].errors">(Question in mandatory)</span></h4>
                                 <div formArrayName="response">
                                     <div *ngFor="let option of question.options; let j=index">
-                                        <div >
-                                            <span >
-                                                <input type="radio" value="{{option.id}}" class="form-control" [formControlName]="i" >
+                                        <div class="input-group">
+                                            <span class="input-group-addon radio-btn">
+                                                <input type="radio" value="{{option.id}}" [formControlName]="i" >
                                             </span>
                                             <div [froalaView]="option.text"></div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div *ngIf="isSubmited && !surveyForm.controls.response.controls[i].valid"
+                            <!-- <div *ngIf="isSubmited && !surveyForm.controls.response.controls[i].valid"
                             class="alert alert-danger">
                                 <div *ngIf="surveyForm.controls.response.controls[i].errors.required">
                                     Option is required
                                 </div>
-                            </div> 
+                            </div>  -->
                         </div>
                     </div>
-                    <button mat-raised-button class="success-btn float-right" (click)="isSubmited = true;submitSurvey()">Submit</button>
-                    <div class="margin-20">
-                        <div>surveyForm details:-</div>
-                        <pre>Is surveyForm valid?: <br>{{surveyForm.valid | json}}</pre>
-                        <pre>form value: <br>{{surveyForm.value | json}}</pre>
-                    </div>
+                    <button mat-raised-button class="success-btn float-right" data-toggle="modal" data-target="#successModal"
+                    (click)="isSubmited = true;submitSurvey();">Submit</button>
                 </form>
             </div>
         </div>
+        <ng-template #elseBlock>
+            <div class="alert alert-info">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                Survey is not Live.
+            </div>
+        </ng-template>
     </div>
+
+
+
+ 

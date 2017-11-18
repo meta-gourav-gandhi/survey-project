@@ -17,6 +17,9 @@ export class SurveyResultComponent implements OnInit {
   order: string = 'id';
   reverse: boolean = false;
   surveyFilter: any = {surveyName : '', id : ''};
+  resultFetched : boolean = false;
+  errorMessageStatus : boolean;
+  errorMessage : String;
 
   constructor(private router: Router,public _auth: AuthService, private userService: UserService){ }
 
@@ -32,13 +35,16 @@ export class SurveyResultComponent implements OnInit {
   }
 
   getViewableSurveyList() {
+    this.resultFetched = false;
+    this.errorMessageStatus = false;
     this.userService.getViewableSurveyList(JSON.parse(localStorage.getItem("currentUser")).accessToken)
-    .then(response => { 
-        console.log(response);
+    .then(response => {   
+        this.resultFetched = true;
         if (response.status.toString() == "SUCCESS") {
             this.allViewableSurveys = response.body;
-        } else {
-            alert("Error");
+        }  else {
+          this.errorMessageStatus = true;
+          this.errorMessage = "Error in fetching survey list";
         }
      });
   }

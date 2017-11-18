@@ -17,8 +17,15 @@ export class SideNavbarComponent implements OnInit {
   sub: any;
   message : Message;
   currentLoggedInUser : User;
+  
 
-  constructor(private router: Router,public _auth: AuthService, private userService: UserService){ }
+  constructor(private router: Router,public _auth: AuthService, private userService: UserService){
+    if (JSON.parse(localStorage.getItem('currentUser')) === null) {
+      this.router.navigate(['/login']);
+    } else {
+        this.user = JSON.parse(localStorage.getItem('currentUser'));
+    }
+   }
 
   ngOnInit() {
     this.router.events.subscribe((evt) => {
@@ -27,12 +34,6 @@ export class SideNavbarComponent implements OnInit {
       }
       window.scrollTo(0, 0)
     });
-
-    if(JSON.parse(localStorage.getItem('currentUser')) === null) {
-        // will be improve when api will be complete
-        this.router.navigate(['/login']);
-      } else {
-          this.user = JSON.parse(localStorage.getItem('currentUser'));
-      }
   }
+
 }

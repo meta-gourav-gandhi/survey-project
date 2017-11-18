@@ -25,7 +25,7 @@
 }
 
 .main {
-    margin-left: 200px; /* Same as the width of the sidenav */
+    margin-left: 200px; 
 }
 
 @media screen and (max-height: 450px) {
@@ -37,3 +37,4 @@
     background: #444b5c;
     color: #f1f1f1;
 }
+

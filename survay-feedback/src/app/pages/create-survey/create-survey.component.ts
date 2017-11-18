@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Survey } from '../../models/survey';
+import { User } from '../../models/user';
 import { Question } from '../../models/question';
 import { Option } from '../../models/option';
 import { MatSnackBar } from '@angular/material';
@@ -8,13 +9,15 @@ import { Label } from '../../models/label';
 import { MatChipInputEvent } from '@angular/material';
 import { ENTER } from '@angular/cdk/keycodes';
 import { SurveyService} from '../../services/survey.service';
+import { Router,NavigationEnd } from '@angular/router';
+import { CreatedSurveyResponse } from '../../models/created-survey-response';
 
 const COMMA = 188;
 
 @Component({
   selector: 'app-create-survey',
   templateUrl: './create-survey.component.html',
-  styleUrls: ['./create-survey.component.css']
+  styleUrls: ['./create-survey.component.css'],
 })
 export class CreateSurveyComponent implements OnInit {
   public surveyForm: FormGroup;
@@ -24,10 +27,21 @@ export class CreateSurveyComponent implements OnInit {
   selectable: boolean = true;
   removable: boolean = true;
   addOnBlur: boolean = true;
+  errorMessageStatus : boolean; 
+  errorMessage : string;
+  errorMessageClass : string;
   separatorKeysCodes = [ENTER, COMMA];
+  user : User;
+  loadingData : boolean;
+  createdSurvey : CreatedSurveyResponse;
 
-  constructor(public snackBar: MatSnackBar, private _fb: FormBuilder, private surveyService : SurveyService) {
-
+  constructor(private router: Router,public snackBar: MatSnackBar, private _fb: FormBuilder, private surveyService : SurveyService) {
+    if(JSON.parse(localStorage.getItem('currentUser')) === null) {
+      // will be improve when api will be complete
+      this.router.navigate(['/login']);
+    } else {
+        this.user = JSON.parse(localStorage.getItem('currentUser'));
+    }
   }
 
   public questionEditor: Object = {
@@ -76,7 +90,7 @@ export class CreateSurveyComponent implements OnInit {
         this.initQuestions(),
       ]),
       'surveyName': [this.survey.name, [Validators.required, this.NoWhitespaceValidator]],
-      'surveyDesc': [null, Validators.required],
+      'surveyDesc': [null, null],
       'surveyLabels': [this.labels, null]
     });
     
@@ -154,10 +168,11 @@ export class CreateSurveyComponent implements OnInit {
     } else {
       let questions: Question[] = [];
       let question: Question;
-      let options: Option[] = [];
-      let option: Option
       this.surveyForm.get('surveyQuestions').value.forEach(element => {
-        element.questionOptions.forEach(questionOptions => {
+        
+          let options: Option[] = [];
+          let option: Option
+          element.questionOptions.forEach(questionOptions => {
           option = {
             id: 0,
             text: questionOptions.optionText,
@@ -174,24 +189,28 @@ export class CreateSurveyComponent implements OnInit {
       });
       let survey: Survey = {
         id: 0,
+        status : null,
         name: this.surveyForm.get('surveyName').value,
         description: this.surveyForm.get('surveyDesc').value,
         labels: this.surveyForm.get('surveyLabels').value,
         questions: questions
       }
-
+      console.log(survey);
       this.saveSurvey(survey);
     }
   }
 
   saveSurvey(survey : any){
+    this.loadingData = true;
     this.surveyService.createSurvey(survey, JSON.parse(localStorage.getItem("currentUser")).accessToken)
     .then(response => { 
-        console.log(response);
+        this.loadingData = false;
         if (response.status.toString() == "SUCCESS") {
-          alert("Created");
+          this.createdSurvey = response.body;
         } else {
-          alert("Not Created");
+          this.errorMessageStatus = true;
+          this.errorMessageClass = "alert alert-danger flipInX animated";
+          this.errorMessage = "Error in creating survey.";
         }
     });
   }

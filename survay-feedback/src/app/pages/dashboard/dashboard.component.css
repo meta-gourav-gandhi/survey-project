@@ -21,3 +21,12 @@ a {
         padding-bottom: 1.5%;
     }
 }
+.content{
+    margin-left: 10%;
+    width:90%;
+}
+
+.full-content{
+    margin-left: 0%;
+    width: 100%;
+}

@@ -1,0 +1,116 @@
+<div class="secondary" id="headLine">
+    <div class="container"><h2>Edit Survey - {{survey.name}}</h2></div>
+</div>
+<div class="container">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title pull-left">Edit Survey</h3>
+                <button mat-raised-button class="success-btn pull-right" (click)="editSurvey()" >Save</button>
+                <div class="clearfix"></div>
+            </div>
+            <div class="panel-body">
+                <form [formGroup]="surveyForm" novalidate>
+                    <div class="form-group input-group-lg">
+                        <label for="name">Survey Name</label>
+                        <input id="name" 
+                            type="text" 
+                            formControlName="surveyName" 
+                            class="form-control input-lg"
+                            placeholder="Name" 
+                            name="name">
+                        <div *ngIf="!surveyForm.controls['surveyName'].valid && surveyForm.controls['surveyName'].touched"
+                        class="alert alert-danger">
+                            <div *ngIf="!surveyForm.controls['surveyName'].errors.required && surveyForm.controls['surveyName'].errors.whitespace">
+                                Name must be valid
+                            </div>
+                            <div *ngIf="surveyForm.controls['surveyName'].errors.required">
+                                Name is required
+                            </div>
+                        </div> 
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Survey Description</label>
+                        <input id="description" class="form-control" formControlName="surveyDesc" type="text" placeholder="Survey Description">
+                    </div>
+                    <div class="form-group">
+                        <label for="labels">Add Labels</label>
+                        <input placeholder="Labels"
+                            id="labels"
+                            [matChipInputFor]="labelList"
+                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                            [matChipInputAddOnBlur]="addOnBlur"
+                            (matChipInputTokenEnd)="add($event)"
+                            class="form-control"  />
+                    </div>
+                    <mat-chip-list #labelList>
+                        <mat-chip *ngFor="let label of labels" [selectable]="selectable"
+                                    [removable]="removable" (remove)="remove(label)">
+                            {{label}}
+                            <span matChipRemove><i class="fa fa-times fa-lg" *ngIf="removable"></i></span>
+                        </mat-chip>
+                    </mat-chip-list>
+                    <hr>
+                    <div class="col-12" style="text-align: right; font-size: 20px">
+                        <span class="btn-icon" matTooltip="Add Question Below" (click)="addQuestion()"><i class="fa fa-plus" aria-hidden="true"></i></span>
+                    </div>
+                    <!--questions-->
+                    <div formArrayName="surveyQuestions">
+                        <div *ngFor="let question of surveyForm.controls.surveyQuestions.controls; let i=index" class="form-group" >
+                            <div [formGroupName]="i">
+                                <div class="form-group">
+                                    <label for="question">Question</label>
+                                    <textarea id="question" [froalaEditor]="questionEditor" class="form-control"  formControlName="questionText"></textarea>
+                                </div>
+                                <div *ngIf="!surveyForm.controls.surveyQuestions.controls[i].controls['questionText'].valid"
+                                class="alert alert-danger">
+                                    <div *ngIf="surveyForm.controls.surveyQuestions.controls[i].controls['questionText'].errors.required">
+                                        Question is required
+                                    </div>
+                                </div> 
+                                    <div formArrayName="questionOptions">
+                                        <label for="option">Option</label>
+                                        <div *ngFor="let option of surveyForm.controls.surveyQuestions.controls[i].controls.questionOptions.controls; let j=index">
+                                            <!-- <div [formGroupName]="j">
+                                                <input class="form-control" formControlName="optionText" type="text" >
+                                                <span class="btn-icon" (click)="deleteOption(question,option)"><i class="fa fa-times fa-lg" aria-hidden="true"></i>
+                                                </span>
+                                            </div> -->
+                                            <div [formGroupName]="j">
+                                                <div class="form-group" [ngClass]="{'input-group' : surveyForm.controls.surveyQuestions.controls[i].controls.questionOptions.controls.length > 1}">
+                                                    <textarea id="option" [froalaEditor]="optionEditor" type="text" class="form-control" formControlName="optionText"></textarea>
+                                                    <span *ngIf="surveyForm.controls.surveyQuestions.controls[i].controls.questionOptions.controls.length > 1" class="input-group-addon btn-icon" (click)="deleteOption(i, j)"><i class="fa fa-times fa-lg"></i></span>
+                                                </div>
+                                                <div *ngIf="!surveyForm.controls.surveyQuestions.controls[i].controls.questionOptions.controls[j].controls['optionText'].valid"
+                                                class="alert alert-danger">
+                                                    <div *ngIf="surveyForm.controls.surveyQuestions.controls[i].controls.questionOptions.controls[j].controls['optionText'].errors.required">
+                                                        Option is required
+                                                    </div>
+                                                </div> 
+                                            </div>
+                                        </div>
+                                    </div>
+                                <button mat-raised-button class="success-btn" (click)="addOption(i)" >Add Option</button>                      
+                                <hr>
+      
+                                <div class="row">
+                                    <div class="col-12" style="text-align: right; font-size: 20px">
+                                        <span *ngIf="question" class="btn-icon" matTooltip="Add Question Below" (click)="addQuestion(i)"><i class="fa fa-plus" aria-hidden="true"></i></span>
+                                        <!-- <span class="btn-icon" matTooltip="Duplicate Question" (click)="duplicateQuestion(question)"><i class="fa fa-clone" aria-hidden="true"></i></span> -->
+                                        <span class="btn-icon" *ngIf="surveyForm.controls.surveyQuestions.controls.length > 1" matTooltip="Delete Question" (click)="deleteQuestion(i)"><i class="fa fa-trash"></i></span>
+                                        <span class="btn-icon vertical-divider" matTooltip="Required">
+                                            <mat-slide-toggle formControlName="required" [checked]="surveyForm.controls.surveyQuestions.controls[i].controls.required">Required</mat-slide-toggle> 
+                                        </span>
+                                    </div>
+                                </div> 
+                            </div>
+                        </div> 
+                    </div>
+                    <div class="margin-20">
+                        <div>surveyForm details:-</div>
+                        <pre>Is surveyForm valid?: <br>{{surveyForm.valid | json}}</pre>
+                        <pre>form value: <br>{{surveyForm.value | json}}</pre>
+                    </div>
+                </form>
+            </div>
+        </div>
+      </div>

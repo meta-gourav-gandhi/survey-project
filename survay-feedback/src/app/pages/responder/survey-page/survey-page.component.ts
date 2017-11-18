@@ -6,6 +6,7 @@ import { SurveyService} from '../../../services/survey.service';
 import { FormGroup, FormArray, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { AuthService } from "angular2-social-login";
 import { User } from '../../../models/user';
+import { SurveyInfo } from '../../../models/survey-info';
 import { Router,NavigationEnd } from '@angular/router';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 
@@ -17,18 +18,28 @@ import { ActivatedRoute, ParamMap } from '@angular/router';
 })
 export class SurveyPageComponent implements OnInit {
   public surveyForm: FormGroup;
-  survey;
+  survey: Survey;
   sub : any;
   user : User;
   surveyId : number;
+  errorMessageStatus : boolean; 
+  errorMessage : string;
+  errorMessageClass : string;
+  selectedSurvey : Survey;
+  success : boolean;
   response = new FormArray([]);
   result: {
     surveyId,
-    questionResponse,
+    questionResponses,
     };
 
   constructor(private _fb: FormBuilder, private surveyService : SurveyService,private router: Router,public _auth: AuthService, private route: ActivatedRoute) {
-      this.survey = new Survey();
+    if(JSON.parse(localStorage.getItem('currentUser')) === null) {
+      // will be improve when api will be complete
+      this.router.navigate(['/login']);
+    } else {
+        this.user = JSON.parse(localStorage.getItem('currentUser'));
+    }
   }
   
 
@@ -39,75 +50,26 @@ export class SurveyPageComponent implements OnInit {
         }
         window.scrollTo(0, 0)
     });
-    
-    if(JSON.parse(localStorage.getItem('currentUser')) === null) {
-        // will be improve when api will be complete
-        this.router.navigate(['/login']);
-    } else {
-        this.user = JSON.parse(localStorage.getItem('currentUser'));
-    }
 
     this.sub = this.route.params.subscribe(params => {
         this.surveyId = +params['id'];
      });
 
-    this.getSurvey();
+    this.getSurveyFromId();
 
   }
 
-//   getSurveyFromId(){
-//     this.surveyService.getSurveyFromId(this.surveyId, JSON.parse(localStorage.getItem("currentUser")).accessToken)
-//     .then(response => {
-//         this.survey = response.body;
-//     });
-//     this.updateForm();
-//   }
+  getSurveyFromId(){
+    this.surveyService.getSurveyFromId(this.surveyId, JSON.parse(localStorage.getItem("currentUser")).accessToken)
+    .then(response => {
+        this.survey = response.body;
+        this.updateForm();
+    });
+  }
 
 getSurvey() {
-    //call service
-    //assign value to this.survey
-   
-    //mock data just for testing
-    //remove it when calling service
-    let questions: Question[] = [];
-    let question: Question;
-    let options: Option[] = [];
-    let option: Option;
-    option = {
-      id: 0,
-      text: 'Option 1',
-    };
-    options.push(option);
-    option = {
-      id: 1,
-      text: 'Option 2',
-    };
-    options.push(option);
-    question = {
-      id: 0,
-      text: '<p>Question 1</p>',
-      required: true,
-      options: options
-    }
-    questions.push(question);
-    question = {
-      id: 1,
-      text: '<p>Question 2</p>',
-      required: false,
-      options: options
-    }
-    questions.push(question);
-    this.survey = {
-      id: 0,
-      name: 'survey 1',
-      description: 'some survey',
-      labels: null,
-      questions: questions
-    }
-
-    //call this always
-    this.updateForm();
-  }
+    this.getSurveyFromId();
+}
 
   updateForm() {
       this.surveyForm = this._fb.group({
@@ -134,25 +96,57 @@ getSurvey() {
   }
 
   submitSurvey() {
+    debugger;
     if (!this.surveyForm.valid) {
         this.validateAllFormFields(this.surveyForm); 
-        } else {
-        let questionResponse = [];
+    } else {
+        let questionResponses = [];
         let response: {
-        questionId,
-        optionId,
+          quesId,
+          optionId,
         }
+
         for(var i=0; i < this.survey.questions.length; i++){
-        response = {
-        questionId: this.survey.questions[i].id,
-        optionId: this.surveyForm.get('response').value[i]
+          response = {
+          quesId: this.survey.questions[i].id,
+          optionId: this.surveyForm.get('response').value[i]
         };
-        questionResponse.push(response);
+          questionResponses.push(response);
         }
+
         this.result = {
-        surveyId: this.survey.id,
-        questionResponse: questionResponse
+          surveyId: this.survey.id,
+          questionResponses: questionResponses
         }
-        }
+
+        this.saveSurveyResponse(this.result);
+    }
   }
+
+  saveSurveyResponse(result : any){
+    console.log(result);
+    this.errorMessageStatus = false;
+    this.surveyService.submitSurvey(result, JSON.parse(localStorage.getItem("currentUser")).accessToken)
+    .then(response => {
+        if (response.status.toString() === "SUCCESS"){
+          this.errorMessageStatus = true;
+          this.errorMessageClass = "alert alert-success flipInX animated";
+          this.errorMessage = "Your response saved.";
+        } else if (response.status.toString() === "DUPLICATE") {
+          this.success = true;
+          this.errorMessageStatus = true;
+          this.errorMessageClass = "alert alert-warning flipInX animated";
+          this.errorMessage = "Survey Already filled by you.";
+        }else {
+          this.errorMessageStatus = true;
+          this.errorMessageClass = "alert alert-danger flipInX animated";
+          this.errorMessage = "Error in Response Saving";
+        }
+    });
+  }
+
+  onSelect(survey: Survey): void {
+    this.selectedSurvey = survey;
+  }
+
 }

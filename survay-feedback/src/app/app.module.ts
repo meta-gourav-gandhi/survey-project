@@ -40,6 +40,12 @@ import { CreateSurveyComponent } from './pages/create-survey/create-survey.compo
 import { ViewSurveyComponent } from './pages/surveyor/view-survey/view-created-survey.component';
 import { PreviousResponsesComponent } from './pages/responder/previous-responses/previous-responses.component';
 import { SurveyResponseComponent } from './pages/responder/survey-response/survey-response.component';
+import { ViewSurveyResultComponent } from './pages/survey-result/view-survey-result/view-survey-result.component';
+import { ChartsModule } from 'ng2-charts';
+import { CeiboShare } from 'ng2-social-share';
+import { SidebarModule } from 'ng-sidebar';
+import { NotFoundComponent } from './pages/not-found/not-found.component';
+import { EditSurveyComponent } from './pages/surveyor/edit-survey/edit-survey.component';
 
 let providers = {
     "google": {
@@ -75,7 +81,11 @@ let providers = {
     CreateSurveyComponent,
     ViewSurveyComponent,
     PreviousResponsesComponent,
-    SurveyResponseComponent
+    SurveyResponseComponent,
+    ViewSurveyResultComponent,
+    CeiboShare,
+    NotFoundComponent,
+    EditSurveyComponent,
   ],
   imports: [
     BrowserModule,
@@ -97,7 +107,9 @@ let providers = {
     MatSnackBarModule,
     MatChipsModule,
     FroalaEditorModule.forRoot(),
-    FroalaViewModule.forRoot()
+    FroalaViewModule.forRoot(),
+    ChartsModule,
+    SidebarModule.forRoot()
   ],
   providers: [UserService,AlertService,SurveyService],
   bootstrap: [AppComponent]

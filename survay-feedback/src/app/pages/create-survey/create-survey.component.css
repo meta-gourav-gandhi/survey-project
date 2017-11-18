@@ -11,18 +11,6 @@
   }
   
   
-  .panel {
-    border-radius: 0px;
-    margin : 0% -5% 5% -5%;
-    font-weight: bold;
-    text-align: center;
-    border: 0px;
-    background: #009cdb;
-    color: white;
-    box-shadow: 0px 0px 10px rgba(0,0,0,0.5);
-    font-size: 20px;
-  }
-  
   .btn-success {
     background : #009cdb;
     border: none;
@@ -46,13 +34,6 @@
     border-left: 1px solid #eee;
   }
   
-  .card-header {
-    position: sticky;
-    top: 0;
-    width: 100%;
-    background-color: rgb(252, 248, 248);
-    z-index: 100000;
-  }
   
   .card-block {
     margin-top: 500px;
@@ -61,3 +42,79 @@
   .fr-box{
     width:100%;
   }
+
+  .full-width{
+    width: 100%;
+  }
+
+  @media only screen and (max-width: 480px) {
+    #headLine {
+        padding-top: 14%;
+        margin-bottom: 10%;
+        padding-bottom: 1.5%;
+    }
+}
+
+@media only screen and (min-width: 480px) {
+    #headLine {
+        padding-top: 4%;
+        margin-bottom: 10%;
+        padding-bottom: 1.5%;
+    }
+}
+
+.loader {
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.success-btn {
+  background : #009cdb;
+  color: white;
+  border: none;
+}
+
+.panel-heading h3 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: normal;
+  width: 75%;
+  padding-top: 8px;
+}
+
+.btn-icon {
+  color:#757575;
+  padding-left:10px;
+  padding-right:10px;
+  background: #fff;
+  border: none;
+}
+
+.vertical-divider {
+  border-left: 1px solid #eee;
+}
+
+
+
+.card-block {
+  margin-top: 500px;
+}
+
+.fr-box{
+  width:100%;
+}
+
+input.mat-chip-input {
+  width: 100%;
+}
+
+.sb-wrapper{
+  background: red;
+}
+
+/* container */

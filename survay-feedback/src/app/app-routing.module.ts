@@ -16,6 +16,9 @@ import { CreateSurveyComponent } from './pages/create-survey/create-survey.compo
 import { ViewSurveyComponent } from './pages/surveyor/view-survey/view-created-survey.component';
 import { PreviousResponsesComponent } from './pages/responder/previous-responses/previous-responses.component';
 import { SurveyResponseComponent } from './pages/responder/survey-response/survey-response.component';
+import { ViewSurveyResultComponent } from './pages/survey-result/view-survey-result/view-survey-result.component';
+import { NotFoundComponent } from './pages/not-found/not-found.component';
+import { EditSurveyComponent } from './pages/surveyor/edit-survey/edit-survey.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -34,6 +37,10 @@ const routes: Routes = [
   { path: 'viewSurvey/:id',  component: ViewSurveyComponent },
   { path: 'previousResponses',  component: PreviousResponsesComponent },
   { path: 'surveyResponse/:id', component: SurveyResponseComponent },
+  { path: 'surveyResult/:id', component: ViewSurveyResultComponent },
+  { path: 'editSurvey/:id', component: EditSurveyComponent },
+  {path: '404', component: NotFoundComponent},
+  {path: '**', redirectTo: '/404'}
 ];
 
 @NgModule({

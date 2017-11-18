@@ -1,0 +1,63 @@
+.success-btn {
+    background : #009cdb;
+    color: white;
+    border: none;
+  }
+  
+  .panel-heading h3 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: normal;
+    width: 75%;
+    padding-top: 8px;
+  }
+  
+  .btn-icon {
+    color:#757575;
+    padding-left:10px;
+    padding-right:10px;
+    background: #fff;
+    border: none;
+  }
+  
+  .vertical-divider {
+    border-left: 1px solid #eee;
+  }
+  
+  .card-header {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    background-color: rgb(252, 248, 248);
+    z-index: 100000;
+  }
+  
+  .card-block {
+    margin-top: 500px;
+  }
+  
+  .fr-box{
+    width:100%;
+  }
+  
+  input.mat-chip-input {
+    width: 100%;
+  }
+  
+  @media only screen and (max-width: 480px) {
+    #headLine {
+        padding-top: 14%;
+        margin-bottom: 10%;
+        padding-bottom: 1.5%;
+    }
+  }
+  
+  @media only screen and (min-width: 480px) {
+    #headLine {
+        padding-top: 4%;
+        margin-bottom: 4%;
+        padding-bottom: 1.5%;
+    }
+  }
+  

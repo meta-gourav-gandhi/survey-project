@@ -192,10 +192,6 @@
     width : 35px;
 }
 
-.large {
-  width : 100%;
-}
-
 .btn-glyphicon {
     padding:8px;
     background:#ffffff;
@@ -213,4 +209,8 @@
 .custom-input{
   display: inline;
   width: 50%;
+}
+
+.min-width{
+  min-width: max-content;
 }

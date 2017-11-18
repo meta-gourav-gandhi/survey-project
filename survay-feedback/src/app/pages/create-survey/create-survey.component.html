@@ -1,16 +1,26 @@
+<div class="secondary" id="headLine">
+    <div class="container"><h2>Create new survey</h2></div>
+</div>
 <div class="container">
-  <div class="card">
-      <div class="card-header">
+    <div *ngIf="errorMessageStatus">
+        <div class="{{errorMessageClass}}">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            {{errorMessage}}
+        </div>
+    </div>
+
+  <div class="panel panel-default">
+      <div class="panel-heading">
           <div class="row">
               <div class="col-md-6">
                   <h2>Create Survey</h2>
               </div>
               <div class="col-md-6 text-right">
-                  <button mat-raised-button class="success-btn" (click)="createSurvey()" >Create</button>
+                  
               </div>
           </div>
       </div>
-      <div class="card-body">
+      <div class="panel-body">
           <form [formGroup]="surveyForm" novalidate>
               <div class="form-group input-group-lg">
                   <label for="name">Survey Name</label>
@@ -82,7 +92,7 @@
                                       </div> -->
                                       <div [formGroupName]="j">
                                           <div class="input-group">
-                                              <textarea id="option" [froalaEditor]="optionEditor" type="text" class="form-control" style="width: 100%" formControlName="optionText"></textarea>
+                                              <textarea id="option" [froalaEditor]="optionEditor" type="text" class="form-control full-width" formControlName="optionText"></textarea>
                                               <span *ngIf="surveyForm.controls.surveyQuestions.controls[i].controls.questionOptions.controls.length > 1" class="input-group-addon btn-icon" (click)="deleteOption(i, j)"><i class="fa fa-times fa-lg"></i></span>
                                           </div>
                                           <div *ngIf="!surveyForm.controls.surveyQuestions.controls[i].controls.questionOptions.controls[j].controls['optionText'].valid"
@@ -109,14 +119,53 @@
                               </div>
                           </div> 
                       </div>
-                  </div> 
+                  </div>  
               </div>
-              <div class="margin-20">
-                  <div>surveyForm details:-</div>
-                  <pre>Is surveyForm valid?: <br>{{surveyForm.valid | json}}</pre>
-                  <pre>form value: <br>{{surveyForm.value | json}}</pre>
-              </div>
+              <div class="panel-footer margin-20 row">
+                  <div class="col-md-6"><button mat-raised-button class="success-btn" data-toggle="modal" data-target="#createdSurveyModal" data-keyboard="false" data-backdrop="static" [class.selected]="survey === createdSurvey"  (click)="createSurvey()" >Create</button></div><div class="col-md-6"><span class="badge" *ngIf="loadingData"><span class="glyphicon glyphicon-repeat loader"></span> Processing... Please wait </span></div>
+                </div>
           </form>
       </div>
   </div>
 </div>
+<side-navbar></side-navbar>
+
+<!--  -->
+<!--  -->
+<div id="createdSurveyModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+        
+            <!-- Modal content-->
+            <div class="modal-content sharp-corner">
+            <div class="modal-header primary text-center">
+                <button type="button" class="close" data-dismiss="modal" routerLink="/dashboard" >&times;</button>
+                <h4 class="modal-title">Survey Created</h4>
+            </div>
+            <div class="modal-body">
+                <label for="usr">Survey ID:</label>
+                <p *ngIf="createdSurvey">{{createdSurvey.id}}</p>
+                <label for="usr">Survey Name:</label>
+                <p *ngIf="createdSurvey">{{createdSurvey.name}}</p>
+                <label for="usr">Survey URL:</label>
+                <div class="input-group" *ngIf="createdSurvey">
+                    <input type="text" class="form-control" [(ngModel)]="createdSurvey.url" placeholder="content will be copy after click the copy button"
+                            #inputTarget>
+                    <span class="input-group-btn">
+                        <button class="btn btn-default large"  title="Copy to clipboard" [class.btn-success]= "isCopied" type="button" [ngxClipboard]="inputTarget" (cbOnSuccess)="isCopied2 = true"><span class="	glyphicon glyphicon-duplicate"></span></button>
+                    </span>
+                </div>
+                <hr class="hr-text" data-content="Share Using" />
+                <p *ngIf="createdSurvey" id="share">
+                    <a class="facebook" ceiboShare  [facebook]="{u: createdSurvey.url}"><i class="fa fa-facebook"></i></a>
+                    <a class="linkedin" ceiboShare  [linkedIn]="{url:createdSurvey.url}"><i class="fa fa-linkedin"></i></a>
+                    <a class="googleplus" ceiboShare  [googlePlus]="{url:createdSurvey.url}"><i class="fa fa-google-plus"></i></a>
+                    <a class="twitter" ceiboShare  [twitter]="{url:createdSurvey.url, text:'Do a awesome Survey ', hashtags:'survey, wesurve'}"><i class="fa fa-twitter"></i></a>                 
+                </p>
+            </div>
+            <div class="modal-footer text-center">
+                <button type="button" class="btn btn-default" data-dismiss="modal" routerLink="/dashboard">Close</button>
+            </div>
+            </div>
+        
+        </div>
+        </div>

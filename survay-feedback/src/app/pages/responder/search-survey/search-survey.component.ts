@@ -5,6 +5,8 @@ import { Message } from '../../../models/message';
 import { User } from '../../../models/user';
 import { Router,NavigationEnd } from '@angular/router';
 import { Survey } from '../../../models/survey'; 
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
 @Component({
   selector: 'search-survey',
   templateUrl: './search-survey.component.html',
@@ -14,18 +16,9 @@ export class SearchSurveyComponent implements OnInit {
   user : any = {};
   errorMessageStatus : boolean; 
   errorMessage : string;
-  //survey : Survey;
+  rForm : FormGroup;
 
-  constructor(private router: Router,public _auth: AuthService, private surveyService: SurveyService){ }
-
-  ngOnInit() {
-    this.router.events.subscribe((evt) => {
-      if (!(evt instanceof NavigationEnd)) {
-          return;
-      }
-      window.scrollTo(0, 0)
-    });
-    
+  constructor(private router: Router,public _auth: AuthService, private surveyService: SurveyService,private formBuilder: FormBuilder){ 
     if(JSON.parse(localStorage.getItem('currentUser')) === null) {
         // will be improve when api will be complete
         this.router.navigate(['/login']);
@@ -34,18 +27,40 @@ export class SearchSurveyComponent implements OnInit {
       }
   }
 
+  ngOnInit() {
+    this.router.events.subscribe((evt) => {
+      if (!(evt instanceof NavigationEnd)) {
+          return;
+      }
+      window.scrollTo(0, 0)
+    });
+
+    this.validate();
+  }
+
   checkSurveyExists(surveyId : number){
     this.errorMessageStatus = false;
     this.surveyService.checkSurveyExists(surveyId, JSON.parse(localStorage.getItem("currentUser")).accessToken)
     .then(response => { 
-        console.log(response);
         if (response.status.toString() == "SUCCESS") {
-            //this.survey = response.body;
             this.router.navigate(['/survey',surveyId]);
-        } else {
+        } else if (response.status.toString() == "NOT_ACCESSIBLE") {
             this.errorMessageStatus = true;
-            this.errorMessage = "Error in fetching survey list";
+            this.errorMessage = "Survey is not live right now. Please come back after some time.";
+        } else if(response.status.toString() == "DUPLICATE") {
+            this.errorMessageStatus = true;
+            this.errorMessage = "Survey is already filled by you.";
+        }else {
+            this.errorMessageStatus = true;
+            this.errorMessage = "Survey not exists with given id.";
         }
     });
+  }
+
+  validate() {
+      console.log("Entered");
+    this.rForm = this.formBuilder.group({
+        'surveyID': [null, Validators.compose([Validators.required, Validators.pattern('^[0-9]*$')])],
+      });
   }
 }

@@ -7,12 +7,10 @@ name: 'filter'
 })
 export class FilterPipe implements PipeTransform {
     transform(items: any[], searchText): any {
-
         return searchText 
-            ? items.filter(item => (item.surveyName.toLowerCase().indexOf(searchText) !== -1 ||
-             item.description.toLowerCase().indexOf(searchText) !== -1 ||
+            ? items.filter(item => ((item.surveyName.toLowerCase().indexOf(searchText) !== -1 ||
              item.labels.toLowerCase().indexOf(searchText) !== -1 ||
-             item.id == searchText)) 
+             item.id == searchText) && (searchText.toLowerCase().indexOf(",") == -1))) 
             : items;
     }
 }

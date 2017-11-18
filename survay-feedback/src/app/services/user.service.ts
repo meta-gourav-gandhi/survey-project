@@ -54,8 +54,11 @@ export class UserService {
     }
 
     private handleError(error: any): Promise<any> {
-        console.error('An error occurred', error); // for demo purposes only
-        return Promise.reject(error.message || error);
+        let ErrorServerResponse = {
+            "status" : "INTERNAL_ERROR",
+            "body" : null
+        }
+        return Promise.resolve(ErrorServerResponse);
     }
 
     setCurrentUser(currentUser: any) {

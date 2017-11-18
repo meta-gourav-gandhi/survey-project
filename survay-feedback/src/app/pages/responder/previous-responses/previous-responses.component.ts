@@ -22,8 +22,16 @@ export class PreviousResponsesComponent implements OnInit {
   reverse: boolean = false;
   surveyFilter: any = {surveyName : '', id : ''};
   showOrderIcon : boolean = false;
+  resultFetched : boolean = false;
 
-  constructor(private router: Router,public _auth: AuthService, private userService: UserService, private surveyService: SurveyService){ }
+  constructor(private router: Router,public _auth: AuthService, private userService: UserService, private surveyService: SurveyService){ 
+    if(JSON.parse(localStorage.getItem('currentUser')) === null) {
+      // will be improve when api will be complete
+      this.router.navigate(['/login']);
+    } else {
+        this.user = JSON.parse(localStorage.getItem('currentUser'));
+    }
+  }
 
   ngOnInit() {
     this.router.events.subscribe((evt) => {
@@ -33,21 +41,15 @@ export class PreviousResponsesComponent implements OnInit {
       window.scrollTo(0, 0)
     });
 
-    if(JSON.parse(localStorage.getItem('currentUser')) === null) {
-        // will be improve when api will be complete
-        this.router.navigate(['/login']);
-      } else {
-          this.user = JSON.parse(localStorage.getItem('currentUser'));
-      }
-
       this.getSurveyList();
     }
 
   getSurveyList() {
+    this.resultFetched = false;
     this.errorMessageStatus = false;
     this.userService.getFilledSurveyList(JSON.parse(localStorage.getItem("currentUser")).accessToken)
     .then(response => { 
-        console.log(response);
+        this.resultFetched = true;
         if (response.status.toString() == "SUCCESS") {
             this.surveyList = response.body;
         } else {

@@ -1,26 +1,34 @@
 <div class="secondary" id="headLine">
-    <div class="container"><h2>WeSurve Administration</h2></div>
+    <div class="container"><h2>Search Survey</h2></div>
 </div>
 <div class="container">
     
     <div class="row">
         <div class="col-sm-2"></div>
         <div class="col-sm-8">
-            <form>
-                <div *ngIf="errorMessageStatus">
-                    <div class="alert alert-danger flipInX animated">
-                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                        {{errorMessage}}
-                    </div>
-                </div>
+            <form [formGroup]="rForm">
                 <div class="form-group">
                     <label for="comment" class="text-primary-for-heading"><h2><strong>Fill out Survey</strong></h2></label>
                     <div class="input-box">
-                        <input type="text" class="form-control custom-input sharp-corner" id="id" placeholder="Search survey by id" #surveyID >
-                        <button class="btn btn-primary btn-custom searchIcon" (click)="checkSurveyExists(surveyID.value)"><span class="glyphicon glyphicon-search"></span></button>
+                        <input type="text" class="form-control custom-input sharp-corner" id="id" formControlName="surveyID" placeholder="Search survey by id" #surveyID >
+                        <button [disabled]="!rForm.valid" class="btn btn-primary btn-custom searchIcon" (click)="checkSurveyExists(surveyID.value)"><span class="glyphicon glyphicon-search"></span></button>
                     </div>
                 </div>
             </form>
+            <div *ngIf="!rForm.controls['surveyID'].valid && rForm.controls['surveyID'].touched">
+                <div *ngIf="rForm.controls['surveyID'].errors.pattern || rForm.controls['surveyID'].errors.required">
+                        <div class="alert alert-warning flipInX animated">
+                            Survey ID must be a number
+                        </div>
+                    </div>
+            </div>
+
+            <div *ngIf="errorMessageStatus">
+                <div class="alert alert-danger flipInX animated">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    {{errorMessage}}
+                </div>
+            </div>
         </div>
         <div class="col-sm-2"></div>
     </div>

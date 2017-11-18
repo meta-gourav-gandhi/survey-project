@@ -1,5 +1,5 @@
 <div class="secondary" id="headLine">
-        <div class="container"></div>
+        <div class="container">{{survey.name}}</div>
     </div>
     <div class="container">
         
@@ -14,15 +14,13 @@
                     </div>
                         <div class="panel panel-default margin-bottom-10">
                             <div class="panel-heading"><h2>{{survey.name}}
-                                <a class="btn btn-primary pull-right btn-medium flipInX animated" data-toggle="modal" data-target="#createViewerModal" (click)="onSelect(survey)" [class.selected]="survey === selectedSurvey" ><span class="glyphicon glyphicon-share-alt"></span> Share Result</a> <a class="btn btn-primary pull-right btn-small flipInX animated" ><span class="glyphicon glyphicon-pencil"></span> Edit</a> 
+                                <a class="btn btn-primary pull-right btn-medium flipInX animated" data-toggle="modal" data-target="#createViewerModal" (click)="onSelect(survey)" [class.selected]="survey === selectedSurvey" ><span class="glyphicon glyphicon-share-alt"></span> Share Result</a> <a [routerLink]="['/editSurvey', survey.id ]" class="btn btn-primary pull-right btn-small flipInX animated" ><span class="glyphicon glyphicon-pencil"></span> Edit</a> 
                             </h2></div>
                             <div class="panel-body" id="table-panel">
                                 <div *ngFor="let question of survey.questions; let i= index">
-                                    <h3 class="inline-show" >{{i+1}}.&nbsp; <span [innerHTML]="question.text">
-                                    </span></h3>
+                                    <h3 class="inline-show" >{{i+1}}.&nbsp; <div [froalaView]="question.text"></div></h3>
                                     <div class="inline-show" *ngFor="let option of question.options; let j= index">
-                                            ({{j+1}})&nbsp; <span [innerHTML]="option.text">
-                                                </span>
+                                            ({{j+1}})&nbsp; <div [froalaView]="option.text"></div>
                                     </div>
                                     <hr/>
                                 </div>

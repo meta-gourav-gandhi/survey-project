@@ -29,9 +29,15 @@ export class ViewSurveyComponent implements OnInit {
     formId : number;
     p: number = 1;
     
+    
   
     constructor(private userService: UserService, private _sanitizer: DomSanitizer, private router: Router,public _auth: AuthService, private route: ActivatedRoute, private surveyService: SurveyService){ 
         this.survey = new Survey();
+        if (JSON.parse(localStorage.getItem('currentUser')) === null) {
+            this.router.navigate(['/login']);
+        } else {
+            this.user = JSON.parse(localStorage.getItem('currentUser'));
+        }
     }
 
     ngOnInit() {
@@ -41,24 +47,13 @@ export class ViewSurveyComponent implements OnInit {
         }
         window.scrollTo(0, 0)
       });
-      
-      if(JSON.parse(localStorage.getItem('currentUser')) === null) {
-          // will be improve when api will be complete
-          this.router.navigate(['/login']);
-        } else {
-            this.user = JSON.parse(localStorage.getItem('currentUser'));
-        }
 
-        // this.route.paramMap
-        // .switchMap((params: ParamMap) => this.surveyService.getSurveyFromId(+params.get('id'), JSON.parse(localStorage.getItem("currentUser")).accessToken))
-        // .subscribe(response => this.survey = response.body);
+    this.sub = this.route.params.subscribe(params => {
+        this.formId = +params['id'];
+        });
 
-        this.sub = this.route.params.subscribe(params => {
-            this.formId = +params['id'];
-         });
-
-        this.getSurveyFromId();
-        this.getAllUsers();
+    this.getSurveyFromId();
+    this.getAllUsers();
 
     }
 

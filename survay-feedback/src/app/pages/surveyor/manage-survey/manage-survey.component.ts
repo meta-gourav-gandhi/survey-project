@@ -25,8 +25,16 @@ export class ManageSurveyComponent implements OnInit {
   reverse: boolean = false;
   surveyFilter: any = {surveyName : '', id : ''};
   showOrderIcon : boolean = false;
+  loading : boolean = true;
+  resultFetched : boolean = false;
 
-  constructor(private router: Router,public _auth: AuthService, private userService: UserService, private surveyService: SurveyService){ }
+  constructor(private router: Router,public _auth: AuthService, private userService: UserService, private surveyService: SurveyService){
+    if (JSON.parse(localStorage.getItem('currentUser')) === null) {
+        this.router.navigate(['/login']);
+    } else {
+        this.user = JSON.parse(localStorage.getItem('currentUser'));
+    }
+   }
 
   ngOnInit() {
     this.router.events.subscribe((evt) => {
@@ -35,13 +43,6 @@ export class ManageSurveyComponent implements OnInit {
       }
       window.scrollTo(0, 0)
     });
-
-    if(JSON.parse(localStorage.getItem('currentUser')) === null) {
-        // will be improve when api will be complete
-        this.router.navigate(['/login']);
-      } else {
-          this.user = JSON.parse(localStorage.getItem('currentUser'));
-      }
 
       this.getSurveyList();
   }
@@ -55,12 +56,16 @@ export class ManageSurveyComponent implements OnInit {
   }
 
   getSurveyList() {
+    this.resultFetched = false;
+    this.loading = true;
     this.errorMessageStatus = false;
     this.userService.getSurveyList(JSON.parse(localStorage.getItem("currentUser")).accessToken)
     .then(response => { 
         console.log(response);
+        this.resultFetched = true;
         if (response.status.toString() == "SUCCESS") {
             this.surveyList = response.body;
+            this.loading = false;
         } else {
             this.errorMessageStatus = true;
             this.errorMessage = "Error in fetching survey list";
@@ -73,7 +78,6 @@ export class ManageSurveyComponent implements OnInit {
     this.errorMessageStatus = false;
     this.surveyService.deleteSurvey(surveyId, JSON.parse(localStorage.getItem("currentUser")).accessToken)
     .then(response => { 
-        console.log(response);
         if (response.status.toString() == "SUCCESS") {
             this.getSurveyList();
         } else {
@@ -87,7 +91,6 @@ export class ManageSurveyComponent implements OnInit {
     this.errorMessageStatus = false;
     this.surveyService.changeSurveyStatus(surveyId, JSON.parse(localStorage.getItem("currentUser")).accessToken)
     .then(response => { 
-        console.log(response);
         if (response.status.toString() == "SUCCESS") {
             
         } else {

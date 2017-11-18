@@ -16,6 +16,7 @@ export class ForgotPasswordComponent implements OnInit {
   infoMessage : String;
   infoMessageStatus : boolean;
   infoMessageClass : String;
+  loadingData : boolean;
 
   constructor(private router: Router,public _auth: AuthService, private userService: UserService){ }
 
@@ -29,18 +30,20 @@ export class ForgotPasswordComponent implements OnInit {
   }
 
   recoverPassword(email : string) {
-    this.infoMessageStatus = true;
+    this.loadingData = true;
+    this.infoMessageStatus = false;
     this.userService.recoverPassword(email)
     .then(response => {
-        if (response.status.toString() == "SUCCESS") {
-            this.infoMessageStatus = true;
-            this.infoMessage = "Email Sent to mail id " + email ;
-            this.infoMessageClass = "alert alert-success alert-dismissable";
-        } else {
-            this.infoMessageStatus = true;
-            this.infoMessage = "Email not exists in System Database";
-            this.infoMessageClass = "alert alert-danger alert-dismissable";
-        }
+      this.loadingData = false;
+      if (response.status.toString() == "SUCCESS") {
+          this.infoMessageStatus = true;
+          this.infoMessage = "Email Sent to mail id " + email ;
+          this.infoMessageClass = "alert alert-success alert-dismissable";
+      } else {
+          this.infoMessageStatus = true;
+          this.infoMessage = "Email not exists in System Database";
+          this.infoMessageClass = "alert alert-danger alert-dismissable";
+      }
     });
   }
 }

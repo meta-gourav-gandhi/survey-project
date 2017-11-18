@@ -24,6 +24,9 @@ export class SignupComponent implements OnInit {
 
   constructor(private userService: UserService,
     private router: Router,private location: Location, private alertService: AlertService,private formBuilder: FormBuilder) {
+      if(JSON.parse(localStorage.getItem('currentUser')) !== null) {
+        this.router.navigate(['/dashboard']);
+      }
      }
 
   ngOnInit() {
