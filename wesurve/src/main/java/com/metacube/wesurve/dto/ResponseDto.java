@@ -1,3 +1,6 @@
+/**
+ * DTO class. Response class for all rest APIs.
+ */
 package com.metacube.wesurve.dto;
 
 import com.metacube.wesurve.enums.Status;

@@ -8,6 +8,11 @@ import java.util.regex.Pattern;
 
 public class StringUtils {
 
+	/**
+	 * This method return a random string of the given length
+	 * @param length
+	 * @return random string
+	 */
 	public static String randomAlphanumeric(int length) {
 		String string1 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
 		StringBuilder string2 = new StringBuilder();
@@ -19,7 +24,12 @@ public class StringUtils {
 
 		return string2.toString();
 	}
-
+	
+	/**
+	 * This method checks if string is not null and empty.
+	 * @param string
+	 * @return
+	 */
 	public static boolean validateString(String string) {
 		System.out.println(string);
 		return !(string == null || string.trim().isEmpty());

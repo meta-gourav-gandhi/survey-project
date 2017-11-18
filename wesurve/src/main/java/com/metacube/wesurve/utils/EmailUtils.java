@@ -13,7 +13,8 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 public class EmailUtils {
-	/**
+	
+	/** This method sends email.
 	 * @param from
 	 * @param password
 	 * @param to
@@ -27,17 +28,20 @@ public class EmailUtils {
 		Message message;
 
 		Properties properties = new Properties();
+		
 		properties.put("mail.smtp.host", "smtp.gmail.com");
 		properties.put("mail.smtp.port", "465");
 		properties.put("mail.smtp.auth", "true");
 		properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
 		properties.put("mail.debug", "false");
+		
 		Session session = Session.getDefaultInstance(properties, new Authenticator() {
 			@Override
 			protected javax.mail.PasswordAuthentication getPasswordAuthentication() {
 				return new PasswordAuthentication(from, password);
 			}
 		});
+		
 		message = new MimeMessage(session);
 		message.setFrom(new InternetAddress(from));
 		message.setRecipient(Message.RecipientType.TO, new InternetAddress(to));

@@ -7,6 +7,7 @@ import java.security.NoSuchAlgorithmException;
 public class MD5Encryption {
 
 	/**
+	 * This methods performs MD5 encryption on the given string and returns it.
 	 * @param input string to encrypt
 	 * @return encrypted string
 	 * @throws NoSuchAlgorithmException

@@ -114,7 +114,12 @@ public class UserController {
 		response.setBody(userList);
 		return response;
 	}
-
+	/**
+	 * This method returns users list to the surveyor
+	 * @param accessToken
+	 * @param surveyId
+	 * @return ResponseDto<Iterable<UserDetailsForSurveyorDto>>
+	 */
 	@RequestMapping(value = "/surveyor/userlist", method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody ResponseDto<Iterable<UserDetailsForSurveyorDto>> getUserToAssignViewer(
 			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken,
@@ -135,6 +140,12 @@ public class UserController {
 		return response;
 	}
 
+	/**
+	 * This method changes password of the user
+	 * @param accessToken
+	 * @param password
+	 * @return ResponseDto<Void> object
+	 */
 	@RequestMapping(value = "/changepassword", method = RequestMethod.PUT)
 	public @ResponseBody ResponseDto<Void> changePassword(
 			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken, @RequestBody PasswordsDto password) {
@@ -170,6 +181,11 @@ public class UserController {
 		return response;
 	}
 
+	/**
+	 * This method returns survey list for the viewer to see result of the survey.
+	 * @param accessToken
+	 * @return ResponseDto<Iterable<SurveyInfoDto>> object
+	 */ 
 	@RequestMapping(value = "/viewer/surveylist", method = RequestMethod.GET)
 	public @ResponseBody ResponseDto<Iterable<SurveyInfoDto>> getSurveyListForViewers(
 			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken) {
@@ -188,6 +204,11 @@ public class UserController {
 		return response;
 	}
 
+	/**
+	 * This method returns created survey's list of the surveyor.
+	 * @param accessToken
+	 * @return ResponseDto<Iterable<SurveyInfoDto>>
+	 */
 	@RequestMapping(value = "/surveyor/surveylist", method = RequestMethod.GET)
 	public @ResponseBody ResponseDto<Iterable<SurveyInfoDto>> getSurveyListOfSurveyor(
 			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken) {
@@ -206,6 +227,11 @@ public class UserController {
 		return response;
 	}
 
+	/**
+	 * This method returns list of filled surveys of the usr to view responses.
+	 * @param accessToken
+	 * @return ResponseDto<Iterable<SurveyInfoDto>>
+	 */
 	@RequestMapping(value = "/responder/surveylist", method = RequestMethod.GET)
 	public @ResponseBody ResponseDto<Iterable<SurveyInfoDto>> getListOfFilledSurveys(
 			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken) {
@@ -225,8 +251,9 @@ public class UserController {
 	}
 
 	/**
+	 * This method checks authorisation of the user using access token
 	 * @param accessToken of the user
-	 * @return the role of the given user
+	 * @return UserData object
 	 */
 	private UserData checkAuthorization(String accessToken) {
 		UserData user = new UserData();

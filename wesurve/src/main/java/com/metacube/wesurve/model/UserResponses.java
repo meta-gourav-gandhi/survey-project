@@ -1,3 +1,6 @@
+/**
+ * The class UserResponse is a POJO class for user_responses table.
+ */
 package com.metacube.wesurve.model;
 
 import javax.persistence.Entity;
@@ -8,7 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@IdClass(UserResonsesID.class)
+@IdClass(UserResponsesID.class)
 @Table(name = "user_responses")
 public class UserResponses {
 

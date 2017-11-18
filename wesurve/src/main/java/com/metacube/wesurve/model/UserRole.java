@@ -1,3 +1,6 @@
+/**
+ * The UserRole class is POJO class for user_roles table.
+ */
 package com.metacube.wesurve.model;
 
 import javax.persistence.Column;

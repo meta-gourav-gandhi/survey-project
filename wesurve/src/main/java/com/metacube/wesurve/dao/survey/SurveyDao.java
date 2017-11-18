@@ -1,3 +1,6 @@
+/**
+ * The SurveyDao is a DAO interface for the Survey Model class.
+ */
 package com.metacube.wesurve.dao.survey;
 
 import com.metacube.wesurve.dao.AbstractDao;

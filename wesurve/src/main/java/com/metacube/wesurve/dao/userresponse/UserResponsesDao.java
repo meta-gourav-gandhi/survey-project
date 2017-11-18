@@ -1,3 +1,6 @@
+/**
+ * The UserResponsesDao is a DAO interface for the UserResponses Model class.
+ */
 package com.metacube.wesurve.dao.userresponse;
 
 import java.util.List;

@@ -1,3 +1,6 @@
+/**
+ * DTO class
+ */
 package com.metacube.wesurve.dto;
 
 public class LabelsDto {

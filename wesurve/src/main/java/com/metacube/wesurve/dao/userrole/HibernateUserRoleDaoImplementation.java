@@ -1,3 +1,7 @@
+/**
+ * The HibernateUserRoleDaoImplementation class is a DAO class for UserRole Model.
+ * It extends GenericHibernateDao class and implements UserRoleDao interface.
+ */
 package com.metacube.wesurve.dao.userrole;
 
 import org.springframework.stereotype.Repository;

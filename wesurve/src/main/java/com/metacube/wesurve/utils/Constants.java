@@ -1,3 +1,6 @@
+/**
+ * Class for constants
+ */
 package com.metacube.wesurve.utils;
 
 public class Constants {

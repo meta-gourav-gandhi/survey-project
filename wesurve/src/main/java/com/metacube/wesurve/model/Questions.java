@@ -1,3 +1,6 @@
+/**
+ * The class Questions is a POJO class for questionstb table.
+ */
 package com.metacube.wesurve.model;
 
 import java.util.Date;

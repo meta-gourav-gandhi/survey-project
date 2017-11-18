@@ -1,3 +1,6 @@
+/**
+ * The class User is POJO class for user_details table.
+ */
 package com.metacube.wesurve.model;
 
 import java.util.Date;
@@ -64,7 +67,7 @@ public class User {
 			@JoinColumn(name = "survey_id") })
 	private Set<Survey> createdSurveyList = new HashSet<>();
 
-	@ManyToMany(mappedBy = "respondersList", cascade = { CascadeType.MERGE })
+	@ManyToMany(mappedBy = "respondersList")
 	private Set<Survey> filledSurveyList = new HashSet<>();
 
 	public int getUserId() {

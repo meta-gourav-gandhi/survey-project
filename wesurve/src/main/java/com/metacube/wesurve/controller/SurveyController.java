@@ -34,11 +34,11 @@ public class SurveyController {
 	SurveyFacade surveyFacade;
 
 	/**
-	 * This method
+	 * This method creates the Survey
 	 * 
 	 * @param accessToken
 	 * @param surveyDto
-	 * @return
+	 * @return ResponseDto<SurveyResponseDto> object
 	 */
 	@RequestMapping(value = "/", method = RequestMethod.POST, consumes = "application/json")
 	public @ResponseBody ResponseDto<SurveyResponseDto> createSurvey(
@@ -57,6 +57,12 @@ public class SurveyController {
 		return response;
 	}
 
+	/**
+	 * This method deletes survey and returns status.
+	 * @param accessToken
+	 * @param surveyId
+	 * @return ResponseDto<Void> object
+	 */
 	@RequestMapping(value = "/", method = RequestMethod.DELETE)
 	public @ResponseBody ResponseDto<Void> deleteSurvey(
 			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken,
@@ -75,6 +81,14 @@ public class SurveyController {
 		return response;
 	}
 
+	/**
+	 * This method checks if survey exists or not and 
+	 * if exists it checks whether it is live or dead.
+	 * 
+	 * @param accessToken
+	 * @param surveyId
+	 * @return ResponseDto<Void> object
+	 */
 	@RequestMapping(value = "/exists", method = RequestMethod.GET)
 	public @ResponseBody ResponseDto<Void> checkIfSurveyExists(
 			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken,
@@ -91,6 +105,12 @@ public class SurveyController {
 		return response;
 	}
 
+	/**
+	 * This method gets survey by id and returns it. 
+	 * @param accessToken
+	 * @param surveyId
+	 * @return ResponseDto<SurveyDto> object.
+	 */
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public @ResponseBody ResponseDto<SurveyDto> getSurvey(
 			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken,
@@ -108,7 +128,13 @@ public class SurveyController {
 
 		return response;
 	}
-
+	
+	/**
+	 * This method edits the survey.
+	 * @param accessToken
+	 * @param surveyDto
+	 * @return ResponseDto<Void>
+	 */
 	@RequestMapping(value = "/", method = RequestMethod.PUT)
 	public @ResponseBody ResponseDto<Void> editSurvey(@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken,
 			@RequestBody SurveyDto surveyDto) {
@@ -125,6 +151,12 @@ public class SurveyController {
 		return response;
 	}
 
+	/**
+	 * This method changes the survey status - LIVE/DEAD
+	 * @param accessToken
+	 * @param surveyId
+	 * @return ResponseDto<Void> object
+	 */
 	@RequestMapping(value = "/changestatus", method = RequestMethod.PUT)
 	public @ResponseBody ResponseDto<Void> changeSurveyStatus(
 			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken,
@@ -142,6 +174,13 @@ public class SurveyController {
 		return response;
 	}
 
+	/**
+	 * This method adds or removes user from the viewers list of the survey.
+	 * @param accessToken
+	 * @param surveyId
+	 * @param userId
+	 * @return ResponseDto<Void> object
+	 */
 	@RequestMapping(value = "/edit/viewer", method = RequestMethod.PUT)
 	public @ResponseBody ResponseDto<Void> addOrRemoveSurveyViewer(
 			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken,
@@ -159,6 +198,12 @@ public class SurveyController {
 		return response;
 	}
 
+	/**
+	 * This method saves user response when user fills survey.
+	 * @param accessToken
+	 * @param ResponderDto
+	 * @return ResponseDto<Void> object
+	 */
 	@RequestMapping(value = "/save/response", method = RequestMethod.POST, consumes = "application/json")
 	public @ResponseBody ResponseDto<Void> saveSurveyResponse(
 			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken, @RequestBody ResponderDto ResponderDto) {
@@ -175,6 +220,12 @@ public class SurveyController {
 		return response;
 	}
 
+	/**
+	 * This method returns response filled by user of a survey.
+	 * @param accessToken
+	 * @param surveyId
+	 * @return ResponseDto<Map<Integer, String>> object
+	 */
 	@RequestMapping(value = "/response", method = RequestMethod.GET)
 	public @ResponseBody ResponseDto<Map<Integer, String>> getSurveyResponse(
 			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken,
@@ -193,6 +244,12 @@ public class SurveyController {
 		return response;
 	}
 
+	/**
+	 * This method returns survey result.
+	 * @param accessToken
+	 * @param surveyId
+	 * @return ResponseDto<SurveyResultDto> object
+	 */
 	@RequestMapping(value = "/result", method = RequestMethod.GET)
 	public @ResponseBody ResponseDto<SurveyResultDto> getSurveyResult(
 			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken,
@@ -214,8 +271,9 @@ public class SurveyController {
 	}
 
 	/**
+	 * This method checks authorisation of the user using access token
 	 * @param accessToken of the user
-	 * @return the role of the given user
+	 * @return UserData object
 	 */
 	private UserData checkAuthorization(String accessToken) {
 		UserData user = new UserData();

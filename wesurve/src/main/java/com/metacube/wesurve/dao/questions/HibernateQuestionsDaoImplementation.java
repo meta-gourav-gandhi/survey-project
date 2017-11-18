@@ -1,3 +1,7 @@
+/**
+ * The HibernateQuestionsDaoImplementation class is a DAO class for Questions Model.
+ * It extends GenericHibernateDao class and implements QuestionsDao interface.
+ */
 package com.metacube.wesurve.dao.questions;
 
 import org.springframework.stereotype.Repository;

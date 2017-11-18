@@ -1,3 +1,7 @@
+/**
+ * The HibernateLabelsDaoImplementation class is a DAO class for Labels Model.
+ * It extends GenericHibernateDao class and implements LabelsDao interface.
+ */
 package com.metacube.wesurve.dao.labels;
 
 import org.hibernate.Criteria;
@@ -19,7 +23,12 @@ public class HibernateLabelsDaoImplementation extends GenericHibernateDao<Labels
 	public String getPrimaryKey() {
 		return "labelId";
 	}
-
+	
+	/**
+	 * This method finds Label by name.
+	 * @param label
+	 * @return Labels class object
+	 */
 	@Override
 	public Labels getByLabelName(String label) {
 		Session session = getSessionFactory().getCurrentSession();

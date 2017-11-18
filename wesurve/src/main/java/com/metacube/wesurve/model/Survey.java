@@ -1,3 +1,6 @@
+/**
+ * The class Survey is a POJO class for survey table.
+ */
 package com.metacube.wesurve.model;
 
 import java.util.Date;

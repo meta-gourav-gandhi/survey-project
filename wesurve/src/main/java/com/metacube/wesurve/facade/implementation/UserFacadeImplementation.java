@@ -261,7 +261,7 @@ public class UserFacadeImplementation implements UserFacade {
 				}
 				if (status != Status.FAILURE) {
 					String emailBody = "Hello " + user.getName() + ",\nYour new password is: \n" + newPassword
-							+ "\n\nYou can use this password for login and you can change the password from the user profile.\n\nThanks & Regards,\nWeServe Helpline";
+							+ "\n\nYou can use this password for login and you can change the password from the user profile.\n\nThanks & Regards,\nWeSurve Helpline";
 					try {
 						EmailUtils.sendEmail("wesurvehelpline@gmail.com", "wesurve#123", email, "Recover Password",
 								emailBody);
@@ -338,13 +338,16 @@ public class UserFacadeImplementation implements UserFacade {
 		Status status = Status.FAILURE;
 		User user = userService.getUserById(userId);
 		if (user != null) {
+			
 			if (user.getUserRole().getRoleId() == 2) {
 				UserRole role = userService.getUserRoleById(3);
 				user.setUserRole(role);
 				Set<Survey> createdSurveys = user.getCreatedSurveyList();
-				for (Survey survey : createdSurveys) {
-					surveyService.changeSurveyStatus(survey, SurveyStatus.NOTLIVE);
-				}
+				
+					for (Survey survey : createdSurveys) {
+						surveyService.changeSurveyStatus(survey, SurveyStatus.NOTLIVE);
+					}
+				
 			} else if (user.getUserRole().getRoleId() == 3) {
 				UserRole role = userService.getUserRoleById(2);
 				user.setUserRole(role);
@@ -416,7 +419,6 @@ public class UserFacadeImplementation implements UserFacade {
 				}
 			}
 			else {
-				System.out.println("failed");
 				status = Status.INVALID_CONTENT;
 			}
 		} catch (NoSuchAlgorithmException exception) {

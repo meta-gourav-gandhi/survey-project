@@ -40,7 +40,14 @@ public class UserResponsesServiceImplementation implements UserResponsesService 
 
 	@Override
 	public Double getUserResponsesOfAQuestionAndOption(Questions curQues, Options curOption) {
-		List<UserResponses> responses = userResponsesDao.userResponsesByQuestionAndOption(curQues, curOption);
+		List<UserResponses> responses;
+		try {
+			responses = userResponsesDao.userResponsesByQuestionAndOption(curQues, curOption);
+		} catch(Exception exception) {
+			exception.printStackTrace();
+			responses = null;
+		}
+		
 		return (double) responses.size();
 	}
 

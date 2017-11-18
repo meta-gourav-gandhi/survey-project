@@ -1,3 +1,7 @@
+/**
+ * The GenericHibernateDao is an abstract class and implements AbstarctDao interface.
+ * It defines all common methods related to the tables.
+ */
 package com.metacube.wesurve.dao;
 
 import java.io.Serializable;
@@ -32,6 +36,9 @@ public abstract class GenericHibernateDao<T, ID extends Serializable> implements
 		return modelClass;
 	}
 
+	/**
+	 * This method return all the records found in the table.
+	 */
 	@Override
 	public Iterable<T> findAll() {
 		Session session = this.sessionFactory.getCurrentSession();
@@ -41,6 +48,9 @@ public abstract class GenericHibernateDao<T, ID extends Serializable> implements
 		return list;
 	}
 
+	/**
+	 * This method returns record from the table which matches to the primary key.
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public T findOne(final ID primaryKey) {
@@ -49,6 +59,9 @@ public abstract class GenericHibernateDao<T, ID extends Serializable> implements
 		return (T) criteria.add(Restrictions.eq(getPrimaryKey(), primaryKey)).uniqueResult();
 	}
 
+	/**
+	 * This method saves the new record in the table.
+	 */
 	@Override
 	public <S extends T> S save(final S entity) {
 		Session session = this.sessionFactory.getCurrentSession();
@@ -56,6 +69,9 @@ public abstract class GenericHibernateDao<T, ID extends Serializable> implements
 		return entity;
 	}
 
+	/**
+	 * This method checks if ID exists in the table or not.
+	 */
 	@Override
 	public boolean exists(final ID primaryKey) {
 		boolean result = false;
@@ -66,21 +82,21 @@ public abstract class GenericHibernateDao<T, ID extends Serializable> implements
 		return result;
 	}
 
+	/**
+	 * This method deletes an entity from the table.
+	 */
 	@Override
 	public void delete(final T entity) {
 		Session session = this.sessionFactory.getCurrentSession();
 		session.delete(entity);
 	}
 
-	@Override
-	public Long count() {
-		return (long) 0;
-	}
-
+	/**
+	 * This method updates an entity in the table.
+	 */
 	@Override
 	public void update(T entity) {
 		Session session = getSessionFactory().getCurrentSession();
-		session.flush();
 		session.update(entity);
 	}
 }

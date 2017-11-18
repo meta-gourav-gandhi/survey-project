@@ -1,3 +1,6 @@
+/**
+ * The LabelsDao is a DAO interface for the Labels Model class.
+ */
 package com.metacube.wesurve.dao.labels;
 
 import com.metacube.wesurve.dao.AbstractDao;

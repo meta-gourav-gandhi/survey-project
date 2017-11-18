@@ -73,7 +73,7 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 		SurveyResponseDto surveyResponse = null;
 		if (validateSurvey(surveyDto)) {
 			User user = userService.getUserById(surveyorId);
-			Survey survey = convertDtoToModel(surveyDto, new Date());
+			Survey survey = convertDtoToModel(surveyDto);
 
 			survey.setSurveyOwner(user);
 			user.getCreatedSurveyList().add(survey);
@@ -99,16 +99,14 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 		return response;
 	}
 
-	private Survey convertDtoToModel(SurveyDto surveyDto, Date createdDate) {
+	private Survey convertDtoToModel(SurveyDto surveyDto) {
 		Survey survey = new Survey();
-		if (surveyDto.getId() > 0) {
-			survey.setSurveyId(surveyDto.getId());
-		}
+		survey.setSurveyId(surveyDto.getId());
 		survey.setSurveyName(surveyDto.getName());
 		survey.setDescription(surveyDto.getDescription());
 		survey.setUpdatedDate(new Date());
-		survey.setCreatedDate(createdDate);
-		survey.setQuestions(convertDtoToModelQuestion(surveyDto.getQuestions(), createdDate));
+		survey.setCreatedDate(new Date());
+		survey.setQuestions(convertDtoToModelQuestion(surveyDto.getQuestions(), new Date()));
 		survey.setLabels(changeStringSetToLabelsSet(surveyDto.getLabels()));
 		return survey;
 	}
@@ -327,17 +325,17 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 	@Override
 	public ResponseDto<Void> editSurvey(int surveyorId, SurveyDto surveyDto) {
 		ResponseDto<Void> response = new ResponseDto<>();
-
 		Status status;
-		User surveyor = userService.getUserById(surveyorId);
 		Survey survey = surveyService.getSurveyById(surveyDto.getId());
 		if(survey != null) {
-			if (surveyor.getCreatedSurveyList().contains(survey)) {
-				if (validateSurvey(surveyDto)) {
-					Survey newSurvey = convertDtoToModel(surveyDto, survey.getCreatedDate());
-					newSurvey.setSurveyOwner(surveyor);
-					newSurvey.setSurveyStatus(SurveyStatus.NOTLIVE);
-					status = surveyService.edit(newSurvey);
+			if(survey.getSurveyOwner().getUserId() == surveyorId) {
+				if(validateSurvey(surveyDto)) {
+					survey.setDescription(surveyDto.getDescription());
+					survey.setLabels(changeStringSetToLabelsSet(surveyDto.getLabels()));
+					survey.setSurveyName(surveyDto.getName());
+					survey.setUpdatedDate(new Date());
+					survey.setQuestions(convertDtoToModelQuestion(surveyDto.getQuestions(), survey.getCreatedDate()));
+					status = surveyService.edit(survey);
 				} else {
 					status = Status.INVALID_CONTENT;
 				}
@@ -345,9 +343,9 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 				status = Status.ACCESS_DENIED;
 			}
 		} else {
-			status = Status.INVALID_CONTENT;
+			status = Status.NOT_FOUND;
 		}
-
+		
 		response.setStatus(status);
 		return response;
 	}
@@ -570,9 +568,7 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 					Collections.sort(optionsList);
 					int index = 1;
 					for (Options curOption : optionsList) {
-
-						Double curOptionResponsesSize = userResponsesService
-								.getUserResponsesOfAQuestionAndOption(curQues, curOption);
+						Double curOptionResponsesSize = userResponsesService.getUserResponsesOfAQuestionAndOption(curQues, curOption);
 						options.add(optionText + index);
 						data.add(curOptionResponsesSize);
 						index++;
@@ -622,7 +618,12 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 					UserResponses userResponse = userResponsesService.getUserResponseById(responder, question);
 					if (userResponse != null) {
 						Options option = userResponse.getOption();
-						selectedOptions.put(question.getQuesId(), option.getOptionValue());
+						if(option != null) {
+							selectedOptions.put(question.getQuesId(), option.getOptionValue());
+						} else {
+							selectedOptions.put(question.getQuesId(), null);
+						}
+						
 					} else {
 						selectedOptions.put(question.getQuesId(), null);
 					}

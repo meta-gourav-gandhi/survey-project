@@ -1,3 +1,7 @@
+/**
+ * The HibernateOptionsDaoImplementation class is a DAO class for Labels Model.
+ * It extends GenericHibernateDao class and implements OptionsDao interface.
+ */
 package com.metacube.wesurve.dao.options;
 
 import org.springframework.stereotype.Repository;

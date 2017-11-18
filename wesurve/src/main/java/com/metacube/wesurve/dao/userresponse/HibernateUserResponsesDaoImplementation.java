@@ -1,3 +1,7 @@
+/**
+ * The HibernateUserResponsesDaoImplementation class is a DAO class for UserResponses Model.
+ * It extends GenericHibernateDao class and implements UserResponsesDao interface.
+ */
 package com.metacube.wesurve.dao.userresponse;
 
 import java.util.List;
@@ -25,17 +29,29 @@ public class HibernateUserResponsesDaoImplementation extends GenericHibernateDao
 		return null;
 	}
 
+	/**
+	 * This method returns list of records that matches to the given question and option.
+	 * @param question
+	 * @param option
+	 * @return List of UserResponses objects
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<UserResponses> userResponsesByQuestionAndOption(Questions curQues, Options curOption) {
+	public List<UserResponses> userResponsesByQuestionAndOption(Questions question, Options option) {
 
 		Session session = getSessionFactory().getCurrentSession();
 		Criteria criteria = session.createCriteria(UserResponses.class);
-		criteria.add(Restrictions.eq("question", curQues)).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
-				.add(Restrictions.eq("option", curOption)).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+		criteria.add(Restrictions.eq("question", question)).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
+				.add(Restrictions.eq("option", option)).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		return criteria.list();
 	}
 
+	/**
+	 * This method finds the record by id(composite key)
+	 * @param user
+	 * @param question
+	 * @return UserResponses object
+	 */
 	@Override
 	public UserResponses findById(User user, Questions question) {
 		Session session = getSessionFactory().getCurrentSession();

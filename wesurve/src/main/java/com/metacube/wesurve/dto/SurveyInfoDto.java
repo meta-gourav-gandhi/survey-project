@@ -1,3 +1,6 @@
+/**
+ * DTO class
+ */
 package com.metacube.wesurve.dto;
 
 import com.metacube.wesurve.enums.SurveyStatus;

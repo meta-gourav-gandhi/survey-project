@@ -1,8 +1,11 @@
+/**
+ * The class UserResponsesID is a composite key class for UserResponses class.
+ */
 package com.metacube.wesurve.model;
 
 import java.io.Serializable;
 
-public class UserResonsesID implements Serializable {
+public class UserResponsesID implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private User user;

@@ -1,3 +1,6 @@
+/**
+ * The labels class is a POJO class which for labelstb table.  
+ */
 package com.metacube.wesurve.model;
 
 import java.util.HashSet;

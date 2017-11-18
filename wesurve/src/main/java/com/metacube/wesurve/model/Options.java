@@ -1,3 +1,6 @@
+/**
+ * The class Options is a POJO class for optionstb table.
+ */
 package com.metacube.wesurve.model;
 
 import java.util.Date;
