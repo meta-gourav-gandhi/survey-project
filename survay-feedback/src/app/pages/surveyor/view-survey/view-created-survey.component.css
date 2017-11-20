@@ -6,26 +6,6 @@ a {
     padding: 24% 2%;
 }
 
-@media only screen and (max-width: 480px) {
-    #headLine {
-        padding-top: 14%;
-        margin-bottom: 10%;
-        padding-bottom: 1.5%;
-    }
-}
-
-@media only screen and (min-width: 480px) {
-    #headLine {
-        padding-top: 4%;
-        margin-bottom: 10%;
-        padding-bottom: 1.5%;
-    }
-    .custom-input{
-        height: 50px;
-        padding: 0% 5% 0% 5%;
-    }
-}
-
 .btn-small {
     width: 10%;
 }
@@ -217,3 +197,4 @@ a {
 .inline-show{
     display: flex;
 }
+

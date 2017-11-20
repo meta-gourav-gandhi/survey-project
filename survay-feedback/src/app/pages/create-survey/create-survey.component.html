@@ -1,6 +1,3 @@
-<div class="secondary" id="headLine">
-    <div class="container"><h2>Create new survey</h2></div>
-</div>
 <div class="container">
     <div *ngIf="errorMessageStatus">
         <div class="{{errorMessageClass}}">
@@ -8,8 +5,11 @@
             {{errorMessage}}
         </div>
     </div>
-
-  <div class="panel panel-default">
+<div class="row">
+    <div class="col-sm-1"></div>
+    <div class="col-sm-10">
+  <div class="panel panel-default margin-bottom-10">
+   
       <div class="panel-heading">
           <div class="row">
               <div class="col-md-6">
@@ -20,8 +20,8 @@
               </div>
           </div>
       </div>
+      <form [formGroup]="surveyForm" novalidate>
       <div class="panel-body">
-          <form [formGroup]="surveyForm" novalidate>
               <div class="form-group input-group-lg">
                   <label for="name">Survey Name</label>
                   <input id="name" 
@@ -42,20 +42,18 @@
               </div>
               <div class="form-group">
                   <label for="description">Survey Description</label>
-                  <input id="description" class="form-control input-sm" formControlName="surveyDesc" type="text" placeholder="Survey Description">
+                  <input id="description" class="form-control" formControlName="surveyDesc" type="text" placeholder="Survey Description">
               </div>
               <div class="form-group">
                   <label for="labels">Add Labels</label>
-                  <div class="input-group">
                       <input placeholder="Labels"
                           id="labels"
-                          class="form-control input-sm" 
+                          class="form-control" 
                           [matChipInputFor]="labelList"
                           [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                           [matChipInputAddOnBlur]="addOnBlur"
                           (matChipInputTokenEnd)="add($event)" />
-                  </div>
-              </div>
+                </div>
               <mat-chip-list #labelList>
                   <mat-chip *ngFor="let label of labels" [selectable]="selectable"
                               [removable]="removable" (remove)="remove(label)">
@@ -65,7 +63,7 @@
               </mat-chip-list>
               <hr>
               <div class="col-12" style="text-align: right; font-size: 20px">
-                  <span class="btn-icon" matTooltip="Add Question Below" (click)="addQuestion()"><i class="fa fa-plus" aria-hidden="true"></i></span>
+                  <span class="btn-icon" matTooltip="Add Question Below" (click)="addQuestion()"><i class="fa fa-plus cursorpointer" aria-hidden="true"></i></span>
               </div>
               <!--questions-->
               <div formArrayName="surveyQuestions">
@@ -81,17 +79,16 @@
                                   Question is required
                               </div>
                           </div> 
-                          <div class="form-group">
+                          <div formArrayName="questionOptions">
                               <label for="option">Options</label>
-                              <div formArrayName="questionOptions">
-                                  <div class="form-group" *ngFor="let option of surveyForm.controls.surveyQuestions.controls[i].controls.questionOptions.controls; let j=index">
+                                  <div *ngFor="let option of surveyForm.controls.surveyQuestions.controls[i].controls.questionOptions.controls; let j=index">
                                       <!-- <div [formGroupName]="j">
                                           <input class="form-control" formControlName="optionText" type="text" >
                                           <span class="btn-icon" (click)="deleteOption(question,option)"><i class="fa fa-times fa-lg" aria-hidden="true"></i>
                                           </span>
                                       </div> -->
                                       <div [formGroupName]="j">
-                                          <div class="input-group">
+                                          <div class="form-group" [ngClass]="{'input-group': surveyForm.controls.surveyQuestions.controls[i].controls.questionOptions.controls.length > 1}">
                                               <textarea id="option" [froalaEditor]="optionEditor" type="text" class="form-control full-width" formControlName="optionText"></textarea>
                                               <span *ngIf="surveyForm.controls.surveyQuestions.controls[i].controls.questionOptions.controls.length > 1" class="input-group-addon btn-icon" (click)="deleteOption(i, j)"><i class="fa fa-times fa-lg"></i></span>
                                           </div>
@@ -104,15 +101,14 @@
                                       </div>
                                   </div>
                               </div>
-                          </div>
                           <button mat-raised-button class="success-btn" (click)="addOption(i)" >Add Option</button>                      
                           <hr>
 
                           <div class="row">
                               <div class="col-12" style="text-align: right; font-size: 20px">
-                                  <span *ngIf="question" class="btn-icon" matTooltip="Add Question Below" (click)="addQuestion(i)"><i class="fa fa-plus" aria-hidden="true"></i></span>
+                                  <span *ngIf="question" class="btn-icon" matTooltip="Add Question Below" (click)="addQuestion(i)"><i class="fa fa-plus cursorpointer" aria-hidden="true"></i></span>
                                   <!-- <span class="btn-icon" matTooltip="Duplicate Question" (click)="duplicateQuestion(question)"><i class="fa fa-clone" aria-hidden="true"></i></span> -->
-                                  <span class="btn-icon" *ngIf="surveyForm.controls.surveyQuestions.controls.length > 1" matTooltip="Delete Question" (click)="deleteQuestion(i)"><i class="fa fa-trash"></i></span>
+                                  <span class="btn-icon" *ngIf="surveyForm.controls.surveyQuestions.controls.length > 1" matTooltip="Delete Question" (click)="deleteQuestion(i)"><i class="fa fa-trash cursorpointer"></i></span>
                                   <span class="btn-icon vertical-divider" matTooltip="Required">
                                       <mat-slide-toggle formControlName="required" [checked]="surveyForm.controls.surveyQuestions.controls[i].controls.required">Required</mat-slide-toggle> 
                                   </span>
@@ -121,14 +117,16 @@
                       </div>
                   </div>  
               </div>
-              <div class="panel-footer margin-20 row">
-                  <div class="col-md-6"><button mat-raised-button class="success-btn" data-toggle="modal" data-target="#createdSurveyModal" data-keyboard="false" data-backdrop="static" [class.selected]="survey === createdSurvey"  (click)="createSurvey()" >Create</button></div><div class="col-md-6"><span class="badge" *ngIf="loadingData"><span class="glyphicon glyphicon-repeat loader"></span> Processing... Please wait </span></div>
-                </div>
-          </form>
       </div>
+      <div class="panel-footer">
+            <button mat-raised-button class="success-btn" data-toggle="modal" data-target="#createdSurveyModal" data-keyboard="false" data-backdrop="static" [class.selected]="survey === createdSurvey"  (click)="createSurvey()" >Create</button> <span class="badge" *ngIf="loadingData"><span class="glyphicon glyphicon-repeat loader"></span> Processing... Please wait </span>
+        </div>
+    </form>
   </div>
+    </div>
+  <div class="col-sm-2"></div>
 </div>
-<side-navbar></side-navbar>
+</div>
 
 <!--  -->
 <!--  -->

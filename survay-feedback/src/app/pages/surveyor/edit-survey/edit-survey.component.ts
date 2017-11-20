@@ -10,6 +10,8 @@ import { ENTER } from '@angular/cdk/keycodes';
 import { Router, NavigationEnd } from '@angular/router';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { SurveyService } from '../../../services/survey.service';
+import { UtilService } from '../../../services/util.service';
+import { SharedServiceService } from "../../../services/shared-service.service";
 
 const COMMA = 188;
 
@@ -29,12 +31,22 @@ export class EditSurveyComponent implements OnInit {
   removable: boolean = true;
   addOnBlur: boolean = true;
   separatorKeysCodes = [ENTER, COMMA];
-  constructor(private surveyService: SurveyService,private router: Router,
-    private route: ActivatedRoute,public snackBar: MatSnackBar, private _fb: FormBuilder) {
+  loadingData: boolean;
+  errorMessageStatus: boolean;
+  errorMessageClass: string;
+  errorMessage: string;
+
+  constructor(private surveyService: SurveyService,
+              private router: Router,
+              private route: ActivatedRoute,
+              public snackBar: MatSnackBar, 
+              private _fb: FormBuilder,
+              private utilService: UtilService,
+              private sharedService: SharedServiceService
+            ) {
       this.survey = new Survey();
       
     }
-
 
   public questionEditor: Object = {
     charCounterCount: false,
@@ -82,6 +94,7 @@ export class EditSurveyComponent implements OnInit {
     this.surveyService.getSurveyFromId(+params.get('id'), JSON.parse(localStorage.getItem('currentUser')).accessToken))
     .subscribe(response => {
       this.survey = response.body;
+      this.sharedService.saveTitle('Edit Survey - ' + this.survey.name);      
       this.updateForm();
     });
 
@@ -177,6 +190,13 @@ export class EditSurveyComponent implements OnInit {
     });
   }
 
+  onKeyUp($event): void {
+    let charCode = String.fromCharCode($event.which).toLowerCase();
+    if ($event.ctrlKey && charCode === 's') {
+      this.editSurvey();
+    }
+  }
+
   editSurvey() {
     if (!this.surveyForm.valid) {
       this.validateAllFormFields(this.surveyForm);
@@ -208,20 +228,34 @@ export class EditSurveyComponent implements OnInit {
       this.survey.description = this.surveyForm.get('surveyDesc').value;
       this.survey.name = this.surveyForm.get('surveyName').value;
 
-      console.log(this.survey);
-
+      this.loadingData = true;
       this.surveyService.editSurvey(this.survey, JSON.parse(localStorage.getItem("currentUser")).accessToken)
       .then(response => { 
-          console.log(response);
-          // if (response.status.toString() == "SUCCESS") {
-          //     this.surveyList = response.body;
-          //     this.loading = false;
-          // } else {
-          //     this.errorMessageStatus = true;
-          //     this.errorMessage = "Error in fetching survey list";
-          // }
+          this.loadingData = false;
+          if (response.status.toString() == "SUCCESS") {
+            this.errorMessageStatus = true;
+            this.errorMessageClass = "alert alert-success flipInX animated";
+            this.errorMessage = "Survey edited successfuly.";
+          } else if (response.status.toString() == "INVALID_CONTENT"){
+            this.errorMessageStatus = true;
+            this.errorMessageClass = "alert alert-danger flipInX animated";
+            this.errorMessage = "Your content is looks like invalid.";
+          } else if (response.status.toString() == "FAILURE") {
+            this.errorMessageStatus = true;
+            this.errorMessageClass = "alert alert-danger flipInX animated";
+            this.errorMessage = "Error in creating survey.";
+          } else {
+            this.errorMessageStatus = true;
+            this.errorMessageClass = "alert alert-danger flipInX animated";
+            this.errorMessage = "Something went wrong!";
+          }
+          this.goToTop();
        });
     }
+  }
+
+  goToTop() {
+    setTimeout(() => window.scrollTo(0, 0), 1);
   }
 
   validateAllFormFields(formGroup: FormGroup) {
@@ -254,6 +288,10 @@ export class EditSurveyComponent implements OnInit {
       optionId: [option.id],
       optionText: [option.text, Validators.required]
     });
+  }
+
+  back() {
+    this.utilService.back();
   }
 }
 

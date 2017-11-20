@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from "../../../services/user.service";
+import { UtilService } from "../../../services/util.service";
 import { AuthService } from "angular2-social-login";
 import { Message } from '../../../models/message';
 import { User } from '../../../models/user';
 import { UserDetail } from '../../../models/user-detail';
 import { Router, NavigationEnd } from '@angular/router';
+import { SharedServiceService } from "../../../services/shared-service.service";
 
 @Component({
   selector: 'create-surveyor',
@@ -18,7 +20,11 @@ export class CreateSurveyorComponent implements OnInit {
   errorMessageStatus : boolean = false;
   errorMessage : string;
 
-  constructor(private router: Router,public _auth: AuthService, private userService: UserService){ 
+  constructor(private router: Router,
+            public _auth: AuthService, 
+            private userService: UserService, 
+            private utilService: UtilService,
+            private sharedService: SharedServiceService){ 
     if(JSON.parse(localStorage.getItem('currentUser')) === null) {
         // will be improve when api will be complete
         this.router.navigate(['/login']);
@@ -28,6 +34,9 @@ export class CreateSurveyorComponent implements OnInit {
   }
 
   ngOnInit() {
+    setTimeout(() => {
+        this.sharedService.saveTitle('Create Surveyor');
+    });
     this.router.events.subscribe((evt) => {
         if (!(evt instanceof NavigationEnd)) {
             return;
@@ -66,5 +75,9 @@ export class CreateSurveyorComponent implements OnInit {
             }
         }
      });
+  }
+
+  back() {
+      this.utilService.back();
   }
 }

@@ -1,6 +1,3 @@
-<div class="secondary" id="headLine">
-    <div class="container"><h2>Search Survey</h2></div>
-</div>
 <div class="container">
     
     <div class="row">
@@ -10,17 +7,22 @@
                 <div class="form-group">
                     <label for="comment" class="text-primary-for-heading"><h2><strong>Fill out Survey</strong></h2></label>
                     <div class="input-box">
-                        <input type="text" class="form-control custom-input sharp-corner" id="id" formControlName="surveyID" placeholder="Search survey by id" #surveyID >
+                        <input type="text" class="form-control custom-input sharp-corner" (keypress)="removeErrorMessage();" id="id" formControlName="surveyID" placeholder="Search survey by id" #surveyID >
                         <button [disabled]="!rForm.valid" class="btn btn-primary btn-custom searchIcon" (click)="checkSurveyExists(surveyID.value)"><span class="glyphicon glyphicon-search"></span></button>
                     </div>
                 </div>
             </form>
             <div *ngIf="!rForm.controls['surveyID'].valid && rForm.controls['surveyID'].touched">
-                <div *ngIf="rForm.controls['surveyID'].errors.pattern || rForm.controls['surveyID'].errors.required">
+                <div *ngIf="rForm.controls['surveyID'].errors.pattern">
                         <div class="alert alert-warning flipInX animated">
                             Survey ID must be a number
                         </div>
-                    </div>
+                </div>
+                <div *ngIf="rForm.controls['surveyID'].errors.required">
+                        <div class="alert alert-warning flipInX animated">
+                            Survey ID is required.
+                        </div>
+                </div>
             </div>
 
             <div *ngIf="errorMessageStatus">
@@ -33,4 +35,3 @@
         <div class="col-sm-2"></div>
     </div>
 </div>
-<side-navbar></side-navbar>

@@ -4,9 +4,6 @@
         <div class="pace-progress-inner"></div>
 </div>
 <div class="pace-activity"></div></div>
-<div class="secondary" id="headLine">
-    <div class="container"><h2>Surveys</h2></div>
-</div>
 <div class="container">
     <div class="row">
                 <div class="col-sm-2"></div>
@@ -19,8 +16,8 @@
                             </a>
                         </div>
                     </div>
-                    <div class="panel panel-default margin-bottom-10" *ngIf="surveyList && surveyList.length !== 0 else EmptySurveyList">
-                        <div class="panel-heading"><h3>Survey List <input type="text" class="form-control pull-right custom-input sharp-corner" [(ngModel)]="name" placeholder="Search Surveys"></h3></div>
+                    <div class="panel panel-default margin-bottom-10">
+                        <div class="panel-heading"><h3>Survey List <input type="text" *ngIf="resultFetched && surveyList.length !== 0" class="form-control pull-right custom-input sharp-corner" [(ngModel)]="name" placeholder="Search Surveys"></h3></div>
                         <div class="panel-body" id="table-panel">
                                 <div class="panel-body" id="table-panel">
                                     <div *ngIf="!resultFetched" id="loading">
@@ -28,7 +25,7 @@
                                         <div id="ball-2" class="circle"></div>
                                         <div id="ball-3" class="circle"></div>
                                     </div>
-                        <table class="table " *ngIf="resultFetched">
+                        <table class="table " *ngIf="resultFetched  && surveyList.length !== 0">
                             <thead>
                                 <tr class="pointer">
                                 <th [class]="order === 'id'"
@@ -41,7 +38,7 @@
                                 <tr *ngFor="let survey of surveyList | orderBy: order:reverse:'case-insensitive' | filter: name | paginate: { itemsPerPage: 5, currentPage: p }">
                                 <td width="20%">{{survey.id}}
                                 </td>
-                                <td width="40%">{{survey.surveyName}}<br>
+                                <td width="40%" class="tw">{{survey.surveyName}}<br>
                                     <span class="mailid">{{survey.description | slice:0:50}}...</span>
                                 </td>
                                 <td  width="40%" class="text-right min-width">
@@ -77,29 +74,23 @@
                                 </tr>
                             </tbody>
                         </table>
+                        <div *ngIf="resultFetched  && surveyList.length == 0 ">
+                            <div class="text-center">
+                                    <h1>OOPS!!</h1>
+                                    <h1>You haven't created any survey yet.</h1>
+                                    <p><img src="./assets/oops.png" width="150px" height="150px"/></p>
+                              </div>
+                        </div>
                     </div>
                 </div>
                 
                 <div class="panel-footer text-center">
-                        <pagination-controls *ngIf="resultFetched" (pageChange)="p = $event"></pagination-controls>
-                    </div>
-
-                    
-                <ng-template #EmptySurveyList>
-                        <div class="panel panel-default margin-bottom-10">
-                            <div class="panel-heading"></div>
-                            <div class="panel-body text-center" id="table-panel">
-                                <h1>OOPS!!</h1>
-                                <h1>You don't have any filled surveys.</h1>
-                                <p><img src="./assets/oops.png" width="150px" height="150px"/></p>
-                            </div>
-                        </div>
-                    </ng-template>
+                        <pagination-controls *ngIf="resultFetched && surveyList.length !== 0" (pageChange)="p = $event"></pagination-controls>
+                </div>
                 </div>
                 <div class="col-sm-2"></div>
     </div>
 </div>
-<side-navbar></side-navbar>
 
 <div *ngIf="selectedSurvey" id="myModal" class="modal fade" role="dialog">
         <div class="modal-dialog">

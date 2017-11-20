@@ -1,25 +1,27 @@
 <nav class="navbar navbar-inverse custom-navbar">
         <div class="container-fluid">
           <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+            <button type="button" class="navbar-toggle" [ngClass]="{'collapsed' : isHidden}" data-toggle="collapse" data-target="#myNavbar">
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>                        
             </button>
-            <a class="navbar-brand" routerLink="/home"><img src="../assets/logo.png" style="width:40px;height:40px;position:relative;top:-35%;" class="img-responsive"/></a>
+            <!-- (click)="sidenav.toggle()" -->
+            <a class="navbar-brand" *ngIf="sidenav" (click)="sidenav.toggle()">Rahul</a>
+            <a class="navbar-brand"><img src="../assets/logo.png" style="width:40px;height:40px;position:relative;top:-35%;" class="img-responsive"/></a>
             <a class="navbar-brand" routerLink="/home">WeSurve</a>
           </div>
           <div class="collapse navbar-collapse" id="myNavbar">
-          <ul *ngIf="displayUser" class="nav navbar-nav">
+          <ul *ngIf="displayUser" class="nav navbar-nav" (click)="changeMenuDisplay()">
             <li><a routerLink="/dashboard">Dashboard</a></li>
           </ul>
-          <ul class="nav navbar-nav navbar-right">
+          <ul class="nav navbar-nav navbar-right" (click)="changeMenuDisplay()">
             <li *ngIf="!displayUser else other_content"><a  routerLink="/signup"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
             <li *ngIf="!displayUser"><a  routerLink="/login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
             <ng-template #other_content>
-              <li data-toggle="dropdown"><a><span class="glyphicon glyphicon-user"></span> {{userName}} <span class="caret"></span></a></li>
+              <li data-toggle="dropdown"><a><span class="glyphicon glyphicon-user "*ngIf="displayUser"></span> {{userName}} <span class="caret"></span></a></li>
                 <ul class="dropdown-menu">
-                    <li><a href="/editProfile"><span class="glyphicon glyphicon-cog"></span> Edit Profile</a></li>
+                    <li><a (click)="editProfile();"><span class="glyphicon glyphicon-cog"></span> Edit Profile</a></li>
                     <li><a (click)="logout();"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
                 </ul>
             </ng-template>
@@ -28,6 +30,20 @@
         </div>
       </nav>
 
+        <!-- <mat-sidenav-container class="sidenav-container">
+          <mat-sidenav class="sidenav-content" #sidenav mode="side" opened="false">
+              <side-navbar></side-navbar>       
+          </mat-sidenav>
+        <mat-sidenav-container> -->
+
+            <div  *ngIf="title" class="secondary" id="headLine">
+                <div class="container">
+                    <h2>
+                      {{title}}  
+                    </h2>
+                </div>
+            </div>
+            <side-navbar *ngIf="title"></side-navbar>
   <router-outlet></router-outlet>
 
   <footer class="footer secondary">

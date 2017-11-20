@@ -8,6 +8,7 @@ import { HomeComponent } from './pages/home/home.component';
 import { SignupComponent } from './pages/signup/signup.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { UserService} from './services/user.service';
+import { SharedServiceService } from './services/shared-service.service';
 import { HttpModule } from '@angular/http';
 import { FormsModule }   from '@angular/forms';
 import { Angular2SocialLoginModule } from "angular2-social-login";
@@ -33,7 +34,7 @@ import { UserFilterPipe } from './user-filter';
 import { SearchSurveyComponent } from './pages/responder/search-survey/search-survey.component';
 import { SurveyPageComponent } from './pages/responder/survey-page/survey-page.component';
 import { SafeUrlPipe } from './safe-url-pipe';
-import { MatSlideToggleModule, MatInputModule, MatButtonModule, MatSnackBarModule } from '@angular/material';
+import { MatSlideToggleModule, MatInputModule, MatButtonModule, MatSnackBarModule, MatSidenavModule } from '@angular/material';
 import { MatChipsModule } from '@angular/material/chips';
 import { FroalaEditorModule, FroalaViewModule } from 'angular-froala-wysiwyg';
 import { CreateSurveyComponent } from './pages/create-survey/create-survey.component';
@@ -46,6 +47,7 @@ import { CeiboShare } from 'ng2-social-share';
 import { SidebarModule } from 'ng-sidebar';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { EditSurveyComponent } from './pages/surveyor/edit-survey/edit-survey.component';
+import { UtilService} from './services/util.service';
 
 let providers = {
     "google": {
@@ -109,9 +111,10 @@ let providers = {
     FroalaEditorModule.forRoot(),
     FroalaViewModule.forRoot(),
     ChartsModule,
-    SidebarModule.forRoot()
+    SidebarModule.forRoot(),
+    MatSidenavModule
   ],
-  providers: [UserService,AlertService,SurveyService],
+  providers: [UserService,AlertService,SurveyService,SharedServiceService,UtilService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

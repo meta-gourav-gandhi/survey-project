@@ -1,11 +1,14 @@
-<div class="secondary" id="headLine">
-    <div class="container"><h2>Edit Survey - {{survey.name}}</h2></div>
-</div>
+<div (keyup)="onKeyUp($event)">
 <div class="container">
-        <div class="panel panel-default">
+         <div *ngIf="errorMessageStatus">
+            <div class="{{errorMessageClass}}">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                {{errorMessage}}
+            </div>
+        </div>
+        <div class="panel panel-default margin-bottom-10">
             <div class="panel-heading">
                 <h3 class="panel-title pull-left">Edit Survey</h3>
-                <button mat-raised-button class="success-btn pull-right" (click)="editSurvey()" >Save</button>
                 <div class="clearfix"></div>
             </div>
             <div class="panel-body">
@@ -105,12 +108,13 @@
                             </div>
                         </div> 
                     </div>
-                    <div class="margin-20">
-                        <div>surveyForm details:-</div>
-                        <pre>Is surveyForm valid?: <br>{{surveyForm.valid | json}}</pre>
-                        <pre>form value: <br>{{surveyForm.value | json}}</pre>
-                    </div>
                 </form>
+            </div>
+            <div class="panel-footer">
+                <button mat-raised-button class="success-btn text-center" (click)="editSurvey()" >Save</button> 
+                <span class="badge" *ngIf="loadingData"><span class="glyphicon glyphicon-repeat loader"></span> Processing... Please wait </span>
+                <div class="clearfix"></div>
             </div>
         </div>
       </div>
+    </div>

@@ -2,15 +2,6 @@ a{
   text-decoration: none;
 }
 
-  
-  .box {
-    margin-top : 7%;
-    background : white;
-    /*box-shadow: 0px 0px 10px rgba(0,0,0,0.5);*/
-    padding-bottom: 3%;
-  }
-
-  
   .panel {
     border-radius: 0px;
     margin : 0% -5% 5% -5%;
@@ -37,8 +28,8 @@ a{
     padding-bottom: 2%;
   }
   .facebook {
-    display: inline-block;
-    width : 49.5%;
+    width: 100%;
+    display: block;
     background : #4267b2;
     color: white;
     border: 0px;
@@ -47,8 +38,8 @@ a{
   }
 
   .google{
-    display: inline-block;
-    width: 49.5%;
+    width: 100%;
+    display: block;
     background : #dd4b3e;
     color: white;
     border: 0px;
@@ -77,7 +68,7 @@ a{
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
-  
 
+  
 
   

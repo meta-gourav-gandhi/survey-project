@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from "../../../services/user.service";
 import { SurveyService } from "../../../services/survey.service";
+import { UtilService } from "../../../services/util.service";
 import { AuthService } from "angular2-social-login";
 import { Message } from '../../../models/message';
 import { User } from '../../../models/user';
 import { Router,NavigationEnd } from '@angular/router';
 import { SurveyInfo } from '../../../models/survey-info';
 import { FilterPipe } from '../../../filters';
+import { SharedServiceService } from "../../../services/shared-service.service";
 
 @Component({
   selector: 'app-previous-responses',
@@ -24,7 +26,12 @@ export class PreviousResponsesComponent implements OnInit {
   showOrderIcon : boolean = false;
   resultFetched : boolean = false;
 
-  constructor(private router: Router,public _auth: AuthService, private userService: UserService, private surveyService: SurveyService){ 
+  constructor(private router: Router,
+            public _auth: AuthService, 
+            private userService: UserService, 
+            private surveyService: SurveyService, 
+            private utilService: UtilService,
+            private sharedService: SharedServiceService){ 
     if(JSON.parse(localStorage.getItem('currentUser')) === null) {
       // will be improve when api will be complete
       this.router.navigate(['/login']);
@@ -34,6 +41,9 @@ export class PreviousResponsesComponent implements OnInit {
   }
 
   ngOnInit() {
+    setTimeout(() => {
+      this.sharedService.saveTitle('Filled Surveys');
+    });
     this.router.events.subscribe((evt) => {
       if (!(evt instanceof NavigationEnd)) {
           return;
@@ -66,5 +76,9 @@ export class PreviousResponsesComponent implements OnInit {
     }
 
     this.order = value;
+  }
+
+  back() {
+    this.utilService.back();
   }
 }

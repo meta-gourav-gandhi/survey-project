@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from "angular2-social-login";
 import { UserService } from "../../services/user.service";
+import { SharedServiceService } from "../../services/shared-service.service";
 import { Message } from '../../models/message';
 import { User } from '../../models/user';
 import { Router,NavigationEnd } from '@angular/router';
@@ -15,11 +16,13 @@ import { NgSwitch } from '@angular/common';
 export class DashboardComponent implements OnInit {
   user : User;
   sub: any;
-  message : Message;
   currentLoggedInUser : User;
   sidebar : boolean = false;
 
-  constructor(private router: Router,public _auth: AuthService, private userService: UserService){ 
+  constructor(private router: Router,
+    public _auth: AuthService, 
+    private userService: UserService, 
+    private sharedService: SharedServiceService){ 
     if(JSON.parse(localStorage.getItem('currentUser')) === null) {
       // will be improve when api will be complete
       this.router.navigate(['/login']);
@@ -29,6 +32,9 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit() {
+      setTimeout(() => {
+        this.sharedService.saveTitle('Dashboard');
+      });
       this.router.events.subscribe((evt) => {
         if (!(evt instanceof NavigationEnd)) {
             return;
@@ -37,19 +43,6 @@ export class DashboardComponent implements OnInit {
       });
   }
 
-  logout() {
-      alert("You will be logout soon");
+  ngAfterViewInit() {
   }
-
-//   logout(){
-//       if (localStorage.getItem("provider"))
-//     this._auth.logout().subscribe(
-//       (data)=>{console.log(data);this.user=null;}
-//     )
-//   }
-
-  /*ngOnDestroy(){
-    this.sub.unsubscribe();
-  }*/
-
 }

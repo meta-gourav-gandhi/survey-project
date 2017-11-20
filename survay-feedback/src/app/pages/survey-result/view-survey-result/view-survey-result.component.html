@@ -1,11 +1,3 @@
-<div class="secondary" id="headLine">
-    <div class="container">
-        <h2>{{survey.name}} - Result
-            <button class="btn pull-right refresh" (click)="updateSet()"><span class="glyphicon glyphicon-refresh"></span> Refresh</button>
-        </h2>
-    </div>
-</div>
-
 <div class="container">
     <div class="row">
         <div class="col-sm-12">
@@ -15,7 +7,9 @@
                     {{errorMessage}}
                 </div>
             </div>                    
-          
+            <div class="text-right">
+                <button class="btn btn-primary btn-small" (click)="updateSet()">Refresh</button>
+            </div>
             <div class="panel panel-default margin-bottom-10">
                 <div class="panel-heading">
                     <div class="row">
@@ -30,60 +24,52 @@
                             <div *ngFor="let option of question.options | orderBy: order ; let j= index" class="inline-show">
                                 ({{j+1}}) &nbsp;<div [froalaView]="option.text"></div>
                             </div>
-                        <div>
-                            <ul class="nav nav-tabs">
-                                <li class="active">
-                                    <a data-toggle="tab" href="#bar" (click)="changeType('pie')">
+                            <div class="draw-chart">
+                                <ul class="nav nav-tabs">
+                                    <li class="active">
+                                        <a data-toggle="tab" href="#bar{{question.id}}">
                                         Bar chart
-                                    </a>
-                                </li>
-                                <li>
-                                    <a data-toggle="tab" href="#pie" (click)="changeType('bar')" >
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a data-toggle="tab" href="#pie{{question.id}}">
                                         Pie chart
-                                    </a>
-                                </li>
-                            </ul>
-                            
-                            
-                            <div class="tab-content" *ngIf="data">
-                                <div id="bar" class="tab-pane fade in active">
-                                    <h3>Bar-charts</h3>
-                                    <div style="width : 500px">
-                                            <!-- getOptionSet(question.id) -->
-                                        <div *ngIf="getDataSet(question.id)">
-                                            <div style="display: block">
-                                                <canvas class="canvas" baseChart
-                                                    [datasets]="getDataSet(question.id)"
-                                                    [labels]="getOptionSet(question.id)"
-                                                    [options]="chartOptions"
-                                                    [legend]="chartLegend"
-                                                    [chartType]="chartType"
-                                                    (chartHover)="chartHovered($event)"
-                                                    (chartClick)="chartClicked($event)">
-                                                </canvas>
+                                        </a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content" *ngIf="getDataSet(question.id)">
+                                    <div id="bar{{question.id}}" class="tab-pane fade in active">
+                                        <h3>Bar-charts</h3>
+                                        <div style="width : 500px">
+                                        <div style="display: block">
+                                            <canvas class="canvas" baseChart
+                                                [datasets]="getDataSet(question.id)"
+                                                [labels]="getOptionSet(question.id)"
+                                                [options]="barChartOptions"
+                                                [legend]="chartLegend"
+                                                [chartType]="'bar'"
+                                                (chartHover)="chartHovered($event)"
+                                                (chartClick)="chartClicked($event)">
+                                            </canvas>
+                                        </div>
+                                        </div>
+                                    </div>
+                                    <div id="pie{{question.id}}" class="tab-pane fade">
+                                        <h3>Pie - charts</h3>
+                                                <div style="width : 500px">
+                                                        <div style="display: block">
+                                            <canvas class="canvas" baseChart
+                                                [datasets]="getDataSet(question.id)"
+                                                [labels]="getOptionSet(question.id)"
+                                                [chartType]="'pie'"
+                                                (chartHover)="chartHovered($event)"
+                                                (chartClick)="chartClicked($event)">
+                                            </canvas>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                           
-                                <div id="pie" class="tab-pane fade">
-                                    <h3>Pie - charts</h3>
-                                    <div style="width : 500px">
-                                        <div>
-                                            <div style="display: block">
-                                                <canvas class="canvas" baseChart
-                                                    [datasets]="chartData"
-                                                    [labels]="chartLabels"
-                                                    [chartType]="chartType"
-                                                    (chartHover)="chartHovered($event)"
-                                                    (chartClick)="chartClicked($event)">
-                                                </canvas>
-                                            </div>
-                                        </div>  
-                                    </div>
-                                </div>
                             </div>
-                        </div>
                     </div>
                 </div>
             </div>

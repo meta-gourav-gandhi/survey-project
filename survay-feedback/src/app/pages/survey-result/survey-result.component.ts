@@ -1,10 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from "../../services/user.service";
+import { UtilService } from "../../services/util.service";
 import { AuthService } from "angular2-social-login";
 import { Message } from '../../models/message';
 import { User } from '../../models/user';
 import { Router } from '@angular/router';
 import { SurveyInfo } from '../../models/survey-info';
+import { SharedServiceService } from "../../services/shared-service.service";
+
 
 @Component({
   selector: 'survey-results',
@@ -21,9 +24,17 @@ export class SurveyResultComponent implements OnInit {
   errorMessageStatus : boolean;
   errorMessage : String;
 
-  constructor(private router: Router,public _auth: AuthService, private userService: UserService){ }
+  constructor(private router: Router,
+              public _auth: AuthService, 
+              private userService: UserService,
+              private utilService: UtilService,
+              private sharedService: SharedServiceService
+            ){ }
 
   ngOnInit() {
+    setTimeout(() => {
+      this.sharedService.saveTitle('View Survey Result');    
+    });
     if(JSON.parse(localStorage.getItem('currentUser')) === null) {
         // will be improve when api will be complete
         this.router.navigate(['/login']);
@@ -56,4 +67,9 @@ export class SurveyResultComponent implements OnInit {
 
     this.order = value;
   }
+
+  back() {
+    this.utilService.back();
+  }
+
 }

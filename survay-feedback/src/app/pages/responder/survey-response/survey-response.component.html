@@ -1,8 +1,4 @@
-<div class="secondary" id="headLine">
-    <div class="container">
-        <h2>{{survey.name}} - Response</h2>
-    </div>
-</div>
+
 
 <div class="container">
     <div class="row">
@@ -14,7 +10,7 @@
                     {{errorMessage}}
                 </div>
             </div>
-            <div class="panel panel-default margin-bottom-10">
+            <div class="panel panel-default margin-bottom-10" *ngIf="survey">
                 <div class="panel-heading">
                     <h2>{{survey.name}}</h2>
                 </div>
@@ -23,10 +19,11 @@
                         <h3 class="inline-show">{{i+1}}. &nbsp;<div [froalaView]="question.text"></div></h3>
                         <div *ngFor="let option of question.options; let j= index" class="inline-show">
                             ({{j+1}}) &nbsp;<div [froalaView]="option.text"></div>
+                            <span *ngIf="surveyResponseMap[question.id] === option.id">&nbsp;&nbsp;&nbsp;<i class="fa fa-check-circle font-size-glyph" aria-hidden="true"></i></span>
                         </div>
-                        <div id="answerBlock" class="inline-show">
+                        <!-- <div id="answerBlock" class="inline-show">
                             Your Selected Option: &nbsp;<b><div *ngIf="surveyResponseMap[question.id]" [froalaView]="surveyResponseMap[question.id]"></div><div *ngIf="!surveyResponseMap[question.id]">(Not Answered)</div></b>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
@@ -34,4 +31,3 @@
         <div class="col-sm-2"></div>
     </div>
 </div>
-<side-navbar></side-navbar>

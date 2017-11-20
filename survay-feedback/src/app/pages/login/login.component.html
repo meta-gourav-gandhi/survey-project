@@ -1,8 +1,7 @@
 <div>
     <div class="container-fluid fadeIn animated">
             <div class="row">
-            <div class="col-sm-4"></div>
-            <div class="col-sm-4 box">
+            <div class="col-sm-12 box">
                 <div class="panel panel-default">
                     <div class="panel-body">Login</div>
                 </div>
@@ -11,17 +10,20 @@
                         <div class="form-group has-success has-feedback" [ngClass]="{'has-error': rForm.controls['email'].errors && rForm.controls['email'].touched , 'has-success': !rForm.controls['email'].errors}">
                             <label for="email">Email:</label>
                             <div style="position: relative; ">
-                                <input [(ngModel)]="user.email" style="padding-right: 30px;"formControlName="email" type="email" class="form-control" id="email" >
+                                <input [(ngModel)]="user.email" style="padding-right: 30px;" formControlName="email" type="email" class="form-control" id="email" >
                                 <span class="glyphicon glyphicon-ok" [ngClass]="{'glyphicon-ok': !rForm.controls['email'].errors , 'glyphicon-remove': rForm.controls['email'].errors && rForm.controls['email'].touched}"  style="position: absolute; padding: 10px; right: 0px;" ></span>
+                            </div>
+                            <div *ngIf="!rForm.controls['email'].valid && rForm.controls['email'].touched" class="custom-alert custom-alert-danger" >
+                                <div *ngIf="rForm.controls['email'].errors.required">
+                                        Email is Required.
+                                </div>
+                                <div *ngIf="rForm.controls['email'].errors.pattern">
+                                    Email is invalid.
+                                    </div>
                             </div>
                         </div>
                         
-                        <div *ngIf="!rForm.controls['email'].valid && rForm.controls['email'].touched"
-                        >
-                            <div *ngIf="rForm.controls['email'].errors.pattern || rForm.controls['email'].errors.required">
-                                   
-                            </div>
-                        </div>
+                        
 
                         <div class="form-group has-success has-feedback" [ngClass]="{'has-error': rForm.controls['password'].errors && rForm.controls['password'].touched , 'has-success': !rForm.controls['password'].errors}">
                         <label for="password">Password:</label>
@@ -29,7 +31,7 @@
                         <span class="glyphicon glyphicon-ok form-control-feedback" [ngClass]="{'glyphicon-ok': !rForm.controls['password'].errors , 'glyphicon-remove': rForm.controls['password'].errors && rForm.controls['password'].touched}"></span>
 
                         <div *ngIf="!rForm.controls['password'].valid && rForm.controls['password'].touched"
-                          class="alert alert-danger">
+                          class="custom-alert custom-alert-danger">
                               <div *ngIf="rForm.controls['password'].errors.required">
                               Password is required
                               </div>
@@ -43,24 +45,26 @@
                 <div *ngIf="!loadingData">
                     <div *ngIf="error" class="alert alert-danger alert-dismissable flipInX animated">
                             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                Email or Password is incorrect!
+                                {{errorMessage}}
                     </div>
                 </div>
                 <div *ngIf="loadingData" class="alert alert-info flipInX animated">
-                    <span class="glyphicon glyphicon-repeat loader"></span> <span id="loginMessage">Processing... Please wait</span>
+                    <span class="glyphicon glyphicon-repeat loader"></span> {{loadingMessage}}<span></span>
                 </div>
 
                     
 
                 <hr class="hr-text" data-content="OR, connect with" />
-
-                    <div class="social-btn-group">
-                        <button (click)="signIn('google')" class="google"><i class="fa fa-google left" aria-hidden="true"></i> Google</button>
-                        <button (click)="signIn('facebook')" class="facebook"><i class="fa fa-facebook left" aria-hidden="true"></i> Facebook</button>
-                    </div> 
+                <div class="row">
+                        <div class="col-sm-6">
+                            <button (click)="signIn('google')" class="google flipInX animated"><i class="fa fa-google left" aria-hidden="true"></i> Google</button>
+                        </div>
+                        <div class="col-sm-6">
+                            <button (click)="signIn('facebook')" class="facebook flipInX animated"><i class="fa fa-facebook left" aria-hidden="true"></i> Facebook</button>
+                        </div>
+                </div>  
                 
                   </div>
-            <div class="col-sm-4"></div>
             </div>
     </div>
 </div>

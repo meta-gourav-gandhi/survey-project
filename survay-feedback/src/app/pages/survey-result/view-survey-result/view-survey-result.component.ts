@@ -13,6 +13,8 @@ import { QuestionResponse } from '../../../models/question-responses';
 import { SurveyResult } from '../../../models/survey-result';
 import { Option } from '../../../models/option';
 import { QuestionResult } from '../../../models/question-result';
+import { UtilService } from '../../../services/util.service'; 
+import { SharedServiceService } from "../../../services/shared-service.service";
 
 @Component({
   selector: 'app-view-survey-result',
@@ -27,12 +29,38 @@ export class ViewSurveyResultComponent implements OnInit {
     surveyResult: SurveyResult;
     questionResults: QuestionResult[];
     data;
+    chartTypeCustom = new Map() // Here
     optionset;
     order: string = 'id';
 
-    public chartOptions: any = {
+    public barChartOptions: any = {
         scaleShowVerticalLines: false,
         responsive: true,
+        scales: {
+            xAxes: [{
+                barPercentage: 0.4,
+                ticks: {
+                    beginAtZero: false,
+                }
+            }],
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true,
+                }
+            }]
+        }
+    };
+        
+    public pieChartOptions: any = {
+        scaleShowVerticalLines: false,
+        responsive: true,
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true,
+                }
+            }]
+        }
     };
 
     myType = 'bar';
@@ -40,14 +68,17 @@ export class ViewSurveyResultComponent implements OnInit {
     public chartType: string = this.myType;
     public chartLegend = true;
     public chartData: any[] = [
-        {data: [65, 59, 44, 81], label: 'Series A'  }
+        {data: [65, 59, 44, 81], label: 'Selected Option'  }
       ];
 
     constructor(private _sanitizer: DomSanitizer,
         private router: Router,
         public _auth: AuthService,
         private route: ActivatedRoute,
-        private surveyService: SurveyService) {
+        private surveyService: SurveyService,
+        private utilService: UtilService,
+        private sharedService: SharedServiceService
+    ) {
         this.data = new Map();
         this.optionset = new Map();
 
@@ -61,7 +92,14 @@ export class ViewSurveyResultComponent implements OnInit {
         this.route.paramMap
         .switchMap((params: ParamMap) =>
         this.surveyService.getSurveyFromId(+params.get('id'), JSON.parse(localStorage.getItem('currentUser')).accessToken))
-        .subscribe(response => this.survey = response.body);
+        .subscribe(response => {
+            if (response.status.toString() == "SUCCESS") {
+                this.survey = response.body;
+                this.sharedService.saveTitle(this.survey.name + ' - Result');
+            } else {
+                this.router.navigate(['/404']);
+            }
+        });
 
         this.updateSet();
     }
@@ -73,22 +111,21 @@ export class ViewSurveyResultComponent implements OnInit {
             }
             window.scrollTo(0, 0);
         });    
-    }
+    } 
 
     updateSet() {
-        console.log("Hello");
         this.route.paramMap
         .switchMap((params: ParamMap) =>
         this.surveyService.getSurveyResult(+params.get('id'), JSON.parse(localStorage.getItem('currentUser')).accessToken))
         .subscribe(response => { 
-            console.log("Getting Response." + response);
             this.surveyResult = response.body;
             this.questionResults = this.surveyResult.questionResults;
-            
+
             for(let questionResultInstance of this.questionResults) {
                 let optionset = questionResultInstance.option;
                 let dataset = questionResultInstance.data;
 
+                this.chartTypeCustom.set(questionResultInstance.id,"bar");
                 let clone = JSON.parse(JSON.stringify(this.chartData));
                 clone[0].data = dataset;
     
@@ -96,11 +133,13 @@ export class ViewSurveyResultComponent implements OnInit {
                 this.chartLabels = optionset;
     
                 this.optionset.set(questionResultInstance.id, this.chartLabels);
-                console.log("Option : " + this.optionset.get(questionResultInstance.id));
                 this.data.set(questionResultInstance.id, this.chartData);
-                console.log("Data : " + this.data.get(questionResultInstance.id));
             }
         });
+    }
+
+    getChartType(id : number) : string {
+        return this.chartTypeCustom.get(id);
     }
     getOptionSet(id : number) : String[]{
         return this.optionset.get(id);
@@ -110,25 +149,27 @@ export class ViewSurveyResultComponent implements OnInit {
         return this.data.get(id);
     }
 
-    public changeType(curType: string) {
+    public changeType(curType: string, id: number) {
         if (curType === 'pie') {
-            this.myType = 'bar';
+            this.chartTypeCustom.set(id,'bar');
         } else {
-            this.myType = 'pie';
+            this.chartTypeCustom.set(id,'pie');
         }
-
-        this.chartType = this.myType;
     }
 
     public chartClicked(e: any): void {
-        console.log(e);
+       
     }
 
     public chartHovered(e: any): void {
-        console.log(e);
+        
     }
 
     getEmbbedUrl(url: string) {
         return this._sanitizer.bypassSecurityTrustResourceUrl(url);
+    }
+
+    back() {
+        this.utilService.back();
     }
 }

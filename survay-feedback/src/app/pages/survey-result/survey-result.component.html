@@ -4,9 +4,6 @@
             <div class="pace-progress-inner"></div>
     </div>
     <div class="pace-activity"></div></div>
-<div class="secondary" id="headLine">
-    <div class="container"><h2>View Survey Result</h2></div>
-</div>
 <div class="container">
     <div class="row">
                 <div class="col-sm-2"></div>
@@ -33,7 +30,7 @@
                                 <th [class]="order === 'id'"
                                 (click)="setOrder('id')">Survey ID<span [hidden]="reverse">▼</span><span [hidden]="!reverse">▲</span></th>
                                 <th class="pointer">Survey </th>
-                                <th class="text-right">Survey Controls</th>
+                                <th class="text-right">View Result</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -61,4 +58,3 @@
                 <div class="col-sm-2"></div>
     </div>
 </div>
-<side-navbar></side-navbar>

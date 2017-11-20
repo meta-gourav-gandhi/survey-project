@@ -6,22 +6,6 @@ a {
     padding: 24% 2%;
 }
 
-@media only screen and (max-width: 480px) {
-    #headLine {
-        padding-top: 14%;
-        margin-bottom: 10%;
-        padding-bottom: 1.5%;
-    }
-}
-
-@media only screen and (min-width: 480px) {
-    #headLine {
-        padding-top: 4%;
-        margin-bottom: 10%;
-        padding-bottom: 1.5%;
-    }
-}
-
 .circle {
     display: inline-block;
     background-color: #009cdb;
@@ -37,4 +21,8 @@ a {
 
   .progress{
       border-radius: 0px;
+  }
+
+  .panel{
+      margin-top:10%;
   }

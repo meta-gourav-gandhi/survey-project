@@ -1,22 +1,25 @@
- <div class="sidenav">
-        <div [ngSwitch]="user.role"> 
-            <span *ngSwitchCase="1">     
-                <a routerLink="/createSurveyor" ><span class="glyphicon glyphicon-pencil"></span> Create Surveyor</a>
-                <a >Surveys</a>
-            </span>
-            <span *ngSwitchCase="2">
-                <a routerLink="/manageSurveys" ><span class="glyphicon glyphicon-list-alt"></span> Manage Surveys</a>
-                <a routerLink="/createSurvey" ><span class="glyphicon glyphicon-pencil"></span> Create Survey</a>
-            </span>
-            <span>
-                <a routerLink="/searchSurvey" ><span class="glyphicon glyphicon-ok"></span> Do a survey</a>
-                <a routerLink="/previousResponses" ><span class="glyphicon glyphicon-bookmark"></span> Previous Responses</a>
-            </span>
-        </div>
-        <span *ngIf="user.viewer">
-            <a routerLink="/surveyResults"><span class="glyphicon glyphicon-stats"></span> Survey Results</a>
-        </span>
-</div> 
+<div id="subnav">
+    <div class="container">
+        <div class="pull-left">
+    <span *ngIf="user.viewer">
+            <a routerLink="/surveyResults">Survey Results</a> |
+     </span>
+<span [ngSwitch]="user.role"> 
+    <span *ngSwitchCase="1">     
+        <a routerLink="/createSurveyor" >Create Surveyor</a> | 
+    </span>
+    <span *ngSwitchCase="2">
+        <a routerLink="/manageSurveys" > Manage Surveys</a> | 
+        <a routerLink="/createSurvey" > Create Survey</a> |
+    </span>
+    <span>
+        <a routerLink="/searchSurvey" > Do a survey</a> |
+        <a routerLink="/previousResponses" > Previous Responses</a>
+    </span>
+</span>
+</div>
+</div>
+</div>
 
 
 

@@ -9,8 +9,10 @@ import { Label } from '../../models/label';
 import { MatChipInputEvent } from '@angular/material';
 import { ENTER } from '@angular/cdk/keycodes';
 import { SurveyService} from '../../services/survey.service';
+import { UtilService} from '../../services/util.service';
 import { Router,NavigationEnd } from '@angular/router';
 import { CreatedSurveyResponse } from '../../models/created-survey-response';
+import { SharedServiceService } from "../../services/shared-service.service";
 
 const COMMA = 188;
 
@@ -35,7 +37,12 @@ export class CreateSurveyComponent implements OnInit {
   loadingData : boolean;
   createdSurvey : CreatedSurveyResponse;
 
-  constructor(private router: Router,public snackBar: MatSnackBar, private _fb: FormBuilder, private surveyService : SurveyService) {
+  constructor(private router: Router,
+              public snackBar: MatSnackBar, 
+              private _fb: FormBuilder, 
+              private surveyService : SurveyService, 
+              private utilService: UtilService,
+              private sharedService: SharedServiceService){ 
     if(JSON.parse(localStorage.getItem('currentUser')) === null) {
       // will be improve when api will be complete
       this.router.navigate(['/login']);
@@ -85,6 +92,9 @@ export class CreateSurveyComponent implements OnInit {
   };
 
   ngOnInit() {
+    setTimeout(() => {
+      this.sharedService.saveTitle('Create Survey');
+    });    
     this.surveyForm = this._fb.group({
       'surveyQuestions': this._fb.array([
         this.initQuestions(),
@@ -195,7 +205,6 @@ export class CreateSurveyComponent implements OnInit {
         labels: this.surveyForm.get('surveyLabels').value,
         questions: questions
       }
-      console.log(survey);
       this.saveSurvey(survey);
     }
   }
@@ -206,6 +215,8 @@ export class CreateSurveyComponent implements OnInit {
     .then(response => { 
         this.loadingData = false;
         if (response.status.toString() == "SUCCESS") {
+          this.user.viewer = true;
+          localStorage.setItem("currentUser", JSON.stringify(this.user));
           this.createdSurvey = response.body;
         } else {
           this.errorMessageStatus = true;
@@ -224,5 +235,9 @@ export class CreateSurveyComponent implements OnInit {
         this.validateAllFormFields(control);
       }
     });
+  }
+
+  back() {
+    this.utilService.back();
   }
 }

@@ -12,6 +12,8 @@ import { SurveyResponse } from '../../../models/survey-response';
 import { QuestionResponse } from '../../../models/question-responses';
 import { UserDetailForSurveyor } from '../../../models/user-detail-for-surveyor';
 import { UserService } from "../../../services/user.service";
+import { UtilService } from "../../../services/util.service";
+import { SharedServiceService } from "../../../services/shared-service.service";
 
 @Component({
   selector: 'view-created-survey',
@@ -31,7 +33,15 @@ export class ViewSurveyComponent implements OnInit {
     
     
   
-    constructor(private userService: UserService, private _sanitizer: DomSanitizer, private router: Router,public _auth: AuthService, private route: ActivatedRoute, private surveyService: SurveyService){ 
+    constructor(private userService: UserService,
+             private _sanitizer: DomSanitizer,
+            private router: Router,
+            public _auth: AuthService, 
+            private route: ActivatedRoute,
+            private surveyService: SurveyService,
+            private utilService: UtilService,
+            private sharedService: SharedServiceService
+        ){ 
         this.survey = new Survey();
         if (JSON.parse(localStorage.getItem('currentUser')) === null) {
             this.router.navigate(['/login']);
@@ -60,7 +70,12 @@ export class ViewSurveyComponent implements OnInit {
     getSurveyFromId(){
         this.surveyService.getSurveyFromId(this.formId, JSON.parse(localStorage.getItem("currentUser")).accessToken)
         .then(response => {
-            this.survey = response.body;
+            if (response.status.toString() === "SUCCESS") {
+                this.survey = response.body;
+                this.sharedService.saveTitle(this.survey.name);   
+            } else {
+                this.router.navigate(['/404']);
+            }   
         });
     }
 
@@ -87,8 +102,6 @@ export class ViewSurveyComponent implements OnInit {
       createOrRemoveViewer(user : UserDetailForSurveyor){
         this.surveyService.createOrRemoveViewer(this.formId, user.id , JSON.parse(localStorage.getItem("currentUser")).accessToken)
         .then(response => { 
-            
-            console.log(response);
             if (response.status.toString() == "SUCCESS") {
     
             } else {
@@ -101,5 +114,9 @@ export class ViewSurveyComponent implements OnInit {
                 }
             }
          });
+      }
+
+      back() {
+          this.utilService.back();
       }
 }

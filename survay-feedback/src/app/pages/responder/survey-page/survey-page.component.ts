@@ -3,12 +3,14 @@ import { Survey } from '../../../models/survey';
 import { Question } from '../../../models/question';
 import { Option } from '../../../models/option';
 import { SurveyService} from '../../../services/survey.service';
+import { UtilService} from '../../../services/util.service';
 import { FormGroup, FormArray, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { AuthService } from "angular2-social-login";
 import { User } from '../../../models/user';
 import { SurveyInfo } from '../../../models/survey-info';
 import { Router,NavigationEnd } from '@angular/router';
 import { ActivatedRoute, ParamMap } from '@angular/router';
+import { SharedServiceService } from "../../../services/shared-service.service";
 
 
 @Component({
@@ -26,14 +28,19 @@ export class SurveyPageComponent implements OnInit {
   errorMessage : string;
   errorMessageClass : string;
   selectedSurvey : Survey;
-  success : boolean;
   response = new FormArray([]);
   result: {
     surveyId,
     questionResponses,
     };
 
-  constructor(private _fb: FormBuilder, private surveyService : SurveyService,private router: Router,public _auth: AuthService, private route: ActivatedRoute) {
+  constructor(private _fb: FormBuilder, 
+              private surveyService : SurveyService,
+              private router: Router,
+              public _auth: AuthService, 
+              private route: ActivatedRoute,
+              private utilService: UtilService,
+              private sharedService: SharedServiceService) {
     if(JSON.parse(localStorage.getItem('currentUser')) === null) {
       // will be improve when api will be complete
       this.router.navigate(['/login']);
@@ -44,11 +51,14 @@ export class SurveyPageComponent implements OnInit {
   
 
   ngOnInit() {
+    setTimeout(() => {
+      this.sharedService.saveTitle('Fill Survey');
+    });
     this.router.events.subscribe((evt) => {
-        if (!(evt instanceof NavigationEnd)) {
-            return;
-        }
-        window.scrollTo(0, 0)
+      if (!(evt instanceof NavigationEnd)) {
+          return;
+      }
+      window.scrollTo(0, 0)
     });
 
     this.sub = this.route.params.subscribe(params => {
@@ -59,11 +69,19 @@ export class SurveyPageComponent implements OnInit {
 
   }
 
+  goToTop() {
+    setTimeout(() => window.scrollTo(0, 0), 1);
+  }
+
   getSurveyFromId(){
     this.surveyService.getSurveyFromId(this.surveyId, JSON.parse(localStorage.getItem("currentUser")).accessToken)
     .then(response => {
-        this.survey = response.body;
-        this.updateForm();
+       if (response.status.toString() == "SUCCESS"){
+          this.survey = response.body;
+          this.updateForm();
+       } else {
+          this.router.navigate(['/404']);
+       }
     });
   }
 
@@ -96,7 +114,6 @@ getSurvey() {
   }
 
   submitSurvey() {
-    debugger;
     if (!this.surveyForm.valid) {
         this.validateAllFormFields(this.surveyForm); 
     } else {
@@ -108,9 +125,9 @@ getSurvey() {
 
         for(var i=0; i < this.survey.questions.length; i++){
           response = {
-          quesId: this.survey.questions[i].id,
-          optionId: this.surveyForm.get('response').value[i]
-        };
+            quesId: this.survey.questions[i].id,
+            optionId: this.surveyForm.get('response').value[i]
+          };
           questionResponses.push(response);
         }
 
@@ -124,7 +141,6 @@ getSurvey() {
   }
 
   saveSurveyResponse(result : any){
-    console.log(result);
     this.errorMessageStatus = false;
     this.surveyService.submitSurvey(result, JSON.parse(localStorage.getItem("currentUser")).accessToken)
     .then(response => {
@@ -132,8 +148,8 @@ getSurvey() {
           this.errorMessageStatus = true;
           this.errorMessageClass = "alert alert-success flipInX animated";
           this.errorMessage = "Your response saved.";
+          setTimeout(() => this.router.navigate(['/dashboard']), 2000);
         } else if (response.status.toString() === "DUPLICATE") {
-          this.success = true;
           this.errorMessageStatus = true;
           this.errorMessageClass = "alert alert-warning flipInX animated";
           this.errorMessage = "Survey Already filled by you.";
@@ -142,6 +158,7 @@ getSurvey() {
           this.errorMessageClass = "alert alert-danger flipInX animated";
           this.errorMessage = "Error in Response Saving";
         }
+        this.goToTop();
     });
   }
 
@@ -149,4 +166,7 @@ getSurvey() {
     this.selectedSurvey = survey;
   }
 
+  back() {
+    this.utilService.back();
+  }
 }

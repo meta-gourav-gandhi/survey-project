@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from "../../services/user.service";
+import { UtilService } from "../../services/util.service";
 import { AuthService } from "angular2-social-login";
 import { Message } from '../../models/message';
 import { User } from '../../models/user';
+import { SharedServiceService } from "../../services/shared-service.service";
 import { Router,NavigationEnd } from '@angular/router';
 import { FormBuilder, FormGroup, Validators , FormControl} from '@angular/forms';
 
@@ -19,7 +21,12 @@ export class EditProfileComponent implements OnInit {
   infoMessageClass : String;
   rForm : FormGroup;
 
-  constructor(private router: Router,public _auth: AuthService, private userService: UserService, private formBuilder: FormBuilder){ 
+  constructor(private router: Router,
+            public _auth: AuthService, 
+            private userService: UserService, 
+            private formBuilder: FormBuilder, 
+            private utilService: UtilService,
+            private sharedService: SharedServiceService){ 
     if(JSON.parse(localStorage.getItem('currentUser')) === null) {
       // will be improve when api will be complete
       this.router.navigate(['/login']);
@@ -29,13 +36,16 @@ export class EditProfileComponent implements OnInit {
   }
 
   ngOnInit() {
+    setTimeout(() => {
+      this.sharedService.saveTitle('Edit Profile');
+    });
     this.router.events.subscribe((evt) => {
       if (!(evt instanceof NavigationEnd)) {
           return;
       }
       window.scrollTo(0, 0)
     });
-
+    
     this.validate();
   }
 
@@ -43,10 +53,9 @@ export class EditProfileComponent implements OnInit {
       this.infoMessageStatus = false;
       this.userService.changePassword(this.passwords , JSON.parse(localStorage.getItem("currentUser")).accessToken)
       .then(response => {
-        console.log(response);
           if (response.status.toString() == "FAILURE") {
                 this.infoMessageStatus = true;
-                this.infoMessage = "Error while changing password";
+                this.infoMessage = "You have entered wrong current password.";
                 this.infoMessageClass = "alert alert-danger alert-dismissable";
           } else if (response.status.toString() == "DUPLICATE") {    
                 this.infoMessageStatus = true;
@@ -56,6 +65,10 @@ export class EditProfileComponent implements OnInit {
                 this.infoMessageStatus = true;
                 this.infoMessage = "Password changed successfully";
                 this.infoMessageClass = "alert alert-success alert-dismissable";
+          } else {
+              this.infoMessageStatus = true;
+              this.infoMessage = "Error while changing password";
+              this.infoMessageClass = "alert alert-danger alert-dismissable";
           }
     });
   }
@@ -108,5 +121,9 @@ export class EditProfileComponent implements OnInit {
 
     };
 
+  }
+
+  back() {
+    this.utilService.back();
   }
 }

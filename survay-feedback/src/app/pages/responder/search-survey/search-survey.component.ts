@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { SurveyService } from "../../../services/survey.service";
+import { UtilService } from "../../../services/util.service";
 import { AuthService } from "angular2-social-login";
 import { Message } from '../../../models/message';
 import { User } from '../../../models/user';
 import { Router,NavigationEnd } from '@angular/router';
 import { Survey } from '../../../models/survey'; 
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { SharedServiceService } from "../../../services/shared-service.service";
 
 @Component({
   selector: 'search-survey',
@@ -18,7 +20,12 @@ export class SearchSurveyComponent implements OnInit {
   errorMessage : string;
   rForm : FormGroup;
 
-  constructor(private router: Router,public _auth: AuthService, private surveyService: SurveyService,private formBuilder: FormBuilder){ 
+  constructor(private router: Router,
+            public _auth: AuthService, 
+            private surveyService: SurveyService,
+            private formBuilder: FormBuilder,
+            private utilService: UtilService,
+            private sharedService: SharedServiceService){  
     if(JSON.parse(localStorage.getItem('currentUser')) === null) {
         // will be improve when api will be complete
         this.router.navigate(['/login']);
@@ -28,6 +35,9 @@ export class SearchSurveyComponent implements OnInit {
   }
 
   ngOnInit() {
+    setTimeout(() => {
+        this.sharedService.saveTitle('Search Survey');
+    });
     this.router.events.subscribe((evt) => {
       if (!(evt instanceof NavigationEnd)) {
           return;
@@ -58,9 +68,16 @@ export class SearchSurveyComponent implements OnInit {
   }
 
   validate() {
-      console.log("Entered");
     this.rForm = this.formBuilder.group({
         'surveyID': [null, Validators.compose([Validators.required, Validators.pattern('^[0-9]*$')])],
       });
+  }
+
+  back() {
+      this.utilService.back();
+  }
+
+  removeErrorMessage() {
+      this.errorMessageStatus = false;
   }
 }

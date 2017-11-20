@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from "angular2-social-login";
 import { UserService } from "../../services/user.service";
+import { SharedServiceService } from "../../services/shared-service.service";
 import { Message } from '../../models/message';
 import { User } from '../../models/user';
 import { Router,NavigationEnd } from '@angular/router';
@@ -21,8 +22,10 @@ export class LoginComponent implements OnInit {
   currentLoggedInUser : User;
   rForm : FormGroup;
   loadingData : boolean;
+  loadingMessage;
+  errorMessage;
 
-  constructor(private router: Router,public _auth: AuthService, private userService: UserService,private formBuilder: FormBuilder){ 
+  constructor(private router: Router,public _auth: AuthService, private sharedService: SharedServiceService, private userService: UserService,private formBuilder: FormBuilder){ 
     if(JSON.parse(localStorage.getItem('currentUser')) !== null) {
       this.router.navigate(['/dashboard']);
     }
@@ -41,10 +44,11 @@ export class LoginComponent implements OnInit {
   }
 
   doLogin() : void {
+    this.loadingMessage = 'Processing... Please wait';
     this.loadingData = true;
     this.error = false;
-    setTimeout(function(){ 
-      document.getElementById("loginMessage").innerHTML = "It's taking longer than expected.. Please Wait.";
+    setTimeout(() => {
+      this.loadingMessage = "It's taking longer than usual... Please wait";
      }, 5000);
     this.userService.doLogin(this.user)
     .then(response => {
@@ -52,9 +56,13 @@ export class LoginComponent implements OnInit {
       if (response.status.toString() == "SUCCESS") {
         this.currentLoggedInUser = response.body;
         localStorage.setItem("currentUser",JSON.stringify(this.currentLoggedInUser));
+        this.sharedService.saveUser(true);
         this.router.navigate(['/dashboard']);
-        location.reload();
-      } else {
+      } else if(response.status.toString() == "INVALID") {
+        this.errorMessage = "Email or Password is incorrect!";
+        this.error = true;
+      }else {
+        this.errorMessage = "Something went wrong... Please try again!";
         this.error = true;
       }
     });
@@ -73,8 +81,8 @@ export class LoginComponent implements OnInit {
           if (response.status.toString() == "SUCCESS") {
             this.currentLoggedInUser = response.body;
             localStorage.setItem("currentUser",JSON.stringify(this.currentLoggedInUser));
+            this.sharedService.saveUser(true);
             this.router.navigate(['/dashboard']);
-            location.reload();
           } else {
             this.error = true;
           }

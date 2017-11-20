@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService} from '../../services/user.service';
 import { AlertService } from '../../services/alert.service';
+import { SharedServiceService } from '../../services/shared-service.service';
 import { Location }                 from '@angular/common';
 import { Router,NavigationEnd } from '@angular/router';
 import { Message } from '../../models/message';
@@ -20,9 +21,10 @@ export class SignupComponent implements OnInit {
   regMessageClass : string;
   regMessage : string;
   rForm : FormGroup;
+  currentLoggedInUser;
   
 
-  constructor(private userService: UserService,
+  constructor(private userService: UserService, private sharedService: SharedServiceService,
     private router: Router,private location: Location, private alertService: AlertService,private formBuilder: FormBuilder) {
       if(JSON.parse(localStorage.getItem('currentUser')) !== null) {
         this.router.navigate(['/dashboard']);
@@ -45,7 +47,6 @@ export class SignupComponent implements OnInit {
     if (!this.rForm.valid) {
       this.validateAllFormFields(this.rForm);
     } else {
-      console.log('submitted');
     this.regMessageStatus = false;
     this.userService.doSignup(this.user)
       .then(response => {
@@ -58,6 +59,10 @@ export class SignupComponent implements OnInit {
           this.regMessageStatus = true;
           this.regMessageClass = "alert alert-success alert-dismissable";
           this.regMessage = "Successfully Sign Up!";
+         
+          setTimeout(() => {   
+            this.doLogin();
+          }, 2000);
         } else if (response.status.toString() === "DUPLICATE") {
           this.regMessageStatus = true;
           this.regMessageClass = "alert alert-warning alert-dismissable";
@@ -67,12 +72,23 @@ export class SignupComponent implements OnInit {
     }
   }
 
+  doLogin() : void {
+    this.userService.doLogin(this.user)
+    .then(response => {
+        this.currentLoggedInUser = response.body;
+        localStorage.setItem("currentUser",JSON.stringify(this.currentLoggedInUser));
+        this.sharedService.saveUser(true);
+        this.router.navigate(['/dashboard']);
+    });
+  }
+
+
   validate() {
     this.rForm = this.formBuilder.group({
       'email': [null, Validators.compose([Validators.required, Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,6}$')])],
       'password': [null, [Validators.compose([Validators.required, Validators.minLength(8), this.NoWhitespaceValidator])]],
       'confpassword': [null, [this.matchOtherValidator('password')]],
-      'name': [null, Validators.compose([Validators.required, Validators.minLength(2), this.NoWhitespaceValidator])],
+      'name': [null, Validators.compose([Validators.required, Validators.minLength(2), Validators.maxLength(100), this.NoWhitespaceValidator])],
       'dob': [null, Validators.required],
       'gender': [null, Validators.required]
       });

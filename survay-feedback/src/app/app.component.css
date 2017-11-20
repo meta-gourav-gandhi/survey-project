@@ -1,3 +1,6 @@
+a{
+    cursor: pointer;
+}
 .custom-navbar{
     border-radius: 0px;
     background: #009cdb;
@@ -25,3 +28,36 @@
     color: white;
     text-align: center;
   }
+
+  .sidenav-content {
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    
+  }
+
+
+    
+  @media only screen and (max-width: 480px) {
+    .sidenav-container .sidenav-content {
+        width: 80%;
+    }
+  }
+
+@media only screen and (min-width:600px) and (max-width:961px) {
+    .sidenav-container .sidenav-content {
+        width: 35%;
+    }
+}
+
+@media only screen and (min-width:1024px) {
+    .sidenav-container .sidenav-content {
+        width: 23%;
+    }
+}
+
+@media only screen and (min-width:1280px) {
+    .sidenav-container .sidenav-content {
+        width: 16%;
+    }
+}
