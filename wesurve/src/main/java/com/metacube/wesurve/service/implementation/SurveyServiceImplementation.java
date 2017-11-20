@@ -1,3 +1,6 @@
+/**
+ * The SurveyServiceImplementation class is service class for Survey Model.
+ */
 package com.metacube.wesurve.service.implementation;
 
 import javax.annotation.Resource;
@@ -18,6 +21,11 @@ public class SurveyServiceImplementation implements SurveyService {
 	@Resource(name = "hibernateSurveyDaoImplementation")
 	SurveyDao surveyDao;
 
+	/**
+	 * This method creates a new survey.
+	 * @param survey
+	 * @return Survey - created survey
+	 */
 	@Override
 	public Survey createSurvey(Survey survey) {
 		Survey newSurvey;
@@ -31,6 +39,12 @@ public class SurveyServiceImplementation implements SurveyService {
 		return newSurvey;
 	}
 
+	/**
+	 * This method changes the survey status.
+	 * @param survey - Survey object
+	 * @param status - SurveyStatus
+	 * @return Status
+	 */
 	@Override
 	public Status changeSurveyStatus(Survey survey, SurveyStatus status) {
 		Status changeStatus;
@@ -48,6 +62,11 @@ public class SurveyServiceImplementation implements SurveyService {
 		return changeStatus;
 	}
 
+	/**
+	 * This method returns the Survey object with the survey id.
+	 * @param surveyId
+	 * @return Survey object
+	 */
 	@Override
 	public Survey getSurveyById(int surveyId) {
 		Survey survey;
@@ -62,6 +81,11 @@ public class SurveyServiceImplementation implements SurveyService {
 
 	}
 
+	/**
+	 * This method deletes a survey.
+	 * @param survey - Survey object
+	 * @return Status 
+	 */
 	@Override
 	public Status deleteSurvey(Survey survey) {
 		Status status;
@@ -76,11 +100,21 @@ public class SurveyServiceImplementation implements SurveyService {
 		return status;
 	}
 
+	/**
+	 * This method returns the survey URL.
+	 * @param survey
+	 * @return survey url - String
+	 */
 	@Override
 	public String getSurveyURL(Survey survey) {
 		return Constants.SURVEYURLINITIALS + survey.getSurveyId() + "/";
 	}
 
+	/**
+	 * This method edits the survey
+	 * @param survey - Survey object
+	 * @return Status
+	 */
 	@Override
 	public Status edit(Survey survey) {
 		Status status;
@@ -94,7 +128,13 @@ public class SurveyServiceImplementation implements SurveyService {
 
 		return status;
 	}
-
+	
+	/**
+	 * This method adds new viewer of survey result.
+	 * @param survey - Survey object
+	 * @param viewer - User object
+	 * @return Status.
+	 */
 	@Override
 	public Status addViewer(Survey survey, User viewer) {
 		Status status;
@@ -109,6 +149,12 @@ public class SurveyServiceImplementation implements SurveyService {
 		return status;
 	}
 
+	/**
+	 * This method removes viewer from the survey view list.
+	 * @param survey - Survey object
+	 * @param viewer - User object
+	 * @return Status
+	 */
 	@Override
 	public Status removeViewer(Survey survey, User viewer) {
 		Status status;

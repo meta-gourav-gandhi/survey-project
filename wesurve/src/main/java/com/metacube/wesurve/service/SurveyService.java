@@ -1,3 +1,6 @@
+/**
+ * The SurveyService interface is service layer interface Survey Model 
+ */
 package com.metacube.wesurve.service;
 
 import com.metacube.wesurve.enums.Status;

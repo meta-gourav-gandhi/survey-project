@@ -1,3 +1,6 @@
+/**
+ * The UserResponsesService interface is service layer interface UserResponses Model 
+ */
 package com.metacube.wesurve.service;
 
 import com.metacube.wesurve.enums.Status;

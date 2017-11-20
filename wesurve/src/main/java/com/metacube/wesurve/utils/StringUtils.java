@@ -31,7 +31,6 @@ public class StringUtils {
 	 * @return
 	 */
 	public static boolean validateString(String string) {
-		System.out.println(string);
 		return !(string == null || string.trim().isEmpty());
 	}
 

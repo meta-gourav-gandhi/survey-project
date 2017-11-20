@@ -90,7 +90,7 @@ public class SurveyController {
 	 * @return ResponseDto<Void> object
 	 */
 	@RequestMapping(value = "/exists", method = RequestMethod.GET)
-	public @ResponseBody ResponseDto<Void> checkIfSurveyExists(
+	public @ResponseBody ResponseDto<Void> getSurveyStatus(
 			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken,
 			@RequestParam(Constants.SURVEYID) int surveyId) {
 		ResponseDto<Void> response = new ResponseDto<>();
@@ -98,7 +98,7 @@ public class SurveyController {
 
 		UserData currentUser = checkAuthorization(accessToken);
 		if (currentUser.getRole() != Role.INVALID) {
-			status = surveyFacade.checkIfSurveyExists(surveyId, currentUser.getUserId());
+			status = surveyFacade.getSurveyStatus(surveyId, currentUser.getUserId());
 		}
 
 		response.setStatus(status);

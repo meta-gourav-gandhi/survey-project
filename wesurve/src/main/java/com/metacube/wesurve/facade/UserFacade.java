@@ -1,3 +1,6 @@
+/**
+ * The UserFacade is an interface containing all methods related to User.
+ */
 package com.metacube.wesurve.facade;
 
 import com.metacube.wesurve.authorize.UserData;

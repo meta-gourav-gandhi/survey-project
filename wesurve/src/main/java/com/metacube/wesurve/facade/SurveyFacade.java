@@ -1,3 +1,6 @@
+/**
+ * The SurveyFacade is an interface containing all methods related to survey.
+ */
 package com.metacube.wesurve.facade;
 
 import java.util.Map;
@@ -18,7 +21,7 @@ public interface SurveyFacade {
 	ResponseDto<Void> editSurvey(int surveyorId, SurveyDto surveyDto);
 	ResponseDto<Void> changeSurveyStatus(int surveyorId, int surveyId);
 	ResponseDto<Void> addOrRemoveSurveyViewer(int surveyorId, int surveyId, int userId);
-	Status checkIfSurveyExists(int surveyId, int userId);
+	Status getSurveyStatus(int surveyId, int userId);
 	Status saveResponse(int responderId, ResponderDto responderDto);
 	ResponseDto<SurveyResultDto> getSurveyResult(int viewerId, int surveyId);
 	ResponseDto<Map<Integer, String>> getSuveyResponse(int responderId, int surveyId);

@@ -1,3 +1,6 @@
+/**
+ * The UserResponsesServiceImplementation class is service class for UserResponses Model.
+ */
 package com.metacube.wesurve.service.implementation;
 
 import java.util.List;
@@ -19,7 +22,12 @@ public class UserResponsesServiceImplementation implements UserResponsesService 
 
 	@Resource(name = "hibernateUserResponsesDaoImplementation")
 	UserResponsesDao userResponsesDao;
-
+	
+	/**
+	 * This method saves new userResponse.
+	 * @param userResponse
+	 * @return Status
+	 */
 	@Override
 	public Status addNewResponse(UserResponses userResponse) {
 		Status status;
@@ -38,11 +46,16 @@ public class UserResponsesServiceImplementation implements UserResponsesService 
 		return status;
 	}
 
+	/**
+	 * @param curQues
+	 * @param curOption
+	 * @return Double
+	 */
 	@Override
-	public Double getUserResponsesOfAQuestionAndOption(Questions curQues, Options curOption) {
+	public Double getUserResponsesOfAQuestionAndOption(Questions ques, Options option) {
 		List<UserResponses> responses;
 		try {
-			responses = userResponsesDao.userResponsesByQuestionAndOption(curQues, curOption);
+			responses = userResponsesDao.userResponsesByQuestionAndOption(ques, option);
 		} catch(Exception exception) {
 			exception.printStackTrace();
 			responses = null;
@@ -51,6 +64,12 @@ public class UserResponsesServiceImplementation implements UserResponsesService 
 		return (double) responses.size();
 	}
 
+	/**
+	 * This method returns UserResponses by the given IDs (composite key)
+	 * @param user - User object
+	 * @param question - Question object
+	 * @return UserResponses object
+	 */
 	@Override
 	public UserResponses getUserResponseById(User user, Questions question) {
 		UserResponses userResponse = null;
@@ -62,5 +81,4 @@ public class UserResponsesServiceImplementation implements UserResponsesService 
 
 		return userResponse;
 	}
-
 }

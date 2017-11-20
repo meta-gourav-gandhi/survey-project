@@ -1,3 +1,6 @@
+/**
+ * The QuestionsService interface is service layer interface Questions Model 
+ */
 package com.metacube.wesurve.service;
 
 import com.metacube.wesurve.authorize.UserData;

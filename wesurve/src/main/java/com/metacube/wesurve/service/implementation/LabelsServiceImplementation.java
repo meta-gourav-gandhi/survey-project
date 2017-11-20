@@ -1,3 +1,6 @@
+/**
+ * The LabelsServiceImplementation class is service class for Labels model.
+ */
 package com.metacube.wesurve.service.implementation;
 
 import javax.annotation.Resource;
@@ -14,6 +17,11 @@ public class LabelsServiceImplementation implements LabelsService {
 	@Resource(name = "hibernateLabelsDaoImplementation")
 	LabelsDao labelsDao;
 
+	/**
+	 * This method returns Labels object with label name as the given label
+	 * @param label - String
+	 * @return Labels object
+	 */
 	@Override
 	public Labels getLabelByLabelName(String label) {
 		Labels labelModel;

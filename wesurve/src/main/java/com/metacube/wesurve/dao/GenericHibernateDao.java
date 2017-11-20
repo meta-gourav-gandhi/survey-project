@@ -63,7 +63,7 @@ public abstract class GenericHibernateDao<T, ID extends Serializable> implements
 	 * This method saves the new record in the table.
 	 */
 	@Override
-	public <S extends T> S save(final S entity) {
+	public T save(final T entity) {
 		Session session = this.sessionFactory.getCurrentSession();
 		session.save(entity);
 		return entity;
