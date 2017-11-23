@@ -14,6 +14,8 @@ public class SurveyDto {
 	private Set<QuestionDto> questions;
 	private Set<String> labels;
 	private SurveyStatus status;
+	private boolean viewer;
+	private boolean owner;
 
 	public int getId() {
 		return id;
@@ -61,5 +63,21 @@ public class SurveyDto {
 
 	public void setStatus(SurveyStatus status) {
 		this.status = status;
+	}
+
+	public boolean isViewer() {
+		return viewer;
+	}
+
+	public void setViewer(boolean viewer) {
+		this.viewer = viewer;
+	}
+
+	public boolean isOwner() {
+		return owner;
+	}
+
+	public void setOwner(boolean owner) {
+		this.owner = owner;
 	}
 }

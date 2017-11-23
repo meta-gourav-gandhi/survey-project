@@ -2,11 +2,11 @@
  * The HibernateSurveyDaoImplementation class is a DAO class for Survey Model.
  * It extends GenericHibernateDao class and implements SurveyDao interface.
  */
-package com.metacube.wesurve.dao.survey;
+package com.metacube.wesurve.dao.implementation;
 
 import org.springframework.stereotype.Repository;
 
-import com.metacube.wesurve.dao.GenericHibernateDao;
+import com.metacube.wesurve.dao.SurveyDao;
 import com.metacube.wesurve.model.Survey;
 
 @Repository("hibernateSurveyDaoImplementation")

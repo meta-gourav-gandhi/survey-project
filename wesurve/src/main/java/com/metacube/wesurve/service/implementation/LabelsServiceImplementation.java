@@ -7,7 +7,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import com.metacube.wesurve.dao.labels.LabelsDao;
+import com.metacube.wesurve.dao.LabelsDao;
 import com.metacube.wesurve.model.Labels;
 import com.metacube.wesurve.service.LabelsService;
 

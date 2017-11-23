@@ -7,8 +7,8 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import com.metacube.wesurve.dao.options.OptionsDao;
-import com.metacube.wesurve.dao.questions.QuestionsDao;
+import com.metacube.wesurve.dao.OptionsDao;
+import com.metacube.wesurve.dao.QuestionsDao;
 import com.metacube.wesurve.model.Options;
 import com.metacube.wesurve.model.Questions;
 import com.metacube.wesurve.service.QuestionsService;

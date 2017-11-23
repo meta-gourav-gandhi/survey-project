@@ -49,6 +49,15 @@ public class StringUtils {
 
 		return result;
 	}
+	
+	/**
+	*
+	* @param password
+	* @return
+	*/
+	public static boolean validatePassword(String password) {
+		return validateString(password) && password.length() >= 8;
+	}
 
 	/**
 	 * @param email to append in the access token

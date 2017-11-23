@@ -7,7 +7,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import com.metacube.wesurve.dao.survey.SurveyDao;
+import com.metacube.wesurve.dao.SurveyDao;
 import com.metacube.wesurve.enums.Status;
 import com.metacube.wesurve.enums.SurveyStatus;
 import com.metacube.wesurve.model.Survey;
@@ -107,7 +107,7 @@ public class SurveyServiceImplementation implements SurveyService {
 	 */
 	@Override
 	public String getSurveyURL(Survey survey) {
-		return Constants.SURVEYURLINITIALS + survey.getSurveyId() + "/";
+		return Constants.SURVEY_BASE_URL + survey.getSurveyId() + "/";
 	}
 
 	/**

@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.metacube.wesurve.authorize.UserData;
 import com.metacube.wesurve.dto.ResponderDto;
 import com.metacube.wesurve.dto.ResponseDto;
 import com.metacube.wesurve.dto.SurveyDto;
@@ -24,6 +23,7 @@ import com.metacube.wesurve.dto.SurveyResultDto;
 import com.metacube.wesurve.enums.Role;
 import com.metacube.wesurve.enums.Status;
 import com.metacube.wesurve.facade.SurveyFacade;
+import com.metacube.wesurve.model.UserData;
 import com.metacube.wesurve.utils.Constants;
 
 @Controller
@@ -42,10 +42,10 @@ public class SurveyController {
 	 */
 	@RequestMapping(value = "/", method = RequestMethod.POST, consumes = "application/json")
 	public @ResponseBody ResponseDto<SurveyResponseDto> createSurvey(
-			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken, @RequestBody SurveyDto surveyDto) {
+			@RequestHeader(value = Constants.ACCESS_TOKEN) String accessToken, @RequestBody SurveyDto surveyDto) {
 		
 		ResponseDto<SurveyResponseDto> response;
-		UserData currentUser = checkAuthorization(accessToken);
+		UserData currentUser = getUserByToken(accessToken);
 		if (currentUser.getRole() == Role.SURVEYOR) {
 			response = surveyFacade.createSurvey(currentUser.getUserId(), surveyDto);
 		} else {
@@ -65,11 +65,11 @@ public class SurveyController {
 	 */
 	@RequestMapping(value = "/", method = RequestMethod.DELETE)
 	public @ResponseBody ResponseDto<Void> deleteSurvey(
-			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken,
-			@RequestParam(Constants.SURVEYID) int surveyId) {
+			@RequestHeader(value = Constants.ACCESS_TOKEN) String accessToken,
+			@RequestParam(Constants.SURVEY_ID) int surveyId) {
 
 		ResponseDto<Void> response;
-		UserData currentUser = checkAuthorization(accessToken);
+		UserData currentUser = getUserByToken(accessToken);
 		if (currentUser.getRole() == Role.SURVEYOR) {
 			response = surveyFacade.deleteSurvey(currentUser.getUserId(), surveyId);
 		} else {
@@ -91,12 +91,12 @@ public class SurveyController {
 	 */
 	@RequestMapping(value = "/exists", method = RequestMethod.GET)
 	public @ResponseBody ResponseDto<Void> getSurveyStatus(
-			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken,
-			@RequestParam(Constants.SURVEYID) int surveyId) {
+			@RequestHeader(value = Constants.ACCESS_TOKEN) String accessToken,
+			@RequestParam(Constants.SURVEY_ID) int surveyId) {
 		ResponseDto<Void> response = new ResponseDto<>();
 		Status status = Status.ACCESS_DENIED;
 
-		UserData currentUser = checkAuthorization(accessToken);
+		UserData currentUser = getUserByToken(accessToken);
 		if (currentUser.getRole() != Role.INVALID) {
 			status = surveyFacade.getSurveyStatus(surveyId, currentUser.getUserId());
 		}
@@ -113,13 +113,13 @@ public class SurveyController {
 	 */
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public @ResponseBody ResponseDto<SurveyDto> getSurvey(
-			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken,
-			@RequestParam(Constants.SURVEYID) int surveyId) {
+			@RequestHeader(value = Constants.ACCESS_TOKEN) String accessToken,
+			@RequestParam(Constants.SURVEY_ID) int surveyId) {
 		
 		ResponseDto<SurveyDto> response;
-		
-		if (checkAuthorization(accessToken).getRole() != Role.INVALID) {
-			response = surveyFacade.getSurvey(surveyId);
+		UserData currentUser = getUserByToken(accessToken);
+		if (currentUser.getRole() != Role.INVALID) {
+			response = surveyFacade.getSurvey(currentUser.getUserId(), surveyId);
 		} else {
 			response = new ResponseDto<>();
 			response.setStatus(Status.ACCESS_DENIED);
@@ -136,11 +136,11 @@ public class SurveyController {
 	 * @return ResponseDto<Void>
 	 */
 	@RequestMapping(value = "/", method = RequestMethod.PUT)
-	public @ResponseBody ResponseDto<Void> editSurvey(@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken,
+	public @ResponseBody ResponseDto<Void> editSurvey(@RequestHeader(value = Constants.ACCESS_TOKEN) String accessToken,
 			@RequestBody SurveyDto surveyDto) {
 		ResponseDto<Void> response;
 		
-		UserData currentUser = checkAuthorization(accessToken);
+		UserData currentUser = getUserByToken(accessToken);
 		if (currentUser.getRole() == Role.SURVEYOR) {
 			response = surveyFacade.editSurvey(currentUser.getUserId(), surveyDto);
 		} else {
@@ -159,11 +159,11 @@ public class SurveyController {
 	 */
 	@RequestMapping(value = "/changestatus", method = RequestMethod.PUT)
 	public @ResponseBody ResponseDto<Void> changeSurveyStatus(
-			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken,
-			@RequestParam(Constants.SURVEYID) int surveyId) {
+			@RequestHeader(value = Constants.ACCESS_TOKEN) String accessToken,
+			@RequestParam(Constants.SURVEY_ID) int surveyId) {
 		ResponseDto<Void> response;
 		
-		UserData currentUser = checkAuthorization(accessToken);
+		UserData currentUser = getUserByToken(accessToken);
 		if (currentUser.getRole() == Role.SURVEYOR) {
 			response = surveyFacade.changeSurveyStatus(currentUser.getUserId(), surveyId);
 		} else {
@@ -183,11 +183,11 @@ public class SurveyController {
 	 */
 	@RequestMapping(value = "/edit/viewer", method = RequestMethod.PUT)
 	public @ResponseBody ResponseDto<Void> addOrRemoveSurveyViewer(
-			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken,
-			@RequestParam(Constants.SURVEYID) int surveyId, @RequestParam(Constants.USERID) int userId) {
+			@RequestHeader(value = Constants.ACCESS_TOKEN) String accessToken,
+			@RequestParam(Constants.SURVEY_ID) int surveyId, @RequestParam(Constants.USER_ID) int userId) {
 		ResponseDto<Void> response;
 		
-		UserData currentUser = checkAuthorization(accessToken);
+		UserData currentUser = getUserByToken(accessToken);
 		if (currentUser.getRole() == Role.SURVEYOR) {
 			response = surveyFacade.addOrRemoveSurveyViewer(currentUser.getUserId(), surveyId, userId);
 		} else {
@@ -206,12 +206,12 @@ public class SurveyController {
 	 */
 	@RequestMapping(value = "/save/response", method = RequestMethod.POST, consumes = "application/json")
 	public @ResponseBody ResponseDto<Void> saveSurveyResponse(
-			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken, @RequestBody ResponderDto ResponderDto) {
+			@RequestHeader(value = Constants.ACCESS_TOKEN) String accessToken, @RequestBody ResponderDto ResponderDto) {
 
 		ResponseDto<Void> response = new ResponseDto<>();
 		Status status = Status.ACCESS_DENIED;
 		
-		UserData currentUser = checkAuthorization(accessToken);
+		UserData currentUser = getUserByToken(accessToken);
 		if (Role.INVALID != currentUser.getRole()) {
 			status = surveyFacade.saveResponse(currentUser.getUserId(), ResponderDto);
 		}
@@ -227,12 +227,12 @@ public class SurveyController {
 	 * @return ResponseDto<Map<Integer, String>> object
 	 */
 	@RequestMapping(value = "/response", method = RequestMethod.GET)
-	public @ResponseBody ResponseDto<Map<Integer, String>> getSurveyResponse(
-			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken,
-			@RequestParam(Constants.SURVEYID) int surveyId) {
-		ResponseDto<Map<Integer, String>> response = new ResponseDto<>();
+	public @ResponseBody ResponseDto<Map<Integer, Integer>> getSurveyResponse(
+			@RequestHeader(value = Constants.ACCESS_TOKEN) String accessToken,
+			@RequestParam(Constants.SURVEY_ID) int surveyId) {
+		ResponseDto<Map<Integer, Integer>> response = new ResponseDto<>();
 
-		UserData currentUser = checkAuthorization(accessToken);
+		UserData currentUser = getUserByToken(accessToken);
 		if (Role.INVALID != currentUser.getRole()) {
 			response = surveyFacade.getSuveyResponse(currentUser.getUserId(), surveyId);
 		} else {
@@ -252,13 +252,13 @@ public class SurveyController {
 	 */
 	@RequestMapping(value = "/result", method = RequestMethod.GET)
 	public @ResponseBody ResponseDto<SurveyResultDto> getSurveyResult(
-			@RequestHeader(value = Constants.ACCESSTOKEN) String accessToken,
-			@RequestParam(Constants.SURVEYID) int surveyId) {
+			@RequestHeader(value = Constants.ACCESS_TOKEN) String accessToken,
+			@RequestParam(Constants.SURVEY_ID) int surveyId) {
 
 		ResponseDto<SurveyResultDto> response = new ResponseDto<>();
 		Status status = Status.ACCESS_DENIED;
 
-		UserData currentUser = checkAuthorization(accessToken);
+		UserData currentUser = getUserByToken(accessToken);
 		if (Role.INVALID != currentUser.getRole()) {
 			response = surveyFacade.getSurveyResult(currentUser.getUserId(), surveyId);
 
@@ -275,7 +275,7 @@ public class SurveyController {
 	 * @param accessToken of the user
 	 * @return UserData object
 	 */
-	private UserData checkAuthorization(String accessToken) {
+	private UserData getUserByToken(String accessToken) {
 		UserData user = new UserData();
 		Role role = Role.INVALID;
 		if (accessToken != null) {

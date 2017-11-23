@@ -12,6 +12,9 @@
     <mvc:annotation-driven />
     <context:component-scan base-package="com.metacube.wesurve" />
 
+    <alias name="hibernateUserDetailsDao" alias="userDetailsDao" />
+    
+
     <context:property-placeholder location="classpath:dbconfig.properties" />
 
     <tx:annotation-driven transaction-manager="transactionManager"/>

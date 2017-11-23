@@ -2,7 +2,7 @@
  * The GenericHibernateDao is an abstract class and implements AbstarctDao interface.
  * It defines all common methods related to the tables.
  */
-package com.metacube.wesurve.dao;
+package com.metacube.wesurve.dao.implementation;
 
 import java.io.Serializable;
 import java.util.List;
@@ -12,6 +12,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import com.metacube.wesurve.dao.AbstractDao;
 
 public abstract class GenericHibernateDao<T, ID extends Serializable> implements AbstractDao<T, ID> {
 	@Autowired

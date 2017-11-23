@@ -9,7 +9,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import com.metacube.wesurve.dao.userresponse.UserResponsesDao;
+import com.metacube.wesurve.dao.UserResponsesDao;
 import com.metacube.wesurve.enums.Status;
 import com.metacube.wesurve.model.Options;
 import com.metacube.wesurve.model.Questions;

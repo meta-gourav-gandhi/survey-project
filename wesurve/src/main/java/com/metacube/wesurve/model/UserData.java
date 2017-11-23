@@ -1,7 +1,7 @@
 /**
  * Used for retrieving current user for authorisation.
  */
-package com.metacube.wesurve.authorize;
+package com.metacube.wesurve.model;
 
 import com.metacube.wesurve.enums.Role;
 

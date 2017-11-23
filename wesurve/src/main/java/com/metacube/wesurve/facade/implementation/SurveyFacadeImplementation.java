@@ -15,7 +15,6 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.metacube.wesurve.authorize.UserData;
 import com.metacube.wesurve.dto.OptionDto;
 import com.metacube.wesurve.dto.QuestionDto;
 import com.metacube.wesurve.dto.QuestionResponseDto;
@@ -33,6 +32,7 @@ import com.metacube.wesurve.model.Options;
 import com.metacube.wesurve.model.Questions;
 import com.metacube.wesurve.model.Survey;
 import com.metacube.wesurve.model.User;
+import com.metacube.wesurve.model.UserData;
 import com.metacube.wesurve.model.UserResponses;
 import com.metacube.wesurve.service.LabelsService;
 import com.metacube.wesurve.service.QuestionsService;
@@ -276,15 +276,28 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 	 * @return the survey if exists
 	 */
 	@Override
-	public ResponseDto<SurveyDto> getSurvey(int surveyId) {
+	public ResponseDto<SurveyDto> getSurvey(int userId, int surveyId) {
 		ResponseDto<SurveyDto> response = new ResponseDto<>();
 
 		Status status;
 		SurveyDto surveyDto = null;
 
 		Survey survey = surveyService.getSurveyById(surveyId);
+		User user = userService.getUserById(userId);
 		if (survey != null && survey.getSurveyStatus() != SurveyStatus.DELETED) {
 			surveyDto = convertModelToDto(survey);
+			if(survey.getSurveyOwner().equals(user) ) {
+				surveyDto.setOwner(true);
+				surveyDto.setViewer(true);
+			} else {
+				surveyDto.setOwner(false);
+				if(survey.getViewers().contains(user)) {
+					surveyDto.setViewer(true);
+				} else {
+					surveyDto.setViewer(false);
+				}
+			}
+			
 			
 			//To shuffle questions of the survey
 			List<QuestionDto> questionDtoList = new ArrayList<>(surveyDto.getQuestions());
@@ -671,11 +684,11 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 	 * @return the map of question id with its selected value
 	 */
 	@Override
-	public ResponseDto<Map<Integer, String>> getSuveyResponse(int responderId, int surveyId) {
-		ResponseDto<Map<Integer, String>> response = new ResponseDto<>();
+	public ResponseDto<Map<Integer, Integer>> getSuveyResponse(int responderId, int surveyId) {
+		ResponseDto<Map<Integer, Integer>> response = new ResponseDto<>();
 		Status status = null;
 		
-		Map<Integer, String> selectedOptions = null;
+		Map<Integer, Integer> selectedOptions = null;
 		
 		User responder = userService.getUserById(responderId);
 		Survey survey = surveyService.getSurveyById(surveyId);
@@ -689,7 +702,7 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 					if (userResponse != null) {
 						Options option = userResponse.getOption();
 						if (option != null) {
-							selectedOptions.put(question.getQuesId(), option.getOptionValue());
+							selectedOptions.put(question.getQuesId(), option.getOptionId());
 						} else {
 							selectedOptions.put(question.getQuesId(), null);
 						}
@@ -707,5 +720,16 @@ public class SurveyFacadeImplementation implements SurveyFacade {
 		response.setStatus(status);
 		response.setBody(selectedOptions);
 		return response;
+	}
+
+	@Override
+	public Status isViewerOfSurvey(int userId, int surveyId) {
+		Status status = Status.ACCESS_DENIED;
+		if(userService.getUserById(userId).getSurveyListToView().
+				contains(surveyService.getSurveyById(surveyId))) {
+			status = Status.ACCESS_GRANTED;
+		}
+		
+		return status;
 	}
 }

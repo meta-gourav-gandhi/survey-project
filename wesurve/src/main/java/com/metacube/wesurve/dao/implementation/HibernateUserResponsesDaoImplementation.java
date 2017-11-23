@@ -2,7 +2,7 @@
  * The HibernateUserResponsesDaoImplementation class is a DAO class for UserResponses Model.
  * It extends GenericHibernateDao class and implements UserResponsesDao interface.
  */
-package com.metacube.wesurve.dao.userresponse;
+package com.metacube.wesurve.dao.implementation;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
-import com.metacube.wesurve.dao.GenericHibernateDao;
+import com.metacube.wesurve.dao.UserResponsesDao;
 import com.metacube.wesurve.model.Options;
 import com.metacube.wesurve.model.Questions;
 import com.metacube.wesurve.model.User;

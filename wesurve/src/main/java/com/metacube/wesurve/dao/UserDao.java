@@ -1,9 +1,8 @@
 /**
  * The UserDao is a DAO interface for the User Model class.
  */
-package com.metacube.wesurve.dao.userdetails;
+package com.metacube.wesurve.dao;
 
-import com.metacube.wesurve.dao.AbstractDao;
 import com.metacube.wesurve.model.User;
 
 public interface UserDao extends AbstractDao<User, Integer> {

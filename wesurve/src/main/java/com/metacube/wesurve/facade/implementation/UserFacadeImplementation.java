@@ -13,7 +13,6 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.metacube.wesurve.authorize.UserData;
 import com.metacube.wesurve.dto.LoginCredentialsDto;
 import com.metacube.wesurve.dto.LoginResponseDto;
 import com.metacube.wesurve.dto.ResponseDto;
@@ -27,9 +26,11 @@ import com.metacube.wesurve.facade.UserFacade;
 import com.metacube.wesurve.model.Labels;
 import com.metacube.wesurve.model.Survey;
 import com.metacube.wesurve.model.User;
+import com.metacube.wesurve.model.UserData;
 import com.metacube.wesurve.model.UserRole;
 import com.metacube.wesurve.service.SurveyService;
 import com.metacube.wesurve.service.UserService;
+import com.metacube.wesurve.utils.Constants;
 import com.metacube.wesurve.utils.EmailUtils;
 import com.metacube.wesurve.utils.MD5Encryption;
 import com.metacube.wesurve.utils.StringUtils;
@@ -160,24 +161,21 @@ public class UserFacadeImplementation implements UserFacade {
 	}
 
 	/**
-	 * @param loginCredentialsDto email and password to authenticate user
-	 * @return user
-	 */
+	* @param loginCredentialsDto email and password to authenticate user
+	* @return user
+	*/
 	private User authenticate(LoginCredentialsDto loginCredentialsDto) {
 		User user = null;
-		Boolean condition = StringUtils.validateEmail(loginCredentialsDto.getEmail())
-				&& StringUtils.validateString(loginCredentialsDto.getPassword())
-				&& loginCredentialsDto.getPassword().length() >= 8;
-		if (condition) {
+		String email = loginCredentialsDto.getEmail();
+		String password = loginCredentialsDto.getPassword();
+		if (StringUtils.validateEmail(email) && StringUtils.validatePassword(password)) {
 			try {
-				String email = loginCredentialsDto.getEmail();
-				String password = MD5Encryption.encrypt(loginCredentialsDto.getPassword());
-				user = userService.checkAuthentication(email, password);
+				user = userService.checkAuthentication(email, MD5Encryption.encrypt(password));
 			} catch (NoSuchAlgorithmException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}
-
+	
 		return user;
 	}
 
@@ -238,12 +236,10 @@ public class UserFacadeImplementation implements UserFacade {
 	 * @return User object
 	 */
 	private User createUserIfNotExists(UserDto socialUserDto) {
-		User user;
+		User user = userService.getUserByMail(socialUserDto.getEmail());
 
-		if (!userService.checkIfEmailExists(socialUserDto.getEmail())) {
+		if (user == null) {
 			user = userService.createNewUser(convertDtoToModel(socialUserDto));
-		} else {
-			user = userService.getUserByMail(socialUserDto.getEmail());
 		}
 
 		return user;
@@ -268,7 +264,7 @@ public class UserFacadeImplementation implements UserFacade {
 	@Override
 	public ResponseDto<Void> forgotPassword(String email) {
 		ResponseDto<Void> response = new ResponseDto<>();
-		Status status = Status.FAILURE;
+		Status status;
 		
 		if (StringUtils.validateEmail(email)) {
 			User user = userService.getCustomUserByMail(email);
@@ -278,15 +274,14 @@ public class UserFacadeImplementation implements UserFacade {
 				try {
 					status = userService.changePassword(user, MD5Encryption.encrypt(newPassword));
 				} catch (NoSuchAlgorithmException e1) {
+					status = Status.FAILURE;
 					e1.printStackTrace();
 				}
 		
 				if (status != Status.FAILURE) {
 					String emailBody = "Hello "
-							+ user.getName()
-							+ ",\nYour new password is: \n"
-							+ newPassword
-							+ "\n\nYou can use this password for login and you can change the password from the user profile.\n\nThanks & Regards,\nWeSurve Helpline";
+							+ user.getName() +
+							"\n\nPassword: " + newPassword + Constants.EMAIL_MESSAGE;
 					try {
 						EmailUtils.sendEmail("wesurvehelpline@gmail.com",
 								"wesurve#123", email, "Recover Password",
@@ -297,7 +292,11 @@ public class UserFacadeImplementation implements UserFacade {
 						status = Status.FAILURE;
 					}
 				}
+			} else {
+				status = Status.NOT_FOUND;
 			}
+		} else {
+			status = Status.INVALID_CONTENT;
 		}
 
 		response.setStatus(status);

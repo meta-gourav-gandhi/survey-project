@@ -2,14 +2,14 @@
  * The HibernateLabelsDaoImplementation class is a DAO class for Labels Model.
  * It extends GenericHibernateDao class and implements LabelsDao interface.
  */
-package com.metacube.wesurve.dao.labels;
+package com.metacube.wesurve.dao.implementation;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
-import com.metacube.wesurve.dao.GenericHibernateDao;
+import com.metacube.wesurve.dao.LabelsDao;
 import com.metacube.wesurve.model.Labels;
 
 @Repository("hibernateLabelsDaoImplementation")

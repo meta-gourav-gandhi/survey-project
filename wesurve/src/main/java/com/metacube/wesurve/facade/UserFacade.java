@@ -3,7 +3,6 @@
  */
 package com.metacube.wesurve.facade;
 
-import com.metacube.wesurve.authorize.UserData;
 import com.metacube.wesurve.dto.LoginCredentialsDto;
 import com.metacube.wesurve.dto.LoginResponseDto;
 import com.metacube.wesurve.dto.ResponseDto;
@@ -12,6 +11,7 @@ import com.metacube.wesurve.dto.UserDetailsDto;
 import com.metacube.wesurve.dto.UserDetailsForSurveyorDto;
 import com.metacube.wesurve.dto.UserDto;
 import com.metacube.wesurve.enums.Status;
+import com.metacube.wesurve.model.UserData;
 
 public interface UserFacade {
 	ResponseDto<Void> createNewUser(UserDto userDetailsDto);
